@@ -61,6 +61,12 @@ Also setting up a python virtualenv is the way to go.. if you don't do that than
 * pip install -U nose
 * pip install -U yourmom --superfat
 
+** Notebooks: **
+
+* pip install -U pandas
+* pip install -U matplotlib
+
+
 
 ### Running It:
 #### Server (localhost or server machine)
