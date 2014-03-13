@@ -1,0 +1,56 @@
+import zerorpc
+import argparse
+import os
+import pprint
+
+def main():
+
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-p', '--port', type=int, default=4242, help='port used by workbench server')
+    args = parser.parse_args()
+    port = str(args.port)
+    c = zerorpc.Client()
+    c.connect('tcp://127.0.0.1:'+port)
+
+    # Test out PEFile -> strings -> indexer -> search
+    file_list = [os.path.join('../test_files/pe/bad', child) for child in os.listdir('../test_files/pe/bad')]
+    for filename in file_list:
+
+        # Skip OS generated files
+        if '.DS_Store' in filename: continue
+
+        with open(filename,'rb') as file:
+            md5 = c.store_sample(filename, file.read(), 'pe')
+
+            # Index the strings and features output (notice we can ask for any worker output)
+            # Also (super important) it all happens on the server side.
+            c.index_worker_output('strings', md5, 'pe_strings')
+            print '\n<<< Strings for PE: %s Indexed>>>' % (filename)
+            c.index_worker_output('pe_features', md5, 'pe_features')
+            print '<<< Features for PE: %s Indexed>>>' % (filename)
+
+    # Now actually do something interesing with our ELS index
+    # ES Facets are kewl (http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-facets.html)
+    facet_query = '{"facets" : {"tag" : {"terms" : {"field" : "string_list","script": "term.length() > 3 ? true: false"}}}}'
+    results = c.search('pe_strings',facet_query)
+    print '\nQuery: %s' % facet_query
+    print 'Number of hits: %d' % results['hits']['total']
+    print 'Max Score: %f' % results['hits']['max_score']
+    pprint.pprint(results['facets'])
+
+    # Fuzzy is kewl (http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-fuzzy-query.html)
+    fuzzy_query = '{"fields":["md5","sparse_features.imported_symbols"],"query": {"fuzzy" : {"sparse_features.imported_symbols" : "loadlibrary"},"size":50}}'
+    results = c.search('pe_features',fuzzy_query)
+    print '\nQuery: %s' % fuzzy_query
+    print 'Number of hits: %d' % results['hits']['total']
+    print 'Max Score: %f' % results['hits']['max_score']
+    pprint.pprint([ (hit['fields']['md5'], hit['fields']['sparse_features.imported_symbols']) for hit in results['hits']['hits'] ])
+
+
+def test():
+    ''' pe_strings_indexer test '''
+    main()
+
+if __name__ == '__main__':
+    main()
