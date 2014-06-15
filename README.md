@@ -19,8 +19,7 @@ As an open source python framework it provides light-weight task management, exe
 * WIP Notebooks
 	* **<a href="http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/notebooks/Network_Stream.ipynb">Network Stream Analysis Notebook</a>**
 	* **<a href="http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/notebooks/Rekall_to_Dataframe.ipynb">Rekall Integration Notebook</a>**
-
-	
+	* **<a href="http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/notebooks/PE_Static_Analysis.ipynb">PE File Static Analysis Notebook</a>**
 
 ### Email lists (anyone can join)
 - Users Email List: [workbench-users](https://groups.google.com/forum/#!forum/workbench-users)
@@ -53,7 +52,7 @@ Please note the indexers 'Neo4j' and 'ElasticSearch' are optional. We strongly s
 - Bro IDS: 
    - Put the bro executable in your PATH (/opt/bro/bin or wherever bro is)
 
-    In general the Bro debian package files are WAY too locked down with dependencies on exact versions of libc6 and python2.6. We have a more 'flexible' version [Bro-2.2-Linux-x86_64_flex.deb](https://github.com/SuperCowPowers/data/raw/master/packages/Bro-2.2-Linux-x86_64_flex.deb). 
+    In general the Bro debian package files are WAY too locked down with dependencies on exact versions of libc6 and python2.6. We have a more 'flexible' version [Bro-2.2-Linux-x86_64_flex.deb](https://s3-us-west-2.amazonaws.com/workbench-data/packages/Bro-2.2-Linux-x86_64_flex.deb). 
     - sudo dpkg -i Bro-2.2-Linux-x86_64_flex.deb
  
    If using the Debian package above doesn't work out:
@@ -72,6 +71,8 @@ Please note the indexers 'Neo4j' and 'ElasticSearch' are optional. We strongly s
 
 #### Ubuntu (14.04 and 12.04)
 - Neo4j: See official instructions for Neo4j [here](http://www.neo4j.org/download/linux)
+    - Note: You may need to install Java JDK 1.7. If you have Java 1.7 installed , and error says otherwise, run update-alternatives --config java and select Java 1.7
+
 - ElasticSearch:
     - wget https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.2.1.deb
     - sudo dpkg -i elasticsearch-1.2.1.deb
