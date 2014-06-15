@@ -52,8 +52,8 @@ def main():
     good_files = [os.path.join('../data/pe/good', child) for child in os.listdir('../data/pe/good')]
     
     # First throw them into workbench and add them as nodes into the graph
-    bad_md5s = add_it(c, bad_files, ['pe','bad'])
-    good_md5s = add_it(c, good_files, ['pe','good'])
+    add_it(c, bad_files, ['pe','bad'])
+    add_it(c, good_files, ['pe','good'])
 
 
     # Compute pe_features on all files of type pe, just pull back the sparse features

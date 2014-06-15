@@ -10,13 +10,11 @@ import zerorpc
 import zmq
 import logging
 logging.basicConfig()
-import datetime
 import StringIO
 import json
 import hashlib
 import inspect
 import funcsigs
-import urllib3
 
 ''' Add bro to path for bro_log_reader '''
 import sys
