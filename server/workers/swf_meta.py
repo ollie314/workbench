@@ -8,9 +8,6 @@ class SWFMeta():
 
     def execute(self, input_data):
 
-        # Get the raw_bytes
-        raw_bytes = input_data['sample']['raw_bytes']
-
         # Add the meta data to the output
         output = input_data['meta']
         return output

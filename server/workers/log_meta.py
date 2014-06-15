@@ -1,7 +1,5 @@
 
 ''' Logfile Meta worker '''
-import hashlib
-import datetime
 
 class LogMetaData(object):
     ''' This worker computes a meta-data for log files. '''
