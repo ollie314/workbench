@@ -15,7 +15,7 @@ before_install:
     - sudo dpkg -i Bro-2.2-Linux-x86_64_flex.deb
     - export PATH=/opt/bro/bin:$PATH
     - cp .noserc ~/.noserc
-    - wget https://s3-us-west-2.amazonaws.com/workbench-data/memory_images/exemplar4.vmem -o data/mem    ory_images/exemplar4.vmem
+    - wget https://s3-us-west-2.amazonaws.com/workbench-data/memory_images/exemplar4.vmem -o data/memory_images/exemplar4.vmem
 install:
   - pip install -r requirements.txt
   - pip install coveralls
