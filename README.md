@@ -69,7 +69,8 @@ Please note the indexers 'Neo4j' and 'ElasticSearch' are optional. We strongly s
 
 #### Ubuntu (14.04 and 12.04)
 - Neo4j: See official instructions for Neo4j [here](http://www.neo4j.org/download/linux)
-  - Note: You may need to install Java JDK 1.7
+    - Note: You may need to install Java JDK 1.7. If you have Java 1.7 installed , and error says otherwise, run update-alternatives --config java and select Java 1.7
+
 - ElasticSearch:
     - wget https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.2.1.deb
     - sudo dpkg -i elasticsearch-1.2.1.deb
