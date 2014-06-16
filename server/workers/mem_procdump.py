@@ -44,8 +44,8 @@ class MemoryImageProcDump(object):
             try:
                 plugin = session.plugins.procdump(dump_dir=temp_dir)
             except KeyError:
-                print 'Could load the %s Rekall Plugin.. Failing with Error.' % self.plugin_name
-                return {'Error': 'Could load the %s Rekall Plugin' % self.plugin_name}
+                print 'Could not load the %s Rekall Plugin.. Failing with Error.' % self.plugin_name
+                return {'Error': 'Could not load the %s Rekall Plugin' % self.plugin_name}
 
             # Render the plugin and grab all the dumped files
             renderer.render(plugin)
