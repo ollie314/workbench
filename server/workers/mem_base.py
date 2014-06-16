@@ -34,8 +34,8 @@ class MemoryImageBase(object):
         try:
             plugin = session.plugins.__dict__[self.plugin_name]()
         except KeyError:
-            print 'Could load the %s Rekall Plugin.. Failing with Error.' % self.plugin_name
-            return {'Error': 'Could load the %s Rekall Plugin' % self.plugin_name}
+            print 'Could not load the %s Rekall Plugin.. Failing with Error.' % self.plugin_name
+            return {'Error': 'Could not load the %s Rekall Plugin' % self.plugin_name}
 
         # Render the plugin and return the data
         self.output = renderer.render(plugin)
@@ -57,13 +57,13 @@ def test():
     except IOError, e:
         print 'Not finding exemplar4.mem... Downloading now...'
         import urllib
-        urllib.urlretrieve('https://s3-us-west-2.amazonaws.com/workbench-data/memory_images/exemplar4.vmem',
+        urllib.urlretrieve('https://s3-us-west-2.amazonaws.com/workbench-data/mem_images/exemplar4.vmem',
                            '../../data/mem_images/exemplar4.vmem')
         try:
             md5 = c.store_sample('exemplar4.vmem', open('../../data/mem_images/exemplar4.vmem', 'rb').read(), 'mem')
         except IOError, e:
             print 'Downloading failed, try it manually...'
-            print 'wget https://s3-us-west-2.amazonaws.com/workbench-data/memory_images/exemplar4.vmem'
+            print 'wget https://s3-us-west-2.amazonaws.com/workbench-data/mem_images/exemplar4.vmem'
             exit(1)
 
     # Unit test stuff
