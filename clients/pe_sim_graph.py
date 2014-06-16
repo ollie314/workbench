@@ -46,27 +46,30 @@ def main():
     c = zerorpc.Client()
     c.connect('tcp://127.0.0.1:'+port)
 
-
     # Test out PEFile -> pe_deep_sim -> pe_jaccard_sim -> graph
-    bad_files = [os.path.join('../data/pe/bad', child) for child in os.listdir('../data/pe/bad')]
-    good_files = [os.path.join('../data/pe/good', child) for child in os.listdir('../data/pe/good')]
+    bad_files = [os.path.join('../data/pe/bad', child) for child in os.listdir('../data/pe/bad')][:25]
+    good_files = [os.path.join('../data/pe/good', child) for child in os.listdir('../data/pe/good')][:25]
+
+    # Clear any graph in the Neo4j database
+    c.clear_graph_db()
     
     # First throw them into workbench and add them as nodes into the graph
-    add_it(c, bad_files, ['pe','bad'])
-    add_it(c, good_files, ['pe','good'])
+    md5s_bad = add_it(c, bad_files, ['pe','bad'])
+    md5s_good = add_it(c, good_files, ['pe','good'])
+    all_md5s = md5s_bad + md5s_good
 
 
     # Compute pe_features on all files of type pe, just pull back the sparse features
-    imports = c.batch_work_request('pe_features', {'type_tag': 'pe', 'subkeys':['md5','sparse_features.imported_symbols']})
+    imports = c.batch_work_request('pe_features', {'md5_list': all_md5s, 'subkeys':['md5','sparse_features.imported_symbols']})
 
     # Compute pe_features on all files of type pe, just pull back the sparse features
-    warnings = c.batch_work_request('pe_features', {'type_tag': 'pe', 'subkeys':['md5','sparse_features.pe_warning_strings']})
+    warnings = c.batch_work_request('pe_features', {'md5_list': all_md5s, 'subkeys':['md5','sparse_features.pe_warning_strings']})
     
     # Compute strings on all files of type pe, just pull back the string_list
-    strings = c.batch_work_request('strings', {'type_tag': 'pe', 'subkeys':['md5','string_list']})
+    strings = c.batch_work_request('strings', {'md5_list': all_md5s, 'subkeys':['md5','string_list']})
     
     # Compute pe_peid on all files of type pe, just pull back the match_list
-    peids = c.batch_work_request('pe_peid', {'type_tag': 'pe', 'subkeys':['md5','match_list']})    
+    peids = c.batch_work_request('pe_peid', {'md5_list': all_md5s, 'subkeys':['md5','match_list']})
 
     # Organize the data a bit
     imports = [{'md5':r['md5'],'features':r['imported_symbols']} for r in imports]
@@ -104,7 +107,9 @@ def main():
         for sim_info in result['sim_list']:
             c.add_rel(result['md5'], sim_info['md5'], 'ssdeep')
 
-
+    # Let them know where they can get there graph
+    print 'All done: go to http://localhost:7474/browser and execute this query: "%s"' % \
+           ('match (n)-[r]-() return n,r')
 
 def test():
     ''' pe_sim_graph test '''
