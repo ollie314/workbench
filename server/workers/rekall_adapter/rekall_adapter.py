@@ -76,6 +76,7 @@ class WorkbenchRenderer(BaseRenderer):
         self.header_types = None
         self.incoming_section = False
         self.formatter = Formatter()
+        self.start()
 
     def start(self, plugin_name=None, kwargs=None):
         ''' Start method: initial data structures and store some meta data '''
@@ -86,7 +87,6 @@ class WorkbenchRenderer(BaseRenderer):
 
     def end(self):
         ''' Just a stub method '''
-        print 'Calling end on WorkbenchRenderer does nothing'
 
     def format(self, formatstring, *args):
 
@@ -176,7 +176,7 @@ def test():
     ''' rekall_adapter.py: Test '''
 
     # Grab the sample bytes
-    with open('../../data/mem_images/exemplar4.vmem', 'rb') as mem_file:
+    with open('../../../data/mem_images/exemplar4.vmem', 'rb') as mem_file:
         raw_bytes = mem_file.read()
 
         adapter = RekallAdapter(raw_bytes)
@@ -188,6 +188,9 @@ def test():
         pprint.pprint(output)
 
         output = renderer.render(session.plugins.pslist())
+        pprint.pprint(output)
+
+        output = renderer.render(session.plugins.dlllist())
         pprint.pprint(output)
 
 if __name__ == "__main__":
