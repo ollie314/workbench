@@ -3,6 +3,7 @@
     See Google Github: https://github.com/google/rekall
     All credit for good stuff goes to them, all credit for bad stuff goes to us. :)
 '''
+
 from rekall_adapter.rekall_adapter import RekallAdapter
 
 class MemoryImageBase(object):
