@@ -135,16 +135,13 @@ Workbench is committed to providing open source security software. If you're a d
 - **Buy a T-Shirt!**: [SuperCowPowers](http://www.supercowpowers.com/#about)
 - Donate: [SuperCowPowers](http://www.supercowpowers.com/#about)
 
-#### Pull Requests
-If you're going to make a pull request on the workbench repository:
+#### Git Development Model
+We're going to use the 'GitHub Flow' model.
 
-- You're awesome
-- Use the 'develop' branch for small changes
-- Use the 'future' branch for big changes
-- Make sure all tests pass
-    - Workers: server/workers/runtests
-    - Clients: clients/runtests
-- New code must have a test and greater than 94% test coverage
+- To work on something new, create a descriptively named branch off of master (ie:new-oauth2-scopes)
+- Commit to that branch locally and regularly push your work to the same named branch on the server
+- When you need feedback or help, or you think the branch is ready for merging, open a pull request
+- After someone else has reviewed and signed off on the feature, you can merge it into master
 
 
 ### Additional Information
