@@ -46,3 +46,6 @@ _build
 
 # Local Configuration file
 config.ini
+
+# Pulled datasets
+data/mem_images
