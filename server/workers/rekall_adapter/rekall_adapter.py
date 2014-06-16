@@ -176,22 +176,31 @@ def test():
     ''' rekall_adapter.py: Test '''
 
     # Grab the sample bytes
-    with open('../../../data/mem_images/exemplar4.vmem', 'rb') as mem_file:
-        raw_bytes = mem_file.read()
+    try:
+        mem_file = open('../../../data/mem_images/exemplar4.vmem', 'rb')
+    except IOError:
+        try:
+            mem_file = open('../../data/mem_images/exemplar4.vmem', 'rb')
+        except IOError:
+            print 'Could not open exemplar4.vmem'
+            exit(1)
 
-        adapter = RekallAdapter(raw_bytes)
-        session = adapter.get_session()
-        renderer = adapter.get_renderer()
+    # Got the file, now process it
+    raw_bytes = mem_file.read()
 
-        # Create any kind of plugin supported by this session
-        output = renderer.render(session.plugins.imageinfo())
-        pprint.pprint(output)
+    adapter = RekallAdapter(raw_bytes)
+    session = adapter.get_session()
+    renderer = adapter.get_renderer()
 
-        output = renderer.render(session.plugins.pslist())
-        pprint.pprint(output)
+    # Create any kind of plugin supported by this session
+    output = renderer.render(session.plugins.imageinfo())
+    pprint.pprint(output)
 
-        output = renderer.render(session.plugins.dlllist())
-        pprint.pprint(output)
+    output = renderer.render(session.plugins.pslist())
+    pprint.pprint(output)
+
+    output = renderer.render(session.plugins.dlllist())
+    pprint.pprint(output)
 
 if __name__ == "__main__":
     test()
