@@ -3,7 +3,7 @@
     See Google Github: https://github.com/google/rekall
     All credit for good stuff goes to them, all credit for bad stuff goes to us. :)
 '''
-import rekall_helper.rekall_helper as helper
+from rekall_adapter.rekall_adapter import RekallAdapter
 import zerorpc
 import contextlib
 import tempfile
@@ -30,12 +30,10 @@ class MemoryImageProcDump(object):
         # Grab the raw bytes of the sample
         raw_bytes = input_data['sample']['raw_bytes']
 
-        # Spin up the rekall helpers
-        MemS = helper.MemSession(raw_bytes)
-        renderer = helper.WorkbenchRenderer()
-
-        # Grab the recall session
-        s = MemS.get_session()
+        # Spin up the rekall adapter
+        adapter = RekallAdapter(raw_bytes)
+        session = adapter.get_session()
+        renderer = adapter.get_renderer()
 
         # Create a temporary directory
         with self.make_temp_directory() as temp_dir:
@@ -43,7 +41,7 @@ class MemoryImageProcDump(object):
 
             # Here we can grab any plugin
             try:
-                plugin = s.plugins.procdump(dump_dir=temp_dir)
+                plugin = session.plugins.procdump(dump_dir=temp_dir)
             except KeyError:
                 print 'Could load the %s Rekall Plugin.. Failing with Error.' % self.plugin_name
                 return {'Error': 'Could load the %s Rekall Plugin' % self.plugin_name}
@@ -95,7 +93,7 @@ def test():
     c.connect("tcp://127.0.0.1:4242")
 
     # Store the sample
-    md5 = c.store_sample('exemplar4.vmem', open('/Users/briford/volatility/mem_images/exemplar4.vmem', 'rb').read(), 'mem')
+    md5 = c.store_sample('exemplar4.vmem', open('../../data/mem_images/exemplar4.vmem', 'rb').read(), 'mem')
 
     # Unit test stuff
     input_data = c.get_sample(md5)

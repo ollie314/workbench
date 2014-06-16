@@ -1,5 +1,5 @@
 
-''' rekall_workbench: Helps with boilerplate to utilize the Rekall Memory Forensic Framework.
+''' rekall_adapter: Helps Workbench utilize the Rekall Memory Forensic Framework.
     See Google Github: https://github.com/google/rekall
     All credit for good stuff goes to them, all credit for bad stuff goes to us. :)
 '''
@@ -15,7 +15,23 @@ import datetime
 import pprint
 import msgpack
 import pytz
-import collections
+
+class RekallAdapter(object):
+    ''' RekallAdapter: Helps utilize the Rekall Memory Forensic Framework. '''
+
+    def __init__(self, raw_bytes):
+        ''' Initialization '''
+
+        self.MemS = MemSession(raw_bytes)
+        self.renderer = WorkbenchRenderer()
+        self.session = self.MemS.get_session()
+
+    def get_session(self):
+        return self.session
+
+    def get_renderer(self):
+        return self.renderer
+
 
 class MemSession(object):
     ''' MemSession: Helps utilize the Rekall Memory Forensic Framework. '''
@@ -123,7 +139,7 @@ class WorkbenchRenderer(BaseRenderer):
             are properly cast into the correct types, instead of
             just treating everything like a string from the csv file
         '''
-        output_dict = collections.OrderedDict()
+        output_dict = {}
         for key, value, dtype in zip(keys, values, data_types):
             output_dict[key] = self._cast_value(value, dtype)
 
@@ -157,21 +173,21 @@ class WorkbenchRenderer(BaseRenderer):
 
 # Unit test: Create the class, the proper input and run the execute() method for a test
 def test():
-    ''' rekall_helper.py: Test '''
+    ''' rekall_adapter.py: Test '''
 
     # Grab the sample bytes
-    with open('/Users/briford/volatility/mem_images/exemplar4.vmem', 'rb') as mem_file:
+    with open('../../data/mem_images/exemplar4.vmem', 'rb') as mem_file:
         raw_bytes = mem_file.read()
 
-        MemS = MemSession(raw_bytes)
-        renderer = WorkbenchRenderer()
+        adapter = RekallAdapter(raw_bytes)
+        session = adapter.get_session()
+        renderer = adapter.get_renderer()
 
-        s = MemS.get_session()
-        plugin = s.plugins.imageinfo()
-        output = renderer.render(s.plugins.imageinfo())
+        # Create any kind of plugin supported by this session
+        output = renderer.render(session.plugins.imageinfo())
         pprint.pprint(output)
 
-        output = renderer.render(s.plugins.pslist())
+        output = renderer.render(session.plugins.pslist())
         pprint.pprint(output)
 
 if __name__ == "__main__":

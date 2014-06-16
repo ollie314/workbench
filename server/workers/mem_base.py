@@ -3,7 +3,7 @@
     See Google Github: https://github.com/google/rekall
     All credit for good stuff goes to them, all credit for bad stuff goes to us. :)
 '''
-import rekall_helper.rekall_helper as helper
+from rekall_adapter.rekall_adapter import RekallAdapter
 
 class MemoryImageBase(object):
     ''' This worker computes meta-data for memory image files. '''
@@ -24,16 +24,14 @@ class MemoryImageBase(object):
         # Grab the raw bytes of the sample
         raw_bytes = input_data['sample']['raw_bytes']
 
-        # Spin up the rekall helpers
-        MemS = helper.MemSession(raw_bytes)
-        renderer = helper.WorkbenchRenderer()
-
-        # Grab the recall session
-        s = MemS.get_session()
+        # Spin up the rekall adapter
+        adapter = RekallAdapter(raw_bytes)
+        session = adapter.get_session()
+        renderer = adapter.get_renderer()
 
         # Here we can grab any plugin
         try:
-            plugin = s.plugins.__dict__[self.plugin_name]()
+            plugin = session.plugins.__dict__[self.plugin_name]()
         except KeyError:
             print 'Could load the %s Rekall Plugin.. Failing with Error.' % self.plugin_name
             return {'Error': 'Could load the %s Rekall Plugin' % self.plugin_name}
@@ -53,7 +51,19 @@ def test():
     c.connect("tcp://127.0.0.1:4242")
 
     # Store the sample
-    md5 = c.store_sample('exemplar4.vmem', open('/Users/briford/volatility/mem_images/exemplar4.vmem', 'rb').read(), 'mem')
+    try:
+        md5 = c.store_sample('exemplar4.vmem', open('../../data/mem_images/exemplar4.vmem', 'rb').read(), 'mem')
+    except IOError, e:
+        print 'Not finding exemplar4.mem... Downloading now...'
+        import urllib
+        urllib.urlretrieve('https://s3-us-west-2.amazonaws.com/workbench-data/memory_images/exemplar4.vmem',
+                           '../../data/mem_images/exemplar4.vmem')
+        try:
+            md5 = c.store_sample('exemplar4.vmem', open('../../data/mem_images/exemplar4.vmem', 'rb').read(), 'mem')
+        except IOError, e:
+            print 'Downloading failed, try it manually...'
+            print 'wget https://s3-us-west-2.amazonaws.com/workbench-data/memory_images/exemplar4.vmem'
+            exit(1)
 
     # Unit test stuff
     input_data = c.get_sample(md5)
