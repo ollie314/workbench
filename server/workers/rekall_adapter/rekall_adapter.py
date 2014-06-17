@@ -202,5 +202,11 @@ def test():
     output = renderer.render(session.plugins.dlllist())
     pprint.pprint(output)
 
+
+    # Code coverage: These calls are simply for code coverage
+    renderer.format('foo')
+    renderer.section()
+    renderer.format('foo')
+
 if __name__ == "__main__":
     test()
