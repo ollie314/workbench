@@ -2,7 +2,6 @@
 ''' Meta worker '''
 import hashlib
 import magic
-import datetime
 
 class MetaData(object):
     ''' This worker computes meta data for any file type. '''

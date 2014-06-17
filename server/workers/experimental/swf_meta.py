@@ -21,7 +21,6 @@ class SWFMeta():
 
         # Header info
         head = swf.header
-        fields = ['version']
         output = {'version':head.version,'file_length':head.file_length,'frame_count':head.frame_count,
                   'frame_rate':head.frame_rate,'frame_size':head.frame_size.__str__(),'compressed':head.compressed}
 

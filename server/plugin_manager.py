@@ -115,7 +115,7 @@ class PluginManager(FileSystemEventHandler):
         try:
             getattr(plugin_class, 'dependencies')
             getattr(plugin_class, 'execute')
-        except AttributeError, error:
+        except AttributeError:
             return False
 
         return True
@@ -130,7 +130,7 @@ def test():
         pass
 
     # Create Plugin Manager
-    plugins = PluginManager(new_plugin)
+    PluginManager(new_plugin)
 
 if __name__ == "__main__":
     test()

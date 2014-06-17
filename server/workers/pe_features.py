@@ -1,7 +1,6 @@
 ''' PE Features worker. This class pulls static features
     out of a PE file using the python pefile module.
 '''
-import sys
 import pefile
 
 class PEFileWorker(object):
@@ -228,7 +227,10 @@ class PEFileWorker(object):
         extracted_dense['pe_char']                = pe.FILE_HEADER.Characteristics
 
         # Data directory features!!
-        datadirs = { 0: 'IMAGE_DIRECTORY_ENTRY_EXPORT', 1:'IMAGE_DIRECTORY_ENTRY_IMPORT', 2:'IMAGE_DIRECTORY_ENTRY_RESOURCE', 5:'IMAGE_DIRECTORY_ENTRY_BASERELOC', 12:'IMAGE_DIRECTORY_ENTRY_IAT'}
+        datadirs = { 
+            0: 'IMAGE_DIRECTORY_ENTRY_EXPORT',  1:'IMAGE_DIRECTORY_ENTRY_IMPORT', 
+            2:'IMAGE_DIRECTORY_ENTRY_RESOURCE', 5:'IMAGE_DIRECTORY_ENTRY_BASERELOC', 
+            12:'IMAGE_DIRECTORY_ENTRY_IAT'}
         for idx, datadir in datadirs.items():
             datadir = pefile.DIRECTORY_ENTRY[ idx ]
             if len(pe.OPTIONAL_HEADER.DATA_DIRECTORY) <= idx:

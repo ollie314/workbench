@@ -464,7 +464,6 @@ class WorkBench():
             if name == worker:
                 return '\n Worker: %s %s\n\t%s' % (name, str(plugin['class'].dependencies), plugin['class'].__doc__)
         return '%s worker not found.. misspelled?' % worker
-        #return {plugin['name']:plugin['class'].__doc__ for name, plugin in self.plugin_meta.iteritems()}
 
     def help_advanced(self):
         ''' Returns advanced help commands '''

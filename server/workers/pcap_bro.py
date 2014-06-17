@@ -1,6 +1,5 @@
 ''' PcapBro worker '''
 import os
-import datetime
 import tempfile
 import contextlib
 import shutil

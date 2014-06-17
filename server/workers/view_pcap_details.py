@@ -16,13 +16,13 @@ class ViewPcapDetails(object):
         
         # Grab a couple of handles
         extracted_files = input_data['view_pcap']['extracted_files']
-        bro_logs = input_data['view_pcap']['bro_logs']
         
         # Dump a couple of fields
         del view['extracted_files']        
 
         # Gather additional info from the Bro logs
         '''
+        bro_logs = input_data['view_pcap']['bro_logs']
         view['bro_log_meta'] = [self.c.work_request('meta', md5) for md5 in bro_logs]
         '''
 
