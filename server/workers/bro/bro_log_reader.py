@@ -3,10 +3,8 @@
     because of this, it's memory efficient and does not read the entire file into memory.
 '''
 
-import csv
 import datetime
 import optparse
-import itertools
 import time
 
 

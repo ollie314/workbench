@@ -1,6 +1,5 @@
 ''' view_pcap worker '''
 import zerorpc
-import itertools
 
 class ViewPcap(object):
     ''' ViewPcap: Generates a view for a pcap sample (depends on Bro)'''
