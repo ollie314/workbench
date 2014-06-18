@@ -3,7 +3,6 @@
 import zerorpc
 import requests
 import collections
-import sys
 import workbench_keys
 
 class VTQuery(object):
@@ -35,7 +34,7 @@ class VTQuery(object):
         # Make sure we got a json blob back
         try:
             vt_output = response.json()
-        except ValueError, error:
+        except ValueError:
             vt_err = 'VirusTotal Query Error, no valid response... past per min quota?'
             print vt_err
             output = {'vt_error': vt_err}

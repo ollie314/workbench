@@ -335,7 +335,7 @@ class PEIndicators(object):
     def check_exports(self):
         ''' This is just a stub function right now, might be useful later '''
         exports = ['evil']
-        matching_imports = self._search_for_export_symbols(exports)
+        self._search_for_export_symbols(exports)
 
     #
     # Helper methods

@@ -1,6 +1,5 @@
 ''' PE peid worker. Uses the peid_userdb.txt database of signatures.
 '''
-import sys
 import peutils
 import pefile
 import pkg_resources

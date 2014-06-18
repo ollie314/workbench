@@ -11,7 +11,7 @@ class ELS_Indexer():
             info = self.es.info()
             version = info['version']
             print 'ELS Indexer connected: %s %s %s %s' % (str(hosts), info['name'], version['number'], version['lucene_version'])
-        except:
+        except elasticsearch.exceptions.ConnectionError:
             print 'ELS connection failed! Is your ELS server running?'
             exit(1)
 

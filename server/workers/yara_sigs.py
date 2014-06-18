@@ -52,7 +52,7 @@ def test():
             md5_list.append(c.store_sample(filename, file.read(), 'pe'))
 
     # Store the md5 list on the server as a sample set
-    sample_set = c.store_sample_set(md5_list)
+    c.store_sample_set(md5_list)
 
     # Grab one of the sample for input to the local unit test
     input_data = c.get_sample(md5_list[0])

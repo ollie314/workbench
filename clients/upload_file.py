@@ -1,7 +1,6 @@
 import zerorpc
 import os
 import pprint
-import hashlib
 import argparse
 
 

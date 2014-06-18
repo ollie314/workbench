@@ -47,5 +47,5 @@ _build
 # Local Configuration file
 config.ini
 
-# Pulled datasets
+# Ignore pulled data 
 data/mem_images
