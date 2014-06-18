@@ -46,3 +46,6 @@ _build
 
 # Local Configuration file
 config.ini
+
+# Ignore pulled data 
+data/mem_images
