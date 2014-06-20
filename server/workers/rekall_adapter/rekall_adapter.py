@@ -54,16 +54,41 @@ class MemSession(object):
         # Store session handle
         self.session = s
 
-        # Pack the session (testing for now)
-        #packed = msgpack.packb(self.session, use_bin_type=True)
-        #print 'Size of packed session %d' % packed.sized
-        #self.session = msgpack.unpackb(packed, encoding='utf-8')
+        # Serialize the session (testing for now)
+        if self.session.state.dirty or self.session.state.cache.dirty:
+            print 'Saving %s' % (str(self.session.state.session_filename))
+            print 'Method %s' % (str(self.session.SaveToFile))
+            # self.session.SaveToFile(self.session.state.session_filename)        
+        packed = msgpack.packb(self.session, use_bin_type=True)
+        print 'Size of packed session %d' % packed.sized
+        self.session = msgpack.unpackb(packed, encoding='utf-8')
         
 
     def get_session(self):
         ''' Get the current session handle '''
         return self.session
 
+    def SaveToFile(self, filename):
+        with open(filename, "wb") as fd:
+            logging.info("Saving session to %s", filename)
+            json.dump(self.Serialize(), fd)
+
+    def LoadFromFile(self, filename):
+        lexicon, data = json.load(open(filename, "rb"))
+        logging.info("Loaded session from %s", filename)
+
+        self.Unserialize(lexicon, data)
+
+    def Unserialize(self, lexicon, data):
+        decoder = json_renderer.JsonDecoder(self)
+        decoder.SetLexicon(lexicon)
+        self.state = Configuration(**decoder.Decode(data))
+        self.UpdateFromConfigObject()
+
+    def Serialize(self):
+        encoder = json_renderer.JsonEncoder()
+        data = encoder.Encode(self.state)
+        return encoder.GetLexicon(), data
 
 class WorkbenchRenderer(BaseRenderer):
     ''' Workbench Renderer: Extends BaseRenderer and simply populates local python
