@@ -1,6 +1,5 @@
 
 ''' VTQuery worker '''
-import zerorpc
 import requests
 import collections
 import workbench_keys

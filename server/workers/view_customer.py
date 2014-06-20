@@ -1,14 +1,14 @@
 ''' view_customer worker '''
-import zerorpc
 
 class ViewCustomer(object):
     ''' ViewCustomer: Generates a customer usage view. '''
     dependencies = ['meta']
 
     def execute(self, input_data):
+        ''' Execute Method '''
 
         # View on all the meta data files in the sample
-        fields = ['filename', 'md5', 'length', 'customer', 'import_time','type_tag']
+        fields = ['filename', 'md5', 'length', 'customer', 'import_time', 'type_tag']
         view = {key:input_data['meta'][key] for key in fields}
         return view
 
@@ -36,7 +36,6 @@ def test():
     # Execute the worker (server test)
     output = c.work_request('view_customer', md5)
     print '\n<<< Server Test >>>'
-    import pprint
     pprint.pprint(output)
 
 if __name__ == "__main__":
