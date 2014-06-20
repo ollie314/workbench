@@ -76,15 +76,25 @@ def test():
     vt_api = workbench_conf.get('vt_apikey', '123')
 
     # This worker test requires a local server running
+    import zerorpc
     c = zerorpc.Client()
     c.connect("tcp://127.0.0.1:4242")
-    md5 = c.store_sample('bad_067b39', open('../../data/pdf/bad/067b3929f096768e864f6a04f04d4e54', 'rb').read(), 'pdf')
-    input_data = c.work_request('meta', md5)
 
-    # Execute the worker
+    # Generate input for the worker
+    md5 = c.store_sample('bad_pdf', open('../../data/pdf/bad/067b3929f096768e864f6a04f04d4e54', 'rb').read(), 'pdf')
+    input_data = c.get_sample(md5)
+    input_data.update(c.work_request('meta', md5))
+
+    # Execute the worker (unit test)
     worker = VTQuery(vt_api)
     output = worker.execute(input_data)
+    print '\n<<< Unit Test >>>'
+    import pprint
+    pprint.pprint(output)
 
+    # Execute the worker (server test)
+    output = c.work_request('vt_query', md5)
+    print '\n<<< Server Test >>>'
     import pprint
     pprint.pprint(output)
 

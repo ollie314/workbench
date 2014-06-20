@@ -35,16 +35,8 @@ def test():
     c = zerorpc.Client()
     c.connect("tcp://127.0.0.1:4242")
 
-    # Store the sample
+    # Generate input for the worker
     md5 = c.store_sample('unknown.json', open('../../data/json/generated.json', 'rb').read(), 'json')
-
-    # Execute the worker (server test)
-    output = c.work_request('json_meta', md5)
-    print '\n<<< Server Test >>>'
-    import pprint
-    pprint.pprint(output)
-
-    # Unit test stuff: Feel free to ignore
     input_data = c.get_sample(md5)
     input_data.update(c.work_request('meta', md5))
 
@@ -52,6 +44,12 @@ def test():
     worker = JSONMetaData()
     output = worker.execute(input_data)
     print '\n<<< Unit Test >>>'
+    import pprint
+    pprint.pprint(output)
+
+    # Execute the worker (server test)
+    output = c.work_request('json_meta', md5)
+    print '\n<<< Server Test >>>'
     import pprint
     pprint.pprint(output)
 

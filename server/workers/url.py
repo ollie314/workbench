@@ -19,12 +19,28 @@ class URLS(object):
 # Unit test: Create the class, the proper input and run the execute() method for a test
 def test():
     ''' url.py: Unit test'''
-    import strings
-    input_worker = strings.Strings()
-    _raw_output = input_worker.execute({'sample':{'raw_bytes':open('../../data/pe/bad/505804ec7c7212a52ec85e075b91ed84', "rb").read()}})
-    wrapped_output = {'strings':_raw_output}
+
+    # This worker test requires a local server running
+    import zerorpc
+    c = zerorpc.Client()
+    c.connect("tcp://127.0.0.1:4242")
+
+    # Generate input for the worker
+    md5 = c.store_sample('bad_pe', open('../../data/pe/bad/505804ec7c7212a52ec85e075b91ed84', 'rb').read(), 'pe')
+    input_data = c.work_request('strings', md5)
+
+    # Execute the worker (unit test)
     worker = URLS()
-    print worker.execute(wrapped_output)
+    output = worker.execute(input_data)
+    print '\n<<< Unit Test >>>'
+    import pprint
+    pprint.pprint(output)
+
+    # Execute the worker (server test)
+    output = c.work_request('url', md5)
+    print '\n<<< Server Test >>>'
+    import pprint
+    pprint.pprint(output)
 
 if __name__ == "__main__":
     test()

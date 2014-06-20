@@ -41,7 +41,7 @@ def test():
     c.connect("tcp://127.0.0.1:4242")
 
     # Generate the input data for this worker
-    md5 = c.store_sample('unknown', open('../../data/pe/bad/033d91aae8ad29ed9fbb858179271232', 'rb').read(), 'pe')
+    md5 = c.store_sample('bad_pe', open('../../data/pe/bad/033d91aae8ad29ed9fbb858179271232', 'rb').read(), 'pe')
     input_data = c.get_sample(md5)
 
     # Execute the worker (unit test)
