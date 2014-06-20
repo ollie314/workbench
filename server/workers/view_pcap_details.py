@@ -50,19 +50,27 @@ class ViewPcapDetails(object):
 # Unit test: Create the class, the proper input and run the execute() method for a test
 def test():
     ''' view_pcap_details.py: Unit test'''
-    # This worker test requires a local server as it relies on the recursive dependencies
+
+    # This worker test requires a local server running
     import zerorpc
-    c = zerorpc.Client(timeout=300)
+    c = zerorpc.Client()
     c.connect("tcp://127.0.0.1:4242")
 
-    # Generate the input data for this worker
-    md5 = c.store_sample('http.pcap', open('../../data/pcap/winmediaplayer.pcap', 'rb').read(), 'pcap')
-    input_data = c.work_request('view_pcap', md5)
+    # Generate input for the worker
+    md5 = c.store_sample('winmedia.pcap', open('../../data/pcap/winmediaplayer.pcap', 'rb').read(), 'pcap')
+    input_data = c.get_sample(md5)
+    input_data.update(c.work_request('view_pcap', md5))
 
-    # Execute the worker
+    # Execute the worker (unit test)
     worker = ViewPcapDetails()
     output = worker.execute(input_data)
-    print 'ViewPcapDetails: '
+    print '\n<<< Unit Test >>>'
+    import pprint
+    pprint.pprint(output)
+
+    # Execute the worker (server test)
+    output = c.work_request('view_pcap_details', md5)
+    print '\n<<< Server Test >>>'
     import pprint
     pprint.pprint(output)
 

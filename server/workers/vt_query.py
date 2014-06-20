@@ -75,10 +75,10 @@ def test():
     # This worker test requires a local server running
     import zerorpc
     c = zerorpc.Client()
-    c.connect("tcp://127.0.0.1:4242")    
+    c.connect("tcp://127.0.0.1:4242")
 
     # Generate input for the worker
-    md5 = c.store_sample('system.log', open('../../data/pdf/bad/067b3929f096768e864f6a04f04d4e54', 'rb').read(), 'log')
+    md5 = c.store_sample('bad_pdf', open('../../data/pdf/bad/067b3929f096768e864f6a04f04d4e54', 'rb').read(), 'pdf')
     input_data = c.get_sample(md5)
     input_data.update(c.work_request('meta', md5))
 
