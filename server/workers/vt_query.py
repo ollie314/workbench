@@ -35,10 +35,7 @@ class VTQuery(object):
         try:
             vt_output = response.json()
         except ValueError:
-            vt_err = 'VirusTotal Query Error, no valid response... past per min quota?'
-            print vt_err
-            output = {'vt_error': vt_err}
-            return output
+            return {'vt_error': 'VirusTotal Query Error, no valid response... past per min quota?'}
         
         # Just pull some of the fields
         output = {field:vt_output[field] for field in vt_output.keys() if field not in self.exclude}
