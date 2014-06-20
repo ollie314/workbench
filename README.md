@@ -118,8 +118,11 @@ _zpc_more {'response_to': '67d7df3f-1f3e-45f4-b2e6-352260fa1507', 'zmqid':
 ['\x00\x82*\x01\xea'], 'message_id': '67d7df42-1f3e-45f4-b2e6-352260fa1507',
 'v': 3} [...]
 </pre>
-### VirusTotal Error
-If you get an error on the vt_query.py test that is completely expected. You'll have to put your own VirusTotal API key in the workbench/server/config.ini file.
+### VirusTotal Warning
+The vt_query.py worker uses a shared 'low-volume' API key provided by SuperCowPowers LLC. When running the vt_query worker the following warning happens quite often:
+
+    "VirusTotal Query Error, no valid response... past per min quota?"
+If you'd like to use the vt_query worker on a regular basis, you'll have to put your own VirusTotal API key in the workbench/server/config.ini file.
 <br>
 
 ### Contributions/Support/Getting Involved
