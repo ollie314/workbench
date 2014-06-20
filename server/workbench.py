@@ -513,6 +513,7 @@ def main():
         print '\nInfo: Could not start Workbench server (no worries, probably already running...)\n'
     except KeyboardInterrupt:
         print '\nWorbench Server Exiting...'
+        s.close()
         exit()
 
 # Test that just calls main
