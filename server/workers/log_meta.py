@@ -21,6 +21,7 @@ class LogMetaData(object):
 # Unit test: Create the class, the proper input and run the execute() method for a test
 def test():
     ''' log_meta.py: Unit test'''
+
     # This worker test requires a local server running
     import zerorpc
     c = zerorpc.Client()

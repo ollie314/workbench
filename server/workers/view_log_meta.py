@@ -13,13 +13,26 @@ class ViewLogMeta(object):
 # Unit test: Create the class, the proper input and run the execute() method for a test
 def test():
     ''' view_log_meta.py: Unit test'''
-    # This worker test requires a local server as it relies on the recursive dependencies
+    # This worker test requires a local server running
     import zerorpc
     c = zerorpc.Client()
     c.connect("tcp://127.0.0.1:4242")
+
+    # Generate input for the worker
     md5 = c.store_sample('system.log', open('../../data/log/system.log', 'rb').read(), 'log')
+    input_data = c.get_sample(md5)
+    input_data.update(c.work_request('log_meta', md5))
+
+    # Execute the worker (unit test)
+    worker = ViewLogMeta()
+    output = worker.execute(input_data)
+    print '\n<<< Unit Test >>>'
+    import pprint
+    pprint.pprint(output)
+
+    # Execute the worker (server test)
     output = c.work_request('view_log_meta', md5)
-    print 'ViewLogMeta: '
+    print '\n<<< Server Test >>>'
     import pprint
     pprint.pprint(output)
 

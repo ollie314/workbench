@@ -35,10 +35,8 @@ def test():
     c = zerorpc.Client()
     c.connect("tcp://127.0.0.1:4242")
 
-    # Store the sample
+    # Generate input for the worker
     md5 = c.store_sample('unknown.json', open('../../data/json/generated.json', 'rb').read(), 'json')
-
-    # Unit test stuff
     input_data = c.get_sample(md5)
     input_data.update(c.work_request('meta', md5))
 
@@ -54,8 +52,6 @@ def test():
     print '\n<<< Server Test >>>'
     import pprint
     pprint.pprint(output)
-
-
 
 if __name__ == "__main__":
     test()

@@ -4,7 +4,7 @@
 
 class ViewPEFile(object):
     ''' Generates a high level summary view for PE files that incorporates a large set of workers '''
-    dependencies = ['meta', 'strings', 'pe_peid', 'pe_indicators', 'pe_classifier', 'pe_disass']
+    dependencies = ['meta', 'strings', 'pe_peid', 'pe_indicators', 'pe_classifier']
 
     def execute(self, input_data):
 
@@ -38,19 +38,25 @@ def test():
     c = zerorpc.Client()
     c.connect("tcp://127.0.0.1:4242")
 
-    # Generate the input data for this worker
-    md5 = c.store_sample('bad_033d91', open('../../data/pe/bad/033d91aae8ad29ed9fbb858179271232', 'rb').read(), 'pe')
-    input_data = c.work_request('meta', md5)
+    # Generate input for the worker
+    md5 = c.store_sample('bad_pe', open('../../data/pe/bad/033d91aae8ad29ed9fbb858179271232', 'rb').read(), 'pe')
+    input_data = c.get_sample(md5)
+    input_data.update(c.work_request('meta', md5))
     input_data.update(c.work_request('strings', md5))
     input_data.update(c.work_request('pe_peid', md5))
     input_data.update(c.work_request('pe_indicators', md5))
     input_data.update(c.work_request('pe_classifier', md5))
-    # input_data.update(c.work_request('pe_disass', md5))
 
-    # Execute the worker
+    # Execute the worker (unit test)
     worker = ViewPEFile()
     output = worker.execute(input_data)
-    print 'ViewPEFile: '
+    print '\n<<< Unit Test >>>'
+    import pprint
+    pprint.pprint(output)
+
+    # Execute the worker (server test)
+    output = c.work_request('view_pe', md5)
+    print '\n<<< Server Test >>>'
     import pprint
     pprint.pprint(output)
 

@@ -2,7 +2,6 @@
 ''' MetaDeep worker '''
 import hashlib
 import ssdeep as ssd
-import datetime
 
 class MetaDeepData(object):
     ''' This worker computes deeper meta-data '''
@@ -32,24 +31,28 @@ class MetaDeepData(object):
 def test():
     ''' meta_deep.py: Unit test'''
 
-    # Grab a sample
-    sample = {'sample':{'raw_bytes':open('../../data/pe/bad/033d91aae8ad29ed9fbb858179271232', 'rb').read(),
-              'length':0, 'filename': 'bad_033d91', 'type_tag': 'pe', 'customer':'MegaCorp', 
-              'import_time':datetime.datetime.now()}}
+    # This worker test requires a local server running
+    import zerorpc
+    c = zerorpc.Client()
+    c.connect("tcp://127.0.0.1:4242")
 
-    # Send it through meta
-    import meta
-    input_worker = meta.MetaData()
-    _raw_output = input_worker.execute(sample)
-    wrapped_output = {'meta':_raw_output}
+    # Generate input for the worker
+    md5 = c.store_sample('system.log', open('../../data/log/system.log', 'rb').read(), 'log')
+    input_data = c.get_sample(md5)
+    input_data.update(c.work_request('meta', md5))
 
-    # Now join up the inputs
-    wrapped_output.update(sample)
-
+    # Execute the worker (unit test)
     worker = MetaDeepData()
-
+    output = worker.execute(input_data)
+    print '\n<<< Unit Test >>>'
     import pprint
-    pprint.pprint(worker.execute(wrapped_output))
+    pprint.pprint(output)
+
+    # Execute the worker (server test)
+    output = c.work_request('meta_deep', md5)
+    print '\n<<< Server Test >>>'
+    import pprint
+    pprint.pprint(output)
 
 if __name__ == "__main__":
     test()
