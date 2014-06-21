@@ -112,7 +112,7 @@ class PEIndicators(object):
             std_sections.append('/'+str(i))
         non_std_sections = []
         for section in self.pefile_handle.sections:
-            name = conert_to_ascii_null_term(section.Name).lower()
+            name = convert_to_ascii_null_term(section.Name).lower()
             if (name not in std_sections):
                 non_std_sections.append(name)
         if (non_std_sections):
@@ -401,7 +401,7 @@ class PEIndicators(object):
 
 
 # Helper functions
-def conert_to_ascii_null_term(s):
+def convert_to_ascii_null_term(s):
     ''' Convert string to null terminated ascii string '''
     s = s.split('\x00', 1)[0]
     return s.decode('ascii', 'ignore')
