@@ -146,6 +146,14 @@ We're going to use the 'GitHub Flow' model.
 - When you need feedback or help, or you think the branch is ready for merging, open a pull request
 - After someone else has reviewed and signed off on the feature, you can merge it into master
 
+#### Git Example
+    $ git checkout -b my-awesome
+    $ git push -u origin my-awesome
+    $ <code for a bit>; git push
+    $ <code for a bit>; git push
+    $ Go to github and hit 'New pull request'
+
+
 
 ## Additional Information
 For additional information on the following subjects:
