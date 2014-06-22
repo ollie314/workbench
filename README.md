@@ -76,6 +76,9 @@ Please note the indexers 'Neo4j' and 'ElasticSearch' are optional. We strongly s
 - ElasticSearch:
     - wget https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.2.1.deb
     - sudo dpkg -i elasticsearch-1.2.1.deb
+    - sudo update-rc.d elasticsearch defaults 95 10
+    - sudo /etc/init.d/elasticsearch start
+    - Any issues see [elasticsearch_webpage](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/setup-service.html)
 
 #### Python Modules:
 Note: Workbench is continuously tested with python 2.7. We're currently working on Python 3 support ([Issue 92](https://github.com/SuperCowPowers/workbench/issues/92)).
