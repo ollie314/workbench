@@ -481,14 +481,14 @@ def main():
     workbench_conf.read('config.ini')
 
     # Pull configuration settings (or set defaults if don't exist)
-    server_uri = workbench_conf.get('workbench', 'server_uri', fallback='localhost')
-    datastore_uri = workbench_conf.get('workbench', 'datastore_uri', fallback='localhost')
-    database = workbench_conf.get('workbench', 'database', fallback='workbench')
-    worker_cap = workbench_conf.getint('workbench', 'worker_cap', fallback=10)
-    samples_cap = workbench_conf.getint('workbench', 'samples_cap', fallback=200)
+    server_uri = workbench_conf.get('workbench', 'server_uri')
+    datastore_uri = workbench_conf.get('workbench', 'datastore_uri')
+    database = workbench_conf.get('workbench', 'database')
+    worker_cap = workbench_conf.getint('workbench', 'worker_cap')
+    samples_cap = workbench_conf.getint('workbench', 'samples_cap')
 
     # API keys just get tossed into API_KEYS dict
-    workbench_keys.API_KEYS['vt_apikey'] = workbench_conf.get('workbench', 'vt_apikey', fallback='123')
+    workbench_keys.API_KEYS['vt_apikey'] = workbench_conf.get('workbench', 'vt_apikey')
 
     # Parse the arguments (args overwrite configuration file settings)
     parser = argparse.ArgumentParser()

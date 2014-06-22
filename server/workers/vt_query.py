@@ -69,7 +69,7 @@ def test():
     # Grab API key from configuration file
     workbench_conf = ConfigParser.ConfigParser()
     workbench_conf.read('../config.ini')
-    vt_api = workbench_conf.get('workbench', 'vt_apikey', fallback='123')
+    vt_api = workbench_conf.get('workbench', 'vt_apikey')
 
     # This worker test requires a local server running
     import zerorpc
