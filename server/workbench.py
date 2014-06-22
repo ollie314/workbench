@@ -4,7 +4,6 @@
 from gevent import monkey; monkey.patch_all(thread=False) # Monkey!
 import os
 import argparse
-import shutil
 import zerorpc
 import zmq
 import logging
@@ -474,9 +473,7 @@ class WorkBench():
 
 def main():
 
-    # Load the configuration file (might not exist, so copy the default over)
-    if not os.path.exists('config.ini'):
-        shutil.copyfile('default.ini', 'config.ini')
+    # Load the configuration file
     workbench_conf = ConfigParser.ConfigParser()
     workbench_conf.read('config.ini')
 
