@@ -5,7 +5,6 @@ from gevent import monkey; monkey.patch_all(thread=False) # Monkey!
 import os
 import argparse
 import shutil
-import configparser
 import zerorpc
 import zmq
 import logging
@@ -15,6 +14,7 @@ import json
 import hashlib
 import inspect
 import funcsigs
+import ConfigParser
 
 ''' Add bro to path for bro_log_reader '''
 import sys
@@ -477,20 +477,18 @@ def main():
     # Load the configuration file (might not exist, so copy the default over)
     if not os.path.exists('config.ini'):
         shutil.copyfile('default.ini', 'config.ini')
-    config = configparser.ConfigParser()
-    config.read('config.ini')
-
-    workbench_conf = config['workbench']
+    workbench_conf = ConfigParser.ConfigParser()
+    workbench_conf.read('config.ini')
 
     # Pull configuration settings (or set defaults if don't exist)
-    server_uri = workbench_conf.get('server_uri', 'localhost')
-    datastore_uri = workbench_conf.get('datastore_uri', 'localhost')
-    database = workbench_conf.get('database', 'workbench')
-    worker_cap = int(workbench_conf.get('worker_cap', 10))
-    samples_cap = int(workbench_conf.get('samples_cap', 200))
+    server_uri = workbench_conf.get('workbench', 'server_uri')
+    datastore_uri = workbench_conf.get('workbench', 'datastore_uri')
+    database = workbench_conf.get('workbench', 'database')
+    worker_cap = workbench_conf.getint('workbench', 'worker_cap')
+    samples_cap = workbench_conf.getint('workbench', 'samples_cap')
 
     # API keys just get tossed into API_KEYS dict
-    workbench_keys.API_KEYS['vt_apikey'] = workbench_conf.get('vt_apikey', '123')
+    workbench_keys.API_KEYS['vt_apikey'] = workbench_conf.get('workbench', 'vt_apikey')
 
     # Parse the arguments (args overwrite configuration file settings)
     parser = argparse.ArgumentParser()

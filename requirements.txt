@@ -1,4 +1,3 @@
-configparser
 elasticsearch
 filemagic
 pefile

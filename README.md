@@ -78,7 +78,7 @@ Please note the indexers 'Neo4j' and 'ElasticSearch' are optional. We strongly s
     - sudo dpkg -i elasticsearch-1.2.1.deb
 
 #### Python Modules:
-Note: Workbench has only been tested with python 2.7. If you'd like to volunteer to add support for other versions please do so. :)
+Note: Workbench is continuously tested with python 2.7. We're currently working on Python 3 support ([Issue 92](https://github.com/SuperCowPowers/workbench/issues/92)).
 
 * cd workbench
 * pip install -r requirements.txt

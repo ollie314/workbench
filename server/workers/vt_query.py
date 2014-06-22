@@ -64,12 +64,12 @@ class VTQuery(object):
 def test():
     ''' vt_query.py: Unit test'''
 
+    import ConfigParser
+
     # Grab API key from configuration file
-    import configparser
-    config = configparser.ConfigParser()
-    config.read('../config.ini')
-    workbench_conf = config['workbench']
-    vt_api = workbench_conf.get('vt_apikey', '123')
+    workbench_conf = ConfigParser.ConfigParser()
+    workbench_conf.read('../config.ini')
+    vt_api = workbench_conf.get('workbench', 'vt_apikey')
 
     # This worker test requires a local server running
     import zerorpc
