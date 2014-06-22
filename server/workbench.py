@@ -511,8 +511,9 @@ def main():
         print '\nInfo: Could not start Workbench server (no worries, probably already running...)\n'
     except KeyboardInterrupt:
         print '\nWorbench Server Exiting...'
+        s.stop()
         s.close()
-        exit()
+        exit(0)
 
 # Test that just calls main
 def test():
