@@ -6,6 +6,7 @@
 [![Project Stats](https://www.ohloh.net/p/workbench/widgets/project_thin_badge.gif)](https://www.ohloh.net/p/workbench)
 Workbench
 =========
+#### A medium-data framework for security research and development teams.
 The Workbench framework focuses on simplicity, transparency, and easy on-site customization.
 As an open source python framework it provides light-weight task management, execution and pipelining for a loosely-coupled set of python classes. Adding your own code to Workbench is amazingly simple, please see our set of IPython notebooks below for examples.
 
