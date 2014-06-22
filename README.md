@@ -13,7 +13,7 @@ Workbench focuses on simplicity, transparency, and easy on-site customization. A
 - Developers Email List: [workbench-devs](https://groups.google.com/forum/#!forum/workbench-devs)
 
 ## Workbench Examples
-Please note that all of these notebooks are 'clients' hitting the workbench server. Making your own client is super easy! Just a few lines of python code, or NodeJS, or even a CLI (See [ZeroRPC](http://zerorpc.dotcloud.com/))
+Please note that all of these notebooks are 'clients' hitting the workbench server. Making your own client is super easy! See [Making a Client](README_more.md### Making your own Client)
 
 * **<a href="http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/notebooks/PCAP_to_Graph.ipynb">PCAP to Graph</a>** (A short teaser)
 * **<a href="http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/notebooks/Workbench_Demo.ipynb">Workbench Demo</a>**
