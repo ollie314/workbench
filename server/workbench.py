@@ -14,7 +14,11 @@ import json
 import hashlib
 import inspect
 import funcsigs
-import ConfigParser
+
+try:
+    import configparser
+except ImportError:
+    import ConfigParser as configparser
 
 ''' Add bro to path for bro_log_reader '''
 import sys
@@ -477,7 +481,7 @@ def main():
     # Load the configuration file (might not exist, so copy the default over)
     if not os.path.exists('config.ini'):
         shutil.copyfile('default.ini', 'config.ini')
-    workbench_conf = ConfigParser.ConfigParser()
+    workbench_conf = configparser.ConfigParser()
     workbench_conf.read('config.ini')
 
     # Pull configuration settings (or set defaults if don't exist)
