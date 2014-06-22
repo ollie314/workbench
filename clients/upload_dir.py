@@ -23,7 +23,7 @@ def main():
     port = workbench_conf.getint('workbench', 'server_port') 
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('-d', '--data-dir', type=str, default='../data/log', help='Directory of files to import into the workbench server')
+    parser.add_argument('-d', '--data-dir', type=str, default='../data/pdf/bad', help='Directory of files to import into the workbench server')
     parser.add_argument('-t', '--tag', type=str, default='log', help='Type_tag of the files being imported')    
     parser.add_argument('-p', '--port', type=int, default=port, help='port used by workbench server')
     parser.add_argument('-s', '--server', type=str, default=server, help='location of workbench server')
@@ -50,11 +50,10 @@ def main():
             md5 = hashlib.md5(raw_bytes).hexdigest()
             if c.has_sample(md5):
                 print 'Workbench already has this sample %s' % md5
-                continue
-
-            # Store the sample into workbench
-            md5 = c.store_sample(filename, raw_bytes, args.tag)
-            print 'Filename %s uploaded: type_tag %s, md5 %s' % (filename, args.tag, md5)
+            else:
+                # Store the sample into workbench
+                md5 = c.store_sample(filename, raw_bytes, args.tag)
+                print 'Filename %s uploaded: type_tag %s, md5 %s' % (filename, args.tag, md5)
 
 def test():
     ''' file_upload test '''
