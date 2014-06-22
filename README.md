@@ -13,6 +13,8 @@ Workbench focuses on simplicity, transparency, and easy on-site customization. A
 - Developers Email List: [workbench-devs](https://groups.google.com/forum/#!forum/workbench-devs)
 
 ## Workbench Examples
+Please note that all of these notebooks are 'clients' hitting the workbench server. Making your own client is super easy! Just a few lines of python code, or NodeJS, or even a CLI (See [ZeroRPC](http://zerorpc.dotcloud.com/))
+
 * **<a href="http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/notebooks/PCAP_to_Graph.ipynb">PCAP to Graph</a>** (A short teaser)
 * **<a href="http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/notebooks/Workbench_Demo.ipynb">Workbench Demo</a>**
 * **<a href="http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/notebooks/PCAP_to_Dataframe.ipynb">PCAP to Dataframe</a>**
@@ -35,7 +37,12 @@ git clone https://github.com/supercowpowers/workbench.git
 <br><br>
 
 ## Installing Workbench:
-Please note the indexers 'Neo4j' and 'ElasticSearch' are optional. We strongly suggest you install both of them but we also appreciate that there are cases where that's not possible or feasible.
+
+### Workbench Client:
+    $ pip install zerorpc; echo 'Done!'
+
+### Workbench Server:
+The indexers 'Neo4j' and 'ElasticSearch' are optional. We strongly suggest you install both of them but we also appreciate that there are cases where that's not possible or feasible.
 
 #### Mac/OSX
 - brew install mongodb
@@ -76,6 +83,9 @@ Please note the indexers 'Neo4j' and 'ElasticSearch' are optional. We strongly s
 - ElasticSearch:
     - wget https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.2.1.deb
     - sudo dpkg -i elasticsearch-1.2.1.deb
+    - sudo update-rc.d elasticsearch defaults 95 10
+    - sudo /etc/init.d/elasticsearch start
+    - Any issues see [elasticsearch_webpage](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/setup-service.html)
 
 #### Python Modules:
 Note: Workbench is continuously tested with python 2.7. We're currently working on Python 3 support ([Issue 92](https://github.com/SuperCowPowers/workbench/issues/92)).

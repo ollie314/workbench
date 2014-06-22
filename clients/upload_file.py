@@ -2,26 +2,27 @@ import zerorpc
 import os
 import pprint
 import argparse
-
-
-'''
-def md5_for_file(path, block_size=256*128):
-    md5 = hashlib.md5()
-    with open(path,'rb') as f:
-        for chunk in iter(lambda: f.read(block_size), b''):
-            md5.update(chunk)
-    return md5.hexdigest()
-'''
+import ConfigParser
 
 def main():
+    
+    # Grab server info from configuration file
+    workbench_conf = ConfigParser.ConfigParser()
+    workbench_conf.read('config.ini')
+    server = workbench_conf.get('workbench', 'server_uri') 
+    port = workbench_conf.getint('workbench', 'server_port') 
 
     parser = argparse.ArgumentParser()
     parser.add_argument('-f', '--loadfile', type=str, default='../data/log/system.log', help='File to import into the workbench server')
+    parser.add_argument('-p', '--port', type=int, default=port, help='port used by workbench server')
+    parser.add_argument('-s', '--server', type=str, default=server, help='location of workbench server')
     args = parser.parse_args()
+    port = str(args.port)
+    server = str(args.server)
 
-    # Connect to local workbench
+    # Start up workbench connection
     c = zerorpc.Client()
-    c.connect("tcp://127.0.0.1:4242")
+    c.connect('tcp://'+server+':'+port)
 
     # Upload the files into workbench
     my_file = args.loadfile

@@ -44,7 +44,7 @@ class DataStore():
         sample_info['md5'] = hashlib.md5(sample_bytes).hexdigest()
 
         # Check if sample already exists
-        if self.have_sample(sample_info['md5']):
+        if self.has_sample(sample_info['md5']):
             print 'Sample %s: already exists in DataStore' % (sample_info['md5'])
             return sample_info['md5']
 
@@ -169,7 +169,7 @@ class DataStore():
         # so just return what you've got
         return md5_list
 
-    def have_sample(self, md5):
+    def has_sample(self, md5):
         ''' See if the data store has this sample '''
 
         # The easiest thing is to simply get the sample and if that

@@ -4,7 +4,6 @@
 from gevent import monkey; monkey.patch_all(thread=False) # Monkey!
 import os
 import argparse
-import shutil
 import zerorpc
 import zmq
 import logging
@@ -97,14 +96,14 @@ class WorkBench():
         '''
         return self.data_store.get_sample_window(type_tag, size)
 
-    def have_sample(self, md5):
+    def has_sample(self, md5):
         ''' Do we have this sample in the DataStore.
             Args:
                 md5: the md5 of the sample
             Returns:
                 True or False
         '''
-        return self.data_store.have_sample(md5)
+        return self.data_store.has_sample(md5)
 
     @zerorpc.stream
     def stream_sample(self, md5, max_rows):
@@ -324,7 +323,7 @@ class WorkBench():
                 The md5 of the set (the actual md5 of the set
         '''
         for md5 in md5_list:
-            if not self.have_sample(md5):
+            if not self.has_sample(md5):
                 raise RuntimeError('Sample not found all items in sample_set must be in the datastore: %s (not found)' % (md5))
         set_md5 = hashlib.md5(str(md5_list)).hexdigest()
         self._store_work_results({'md5_list':md5_list}, 'sample_set', set_md5)
@@ -474,14 +473,11 @@ class WorkBench():
 
 def main():
 
-    # Load the configuration file (might not exist, so copy the default over)
-    if not os.path.exists('config.ini'):
-        shutil.copyfile('default.ini', 'config.ini')
+    # Load the configuration file
     workbench_conf = ConfigParser.ConfigParser()
     workbench_conf.read('config.ini')
 
-    # Pull configuration settings (or set defaults if don't exist)
-    server_uri = workbench_conf.get('workbench', 'server_uri')
+    # Pull configuration settings
     datastore_uri = workbench_conf.get('workbench', 'datastore_uri')
     database = workbench_conf.get('workbench', 'database')
     worker_cap = workbench_conf.getint('workbench', 'worker_cap')
