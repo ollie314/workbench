@@ -64,13 +64,10 @@ class VTQuery(object):
 def test():
     ''' vt_query.py: Unit test'''
 
-    try:
-        import configparser
-    except ImportError:
-        import ConfigParser as configparser
+    import ConfigParser
 
     # Grab API key from configuration file
-    workbench_conf = configparser.ConfigParser()
+    workbench_conf = Configparser.ConfigParser()
     workbench_conf.read('../config.ini')
     vt_api = workbench_conf.get('workbench', 'vt_apikey', fallback='123')
 
