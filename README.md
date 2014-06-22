@@ -35,7 +35,12 @@ git clone https://github.com/supercowpowers/workbench.git
 <br><br>
 
 ## Installing Workbench:
-Please note the indexers 'Neo4j' and 'ElasticSearch' are optional. We strongly suggest you install both of them but we also appreciate that there are cases where that's not possible or feasible.
+
+### Workbench Client:
+    $ pip install zerorpc; echo 'Done!'
+
+### Workbench Server:
+The indexers 'Neo4j' and 'ElasticSearch' are optional. We strongly suggest you install both of them but we also appreciate that there are cases where that's not possible or feasible.
 
 #### Mac/OSX
 - brew install mongodb
