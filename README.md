@@ -7,8 +7,7 @@
 Workbench
 =========
 #### A medium-data framework for security research and development teams.
-The Workbench framework focuses on simplicity, transparency, and easy on-site customization.
-As an open source python framework it provides light-weight task management, execution and pipelining for a loosely-coupled set of python classes. Adding your own code to Workbench is amazingly simple, please see our set of IPython notebooks below for examples.
+Workbench focuses on simplicity, transparency, and easy on-site customization. As an open source python project it provides light-weight task management, execution and pipelining for a loosely-coupled set of python classes. Please see our set of IPython notebooks below for examples.
 
 ### Workbench Examples
 * **<a href="http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/notebooks/PCAP_to_Graph.ipynb">PCAP to Graph</a>** (A short teaser)
