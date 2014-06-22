@@ -67,7 +67,7 @@ def test():
     import ConfigParser
 
     # Grab API key from configuration file
-    workbench_conf = Configparser.ConfigParser()
+    workbench_conf = ConfigParser.ConfigParser()
     workbench_conf.read('../config.ini')
     vt_api = workbench_conf.get('workbench', 'vt_apikey', fallback='123')
 
