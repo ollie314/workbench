@@ -277,8 +277,8 @@ class WorkBench():
                         tmp = tmp[key]
                     sub_results[key] = tmp
                 work_results = sub_results
-            except KeyError:
-                raise KeyError('Could not get one or more subkeys for: %s' % (work_results))
+            except (KeyError, TypeError):
+                raise RuntimeError('Could not get one or more subkeys for: %s' % (work_results))
 
         # Clean it and ship it
         work_results = self.data_store.clean_for_serialization(work_results)
