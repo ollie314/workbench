@@ -1,7 +1,7 @@
 import zerorpc
 import argparse
 import os
-
+import ConfigParser
 
 def add_it(c, file_list, labels):
     md5s = []
@@ -41,15 +41,25 @@ def jaccard_sim(features1, features2):
     except ZeroDivisionError:
         return 0
 
-
+    
 def main():
+    
+    # Grab server info from configuration file
+    workbench_conf = ConfigParser.ConfigParser()
+    workbench_conf.read('config.ini')
+    server = workbench_conf.get('workbench', 'server_uri') 
+    port = workbench_conf.getint('workbench', 'server_port') 
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('-p', '--port', type=int, default=4242, help='port used by workbench server')
+    parser.add_argument('-p', '--port', type=int, default=port, help='port used by workbench server')
+    parser.add_argument('-s', '--server', type=str, default=server, help='location of workbench server')
     args = parser.parse_args()
     port = str(args.port)
+    server = str(args.server)
+
+    # Start up workbench connection
     c = zerorpc.Client()
-    c.connect('tcp://127.0.0.1:'+port)
+    c.connect('tcp://'+server+':'+port)
 
     # Test out PEFile -> pe_deep_sim -> pe_jaccard_sim -> graph
     bad_files = [os.path.join('../data/pe/bad', child) for child in os.listdir('../data/pe/bad')][:25]

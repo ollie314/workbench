@@ -1,4 +1,5 @@
 elasticsearch
+urllib3
 filemagic
 pefile
 py2neo

@@ -6,12 +6,18 @@
 [![Project Stats](https://www.ohloh.net/p/workbench/widgets/project_thin_badge.gif)](https://www.ohloh.net/p/workbench)
 Workbench
 =========
-The Workbench framework focuses on simplicity, transparency, and easy on-site customization.
-As an open source python framework it provides light-weight task management, execution and pipelining for a loosely-coupled set of python classes. Adding your own code to Workbench is amazingly simple, please see our set of IPython notebooks below for examples.
+#### A medium-data framework for security research and development teams.
+Workbench focuses on simplicity, transparency, and easy on-site customization. As an open source python project it provides light-weight task management, execution and pipelining for a loosely-coupled set of python classes. Please see our set of IPython notebooks below for examples.
 
-### Workbench Examples
+- Users Email List: [workbench-users](https://groups.google.com/forum/#!forum/workbench-users)
+- Developers Email List: [workbench-devs](https://groups.google.com/forum/#!forum/workbench-devs)
+
+## Workbench Examples
+Please note that all of these notebooks are 'clients' hitting the workbench server. Making your own client is super easy! See [Making a Client](README_more.md### Making your own Client)
+
 * **<a href="http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/notebooks/PCAP_to_Graph.ipynb">PCAP to Graph</a>** (A short teaser)
 * **<a href="http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/notebooks/Workbench_Demo.ipynb">Workbench Demo</a>**
+* **<a href="http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/notebooks/Adding_Worker.ipynb">Adding a new Worker</a>** (super hawt)
 * **<a href="http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/notebooks/PCAP_to_Dataframe.ipynb">PCAP to Dataframe</a>**
 * **<a href="http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/notebooks/PCAP_DriveBy.ipynb">PCAP DriveBy Analysis</a>**
 * **<a href="http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/notebooks/PE_SimGraph.ipynb">Using Neo4j for PE File Sim Graph</a>**
@@ -21,9 +27,7 @@ As an open source python framework it provides light-weight task management, exe
 	* **<a href="http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/notebooks/Rekall_to_Dataframe.ipynb">Rekall Integration Notebook</a>**
 	* **<a href="http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/notebooks/PE_Static_Analysis.ipynb">PE File Static Analysis Notebook</a>**
 
-### Email lists (anyone can join)
-- Users Email List: [workbench-users](https://groups.google.com/forum/#!forum/workbench-users)
-- Developers Email List: [workbench-devs](https://groups.google.com/forum/#!forum/workbench-devs)
+
 
 <br>
 <img src="http://raw.github.com/supercowpowers/workbench/master/images/warning.jpg" width=90 align="left">
@@ -34,8 +38,13 @@ git clone https://github.com/supercowpowers/workbench.git
 **Warning!: The repository contains malcious data samples, be careful, exclude the workbench directory from AV, etc...**
 <br><br>
 
-### Installing Workbench:
-Please note the indexers 'Neo4j' and 'ElasticSearch' are optional. We strongly suggest you install both of them but we also appreciate that there are cases where that's not possible or feasible.
+## Installing Workbench:
+
+### Workbench Client:
+    $ pip install zerorpc; echo 'Done!'
+
+### Workbench Server:
+The indexers 'Neo4j' and 'ElasticSearch' are optional. We strongly suggest you install both of them but we also appreciate that there are cases where that's not possible or feasible.
 
 #### Mac/OSX
 - brew install mongodb
@@ -76,6 +85,9 @@ Please note the indexers 'Neo4j' and 'ElasticSearch' are optional. We strongly s
 - ElasticSearch:
     - wget https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.2.1.deb
     - sudo dpkg -i elasticsearch-1.2.1.deb
+    - sudo update-rc.d elasticsearch defaults 95 10
+    - sudo /etc/init.d/elasticsearch start
+    - Any issues see [elasticsearch_webpage](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/setup-service.html)
 
 #### Python Modules:
 Note: Workbench is continuously tested with python 2.7. We're currently working on Python 3 support ([Issue 92](https://github.com/SuperCowPowers/workbench/issues/92)).
@@ -85,7 +97,7 @@ Note: Workbench is continuously tested with python 2.7. We're currently working 
 * Go have a large cup of coffee...
 
 
-### Running It:
+## Running It:
 #### Server (localhost or server machine)
 <pre>
 $ cd workbench/server
@@ -98,7 +110,7 @@ $ cd workbench/clients
 $ python simple_workbench_client.py [-s tcp://mega.server.com]
 </pre>
 
-### Testing:
+## Testing:
 Unit testing and sub-pipeline tests
 <pre>
 $ cd workbench/server/workers
@@ -126,7 +138,7 @@ The vt_query.py worker uses a shared 'low-volume' API key provided by SuperCowPo
 If you'd like to use the vt_query worker on a regular basis, you'll have to put your own VirusTotal API key in the workbench/server/config.ini file.
 <br>
 
-### Contributions/Support/Getting Involved
+## Contributions/Support/Getting Involved
 Workbench is committed to providing open source security software. If you're a developer looking to chip-in or want to support the project please contact us at <support@supercowpowers.com> or visit one of the links below:
 <img style="border:1px solid #888888"; src="http://raw.github.com/supercowpowers/workbench/master/images/tshirt_back.jpg" width=150 align="right">
 <img style="border:1px solid #888888"; src="http://raw.github.com/supercowpowers/workbench/master/images/tshirt_front.jpg" width=150 align="right">
@@ -146,8 +158,16 @@ We're going to use the 'GitHub Flow' model.
 - When you need feedback or help, or you think the branch is ready for merging, open a pull request
 - After someone else has reviewed and signed off on the feature, you can merge it into master
 
+#### Git Example
+    $ git checkout -b my-awesome
+    $ git push -u origin my-awesome
+    $ <code for a bit>; git push
+    $ <code for a bit>; git push
+    $ Go to github and hit 'New pull request'
 
-### Additional Information
+
+
+## Additional Information
 For additional information on the following subjects:
  
 * Detailed Project Description

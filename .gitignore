@@ -44,7 +44,7 @@ nosetests.xml
 # ReadTheDocs build directory
 _build
 
-# Local Configuration file
+# Local Configuration files
 config.ini
 
 # Ignore pulled data 
