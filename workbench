@@ -1,0 +1,6 @@
+#!/usr/bin/env python -O
+# -*- coding: utf-8 -*-
+  
+from server import workbench
+
+workbench.run()

@@ -99,8 +99,8 @@ Note: Workbench is continuously tested with python 2.7. We're currently working 
 ## Running It:
 #### Server (localhost or server machine)
 <pre>
-$ cd workbench/server
-$ python -O workbench.py
+$ cd workbench
+$ ./workbench
 </pre>
 #### Example Clients (use -s for remote server)
 There are about a dozen example clients showing how to use workbench on pcaps, PEfiles, pdfs, and log files. We even has a simple nodes.js client (looking for node devs to pop some pull requests :).

@@ -22,6 +22,12 @@ class PluginManager(FileSystemEventHandler):
         self.plugin_path = os.path.realpath(plugin_dir)
         sys.path.append(plugin_dir)
         for f in [os.path.join(plugin_dir, child) for child in os.listdir(plugin_dir)]:
+
+            # Skip certain files
+            if '.DS_Store' in f or '__init__.py' in f: 
+                continue
+
+            # Add the plugin
             self.add_plugin(f)
 
         # Now setup dynamic monitoring of the plugins directory
