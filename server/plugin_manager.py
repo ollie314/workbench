@@ -131,7 +131,7 @@ class PluginManager(FileSystemEventHandler):
 def test():
 
     # This test actually does more than it appears. The workers
-    # directory will get scanned and stuff will get loaded, etc.
+    # directory will get scanned and stuff will get loaded, etworkbench.
     def new_plugin(plugin, mod_time):
         pass
 

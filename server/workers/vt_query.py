@@ -67,15 +67,15 @@ def test():
 
     # This worker test requires a local server running
     import zerorpc
-    c = zerorpc.Client()
-    c.connect("tcp://127.0.0.1:4242")
+    workbench = zerorpc.Client()
+    workbench.connect("tcp://127.0.0.1:4242")
 
     # Generate input for the worker
     data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
                              '../../data/pdf/bad/067b3929f096768e864f6a04f04d4e54')
-    md5 = c.store_sample('bad_pdf', open(data_path, 'rb').read(), 'pdf')
-    input_data = c.get_sample(md5)
-    input_data.update(c.work_request('meta', md5))
+    md5 = workbench.store_sample('bad_pdf', open(data_path, 'rb').read(), 'pdf')
+    input_data = workbench.get_sample(md5)
+    input_data.update(workbench.work_request('meta', md5))
 
     # Execute the worker (unit test)
     worker = VTQuery()
@@ -85,7 +85,7 @@ def test():
     pprint.pprint(output)
 
     # Execute the worker (server test)
-    output = c.work_request('vt_query', md5)
+    output = workbench.work_request('vt_query', md5)
     print '\n<<< Server Test >>>'
     import pprint
     pprint.pprint(output)

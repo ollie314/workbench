@@ -20,10 +20,10 @@ def main():
     server = str(args.server)
 
     # Start up workbench connection
-    c = zerorpc.Client()
-    c.connect('tcp://'+server+':'+port)
+    workbench = zerorpc.Client()
+    workbench.connect('tcp://'+server+':'+port)
 
-    results = c.batch_work_request('view_customer', {})
+    results = workbench.batch_work_request('view_customer', {})
     pprint.pprint(list(results))
 
 def test():

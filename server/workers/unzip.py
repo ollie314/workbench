@@ -9,21 +9,21 @@ class Unzip(object):
     dependencies = ['sample']
 
     def __init__(self):
-        self.c = zerorpc.Client()
-        self.c.connect("tcp://127.0.0.1:4242")
+        self.workbench = zerorpc.Client()
+        self.workbench.connect("tcp://127.0.0.1:4242")
 
     def execute(self, input_data):
         raw_bytes = input_data['sample']['raw_bytes']
         zipfile_output = zipfile.ZipFile(StringIO.StringIO(raw_bytes))
         payload_md5s = []
         for name in zipfile_output.namelist():
-            payload_md5s.append(self.c.store_sample(name,zipfile_output.read(name), 'unknown'))
+            payload_md5s.append(self.workbench.store_sample(name,zipfile_output.read(name), 'unknown'))
         return {'payload_md5s': payload_md5s}
 
     def __del__(self):
         ''' Class Cleanup '''
         # Close zeroRPC client
-        self.c.close()
+        self.workbench.close()
 
 # Unit test: Create the class, the proper input and run the execute() method for a test
 def test():
@@ -31,17 +31,17 @@ def test():
 
     # This worker test requires a local server running
     import zerorpc
-    c = zerorpc.Client()
-    c.connect("tcp://127.0.0.1:4242")
+    workbench = zerorpc.Client()
+    workbench.connect("tcp://127.0.0.1:4242")
 
     # Generate input for the worker
     import os
     data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../data/zip/bad.zip')
-    md5 = c.store_sample('bad.zip', open(data_path, 'rb').read(), 'zip')
+    md5 = workbench.store_sample('bad.zip', open(data_path, 'rb').read(), 'zip')
     data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../data/zip/good.zip')
-    md5_2 = c.store_sample('good.zip', open(data_path, 'rb').read(), 'zip')
-    input_data = c.get_sample(md5)
-    input_data_2 = c.get_sample(md5_2)    
+    md5_2 = workbench.store_sample('good.zip', open(data_path, 'rb').read(), 'zip')
+    input_data = workbench.get_sample(md5)
+    input_data_2 = workbench.get_sample(md5_2)    
 
     # Execute the worker (unit test)
     worker = Unzip()
@@ -54,7 +54,7 @@ def test():
     output = worker.execute(input_data_2)
 
     # Execute the worker (server test)
-    output = c.work_request('unzip', md5)
+    output = workbench.work_request('unzip', md5)
     print '\n<<< Server Test >>>'
     import pprint
     pprint.pprint(output)

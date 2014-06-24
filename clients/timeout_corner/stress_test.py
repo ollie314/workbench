@@ -30,8 +30,8 @@ def process_files(path):
         type_tag = 'pe'
 
     # Open a connection to workbench
-    c = zerorpc.Client()
-    c.connect("tcp://127.0.0.1:4242")
+    workbench = zerorpc.Client()
+    workbench.connect("tcp://127.0.0.1:4242")
 
     # Benchmark test on shoving data into workbench
     file_list = [os.path.join(path, child) for child in os.listdir(path)]
@@ -41,8 +41,8 @@ def process_files(path):
     for i in xrange(10):
         for filename in file_list:
             with open(filename, 'rb') as f:
-                md5 = c.store_sample(filename, f.read(), type_tag)
-                c.work_request('view', md5)
+                md5 = workbench.store_sample(filename, f.read(), type_tag)
+                workbench.work_request('view', md5)
                 print 'Filename: %s' % (filename)
         total_files += num_files
     end = datetime.datetime.now()
@@ -50,7 +50,7 @@ def process_files(path):
     print 'Files processed: %d  Time: %d seconds' % (total_files, delta.seconds)
 
     # Close the workbench connection
-    c.close()
+    workbench.close()
 
 # Fixme: see https://github.com/SuperCowPowers/workbench/issues/40
 def test():

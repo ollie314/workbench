@@ -1,5 +1,7 @@
 ''' pcap_graph worker '''
 import zerorpc
+import os
+import pprint
 
 class PcapGraph(object):
     ''' This worker generates a graph from a PCAP (depends on Bro) '''
@@ -7,8 +9,8 @@ class PcapGraph(object):
 
     def __init__(self):
         ''' Initialization '''
-        self.c = zerorpc.Client()
-        self.c.connect('tcp://127.0.0.1:4242')
+        self.workbench = zerorpc.Client()
+        self.workbench.connect('tcp://127.0.0.1:4242')
         self.mime_types = ['application/x-dosexec', 'application/pdf', 'application/zip',
                            'application/jar', 'application/vnd.ms-cab-compressed',
                            'application/x-shockwave-flash']
@@ -19,19 +21,19 @@ class PcapGraph(object):
         self.rel_cache = set()
 
         # In general this is heavy handed but seems better to do than not do
-        self.c.clear_graph_db()
+        self.workbench.clear_graph_db()
 
     # Graph methods
     def add_node(self, node_id, name, labels):
         ''' Cache aware add_node '''
         if node_id not in self.node_cache:
-            self.c.add_node(node_id, name, labels)
+            self.workbench.add_node(node_id, name, labels)
             self.node_cache.add(node_id)
 
     def add_rel(self, source_id, target_id, rel):
         ''' Cache aware add_rel '''
         if (source_id, target_id) not in self.rel_cache:
-            self.c.add_rel(source_id, target_id, rel)
+            self.workbench.add_rel(source_id, target_id, rel)
             self.rel_cache.add((source_id, target_id))
 
     def execute(self, input_data):
@@ -41,24 +43,24 @@ class PcapGraph(object):
         bro_logs = input_data['pcap_bro']
 
         # DNS log
-        stream = self.c.stream_sample(bro_logs['dns_log'], None)
+        stream = self.workbench.stream_sample(bro_logs['dns_log'], None)
         self.dns_log_graph(stream)
 
         # Weird log
         if 'weird_log' in bro_logs:
-            stream = self.c.stream_sample(bro_logs['weird_log'], None)
+            stream = self.workbench.stream_sample(bro_logs['weird_log'], None)
             self.weird_log_graph(stream)
 
         # HTTP log
-        stream = self.c.stream_sample(bro_logs['http_log'], None)
+        stream = self.workbench.stream_sample(bro_logs['http_log'], None)
         self.http_log_graph(stream)
 
         # Files log
-        stream = self.c.stream_sample(bro_logs['files_log'], None)
+        stream = self.workbench.stream_sample(bro_logs['files_log'], None)
         self.files_log_graph(stream)
 
         # Conn log
-        stream = self.c.stream_sample(bro_logs['conn_log'], None)
+        stream = self.workbench.stream_sample(bro_logs['conn_log'], None)
         self.conn_log_graph(stream)
 
         return {'output':'go to http://localhost:7474/browser and execute this query "match (s:origin), (t:file), p=allShortestPaths((s)--(t)) return p"'}
@@ -68,17 +70,17 @@ class PcapGraph(object):
         for row in list(stream):
 
             # Add the connection id with service as one of the labels
-            self.c.add_node(row['uid'], row['uid'][:6], ['conn_id', row['service']])
+            self.workbench.add_node(row['uid'], row['uid'][:6], ['conn_id', row['service']])
 
             # Add the originating host
-            self.c.add_node(row['id.orig_h'], row['id.orig_h'], ['ip', 'origin'])
+            self.workbench.add_node(row['id.orig_h'], row['id.orig_h'], ['ip', 'origin'])
 
             # Add the response host
-            self.c.add_node(row['id.resp_h'], row['id.resp_h'], ['ip', 'response'])
+            self.workbench.add_node(row['id.resp_h'], row['id.resp_h'], ['ip', 'response'])
 
             # Add the ip->connection relationships
-            self.c.add_rel(row['uid'], row['id.orig_h'], 'origin')
-            self.c.add_rel(row['uid'], row['id.resp_h'], 'response')
+            self.workbench.add_rel(row['uid'], row['id.orig_h'], 'origin')
+            self.workbench.add_rel(row['uid'], row['id.resp_h'], 'response')
 
     def http_log_graph(self, stream):
         ''' Build up a graph (nodes and edges from a Bro http.log) '''
@@ -97,8 +99,8 @@ class PcapGraph(object):
             self.add_node(row['id.resp_h'], row['id.resp_h'], ['host'])
 
             # Add the http request relationships
-            self.c.add_rel(row['id.orig_h'], row['host'], 'http_request')
-            self.c.add_rel(row['host'], row['id.resp_h'], 'A')
+            self.workbench.add_rel(row['id.orig_h'], row['host'], 'http_request')
+            self.workbench.add_rel(row['host'], row['id.resp_h'], 'A')
             
             # If the mime-type is interesting add the uri and the host->uri->host relationships
             '''
@@ -200,33 +202,30 @@ class PcapGraph(object):
     def __del__(self):
         ''' Class Cleanup '''
         # Close zeroRPC client
-        self.c.close()
+        self.workbench.close()
 
 # Unit test: Create the class, the proper input and run the execute() method for a test
 def test():
     ''' pcap_graph.py: Unit test '''
     # This worker test requires a local server as it relies on the recursive dependencies
     import zerorpc
-    c = zerorpc.Client(timeout=300)
-    c.connect("tcp://127.0.0.1:4242")
+    workbench = zerorpc.Client(timeout=300)
+    workbench.connect("tcp://127.0.0.1:4242")
 
     # Generate the input data for this worker
-    import os
     data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../data/pcap/kitchen_boss.pcap')
-    md5 = c.store_sample('kitchen_boss.pcap', open(data_path, 'rb').read(), 'pcap')
-    input_data = c.work_request('pcap_bro', md5)
+    md5 = workbench.store_sample('kitchen_boss.pcap', open(data_path, 'rb').read(), 'pcap')
+    input_data = workbench.work_request('pcap_bro', md5)
 
     # Execute the worker (unit test)
     worker = PcapGraph()
     output = worker.execute(input_data)
     print '\n<<< Unit Test >>>'
-    import pprint
     pprint.pprint(output)
 
     # Execute the worker (server test)
-    output = c.work_request('pcap_graph', md5)
+    output = workbench.work_request('pcap_graph', md5)
     print '\n<<< Server Test >>>'
-    import pprint
     pprint.pprint(output)
 
 if __name__ == "__main__":

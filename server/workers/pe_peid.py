@@ -39,16 +39,16 @@ def test():
 
     # This worker test requires a local server running
     import zerorpc
-    c = zerorpc.Client()
-    c.connect("tcp://127.0.0.1:4242")
+    workbench = zerorpc.Client()
+    workbench.connect("tcp://127.0.0.1:4242")
 
     # Generate input for the worker
     import os
     data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
                              '../../data/pe/bad/033d91aae8ad29ed9fbb858179271232')
-    md5 = c.store_sample('bad', open(data_path, 'rb').read(), 'pe')
-    input_data = c.get_sample(md5)
-    input_data.update(c.work_request('meta', md5))
+    md5 = workbench.store_sample('bad', open(data_path, 'rb').read(), 'pe')
+    input_data = workbench.get_sample(md5)
+    input_data.update(workbench.work_request('meta', md5))
 
     # Execute the worker (unit test)
     worker = PEIDWorker()
@@ -58,7 +58,7 @@ def test():
     pprint.pprint(output)
 
     # Execute the worker (server test)
-    output = c.work_request('pe_peid', md5)
+    output = workbench.work_request('pe_peid', md5)
     print '\n<<< Server Test >>>'
     import pprint
     pprint.pprint(output)

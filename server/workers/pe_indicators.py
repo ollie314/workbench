@@ -414,29 +414,29 @@ def test():
 
     # This worker test requires a local server running
     import zerorpc
-    c = zerorpc.Client()
-    c.connect("tcp://127.0.0.1:4242")
+    workbench = zerorpc.Client()
+    workbench.connect("tcp://127.0.0.1:4242")
 
     # Generate the input data for this worker
     import os
     data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
                              '../../data/pe/bad/033d91aae8ad29ed9fbb858179271232')
-    md5_bad = c.store_sample('bad', open(data_path, 'rb').read(), 'pe')
+    md5_bad = workbench.store_sample('bad', open(data_path, 'rb').read(), 'pe')
     data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
                              '../../data/pe/good/4be7ec02133544cde7a580875e130208')
-    md5_good = c.store_sample('good_pe', open(data_path, 'rb').read(), 'pe')
+    md5_good = workbench.store_sample('good_pe', open(data_path, 'rb').read(), 'pe')
 
     # Execute the worker (unit test)
     worker = PEIndicators()
-    output = worker.execute(c.get_sample(md5_bad))
+    output = worker.execute(workbench.get_sample(md5_bad))
     print '\n<<< Unit Test 1 >>>'
     pprint.pprint(output)
-    output = worker.execute(c.get_sample(md5_good))
+    output = worker.execute(workbench.get_sample(md5_good))
     print '\n<<< Unit Test 2 >>>'
     pprint.pprint(output)
 
     # Execute the worker (server test)
-    output = c.work_request('pe_indicators', md5_bad)
+    output = workbench.work_request('pe_indicators', md5_bad)
     print '\n<<< Server Test >>>'
     pprint.pprint(output)
 
