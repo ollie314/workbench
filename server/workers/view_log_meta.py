@@ -19,7 +19,9 @@ def test():
     c.connect("tcp://127.0.0.1:4242")
 
     # Generate input for the worker
-    md5 = c.store_sample('system.log', open('../../data/log/system.log', 'rb').read(), 'log')
+    import os
+    data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../data/log/system.log')
+    md5 = c.store_sample('system.log', open(data_path, 'rb').read(), 'log')
     input_data = c.get_sample(md5)
     input_data.update(c.work_request('log_meta', md5))
 

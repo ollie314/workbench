@@ -24,7 +24,6 @@ from server import data_store
 from server import els_indexer
 from server import neo_db
 from server import plugin_manager
-from server.workers import workbench_keys
 from server.workers.bro import bro_log_reader
 
 class WorkBench():
@@ -478,9 +477,6 @@ def run():
     database = workbench_conf.get('workbench', 'database')
     worker_cap = workbench_conf.getint('workbench', 'worker_cap')
     samples_cap = workbench_conf.getint('workbench', 'samples_cap')
-
-    # API keys just get tossed into API_KEYS dict
-    workbench_keys.API_KEYS['vt_apikey'] = workbench_conf.get('workbench', 'vt_apikey')
 
     # Parse the arguments (args overwrite configuration file settings)
     parser = argparse.ArgumentParser()

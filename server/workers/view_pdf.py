@@ -25,7 +25,10 @@ def test():
     c.connect("tcp://127.0.0.1:4242")
 
     # Generate input for the worker
-    md5 = c.store_sample('bad_067b392', open('../../data/pdf/bad/067b3929f096768e864f6a04f04d4e54', 'rb').read(), 'pdf')
+    import os
+    data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                             '../../data/pdf/bad/067b3929f096768e864f6a04f04d4e54')
+    md5 = c.store_sample('bad_pdf', open(data_path, 'rb').read(), 'pdf')
     input_data = c.work_request('meta', md5)
     input_data.update(c.work_request('strings', md5))
 

@@ -18,10 +18,9 @@ class PcapBro(object):
 
     def get_bro_script_path(self):
         # Just run all the scripts in the bro directory
-        if os.path.exists('bro'):
-            return os.path.abspath('bro')
-        elif os.path.exists('workers/bro'):
-            return os.path.abspath('workers/bro')
+        bro_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'bro')
+        if os.path.exists(bro_dir):
+            return bro_dir
         else:
             raise Exception('pcap_bro could not find bro directory under: %s' % os.getcwd())
 
@@ -149,7 +148,9 @@ def test():
     c.connect("tcp://127.0.0.1:4242")
 
     # Generate the input data for this worker
-    md5 = c.store_sample('http.pcap', open('../../data/pcap/http.pcap', 'rb').read(), 'pcap')
+    import os
+    data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../data/pcap/http.pcap')
+    md5 = c.store_sample('http.pcap', open(data_path, 'rb').read(), 'pcap')
     input_data = c.get_sample(md5)
 
     # Execute the worker (unit test)
@@ -166,7 +167,8 @@ def test():
     pprint.pprint(output)
 
     # Open a bunch of pcaps
-    data_dir = '../../data/pcap'
+    import os
+    data_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../data/pcap')
     file_list = [os.path.join(data_dir, child) for child in os.listdir(data_dir)]
     pcap_md5s = []
     for filename in file_list:

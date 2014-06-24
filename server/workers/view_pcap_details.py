@@ -57,7 +57,10 @@ def test():
     c.connect("tcp://127.0.0.1:4242")
 
     # Generate input for the worker
-    md5 = c.store_sample('winmedia.pcap', open('../../data/pcap/winmediaplayer.pcap', 'rb').read(), 'pcap')
+    import os
+    data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                             '../../data/pcap/winmediaplayer.pcap')
+    md5 = c.store_sample('winmedia.pcap', open(data_path, 'rb').read(), 'pcap')
     input_data = c.get_sample(md5)
     input_data.update(c.work_request('view_pcap', md5))
 

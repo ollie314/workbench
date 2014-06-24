@@ -46,7 +46,10 @@ def test():
     c.connect("tcp://127.0.0.1:4242")
 
     # Generate the input data for this worker
-    md5 = c.store_sample('bad_067b39', open('../../data/pdf/bad/067b3929f096768e864f6a04f04d4e54', 'rb').read(), 'pdf')
+    import os
+    data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                             '../../data/pdf/bad/067b3929f096768e864f6a04f04d4e54')
+    md5 = c.store_sample('bad_067b39', open(data_path, 'rb').read(), 'pdf')
     input_data = c.work_request('meta', md5)
 
     # Execute the worker
@@ -56,7 +59,9 @@ def test():
     pprint.pprint(output)
 
     # Generate the input data for this worker
-    md5 = c.store_sample('bad_033d91', open('../../data/pe/bad/033d91aae8ad29ed9fbb858179271232', 'rb').read(), 'pe')
+    data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                             '../../data/pe/bad/033d91aae8ad29ed9fbb858179271232')
+    md5 = c.store_sample('bad_033d91', open(data_path, 'rb').read(), 'pe')
     input_data = c.work_request('meta', md5)
 
     # Execute the worker
@@ -65,7 +70,9 @@ def test():
     pprint.pprint(output)
 
     # Generate the input data for this worker
-    md5 = c.store_sample('good.zip', open('../../data/zip/good.zip', 'rb').read(), 'zip')
+    data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                             '../../data/zip/good.zip')
+    md5 = c.store_sample('good.zip', open(data_path, 'rb').read(), 'zip')
     input_data = c.work_request('meta', md5)
 
     # Execute the worker
@@ -74,7 +81,9 @@ def test():
     pprint.pprint(output)
 
     # Generate the input data for this worker
-    md5 = c.store_sample('workbench.py', open('../../server/workbench.py', 'rb').read(), 'python')
+    data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                             '../../server/workbench.py')
+    md5 = c.store_sample('workbench.py', open(data_path, 'rb').read(), 'python')
     input_data = c.work_request('meta', md5)
 
     # Execute the worker

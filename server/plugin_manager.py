@@ -136,7 +136,8 @@ def test():
         pass
 
     # Create Plugin Manager
-    PluginManager(new_plugin)
+    plugin_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)),'workers')
+    PluginManager(new_plugin, plugin_dir=plugin_dir)
 
 if __name__ == "__main__":
     test()

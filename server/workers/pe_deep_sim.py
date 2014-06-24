@@ -44,7 +44,10 @@ def test():
     c.connect("tcp://127.0.0.1:4242")
 
     # Generate input for the worker
-    md5 = c.store_sample('bad_pe', open('../../data/pe/bad/033d91aae8ad29ed9fbb858179271232', 'rb').read(), 'pe')
+    import os
+    data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                             '../../data/pe/bad/033d91aae8ad29ed9fbb858179271232')
+    md5 = c.store_sample('bad', open(data_path, 'rb').read(), 'pe')
     input_data = c.work_request('meta_deep', md5)
 
     # Execute the worker (unit test)
