@@ -1,6 +1,10 @@
 
 ''' Workbench: Open Source Security Framework '''
 
+if __name__ == '__main__':
+    print 'Do not call this file directly. Run the workbench script'
+    exit(1)
+
 from gevent import monkey; monkey.patch_all(thread=False) # Monkey!
 import os
 import argparse
@@ -15,26 +19,12 @@ import inspect
 import funcsigs
 import ConfigParser
 
-''' Add bro to path for bro_log_reader '''
-import sys
-sys.path.extend(['workers','workers/bro'])
-
-# Local modules
-try:
-    from . import data_store
-    from . import els_indexer
-    from . import neo_db
-    from . import plugin_manager
-    from . import bro_log_reader
-    from . import workbench_keys
-except ValueError:
-    import data_store
-    import els_indexer
-    import neo_db
-    import plugin_manager
-    import bro_log_reader
-    import workbench_keys
-
+# Workbench server imports
+from server import data_store
+from server import els_indexer
+from server import neo_db
+from server import plugin_manager
+from server.workers.bro import bro_log_reader
 
 class WorkBench():
     ''' Workbench: Open Source Security Framework '''
@@ -57,9 +47,10 @@ class WorkBench():
             print 'Could not connect to Neo4j DB. Is it running?  $ neo4j start'
             self.neo_db = neo_db.NeoDBStub(**{'uri': neo_uri} if neo_uri else {})
 
-        # Create Plugin Grabber
+        # Create Plugin Manager
         self.plugin_meta = {}
-        plugin_manager.PluginManager(self._new_plugin)
+        plugin_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)),'workers')
+        self.plugin_manager = plugin_manager.PluginManager(self._new_plugin, plugin_dir=plugin_dir)
 
     #
     # Sample Methods
@@ -471,20 +462,21 @@ class WorkBench():
         return help_str
 
 
-def main():
+def run():
 
-    # Load the configuration file
+    # Load the configuration file relative to this script location
+    config_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'config.ini')
     workbench_conf = ConfigParser.ConfigParser()
-    workbench_conf.read('config.ini')
+    config_ini = workbench_conf.read(config_path)
+    if not config_ini:
+        print 'Could not locate config.ini file, tried %s : exiting...' % config_path
+        exit(1)
 
     # Pull configuration settings
     datastore_uri = workbench_conf.get('workbench', 'datastore_uri')
     database = workbench_conf.get('workbench', 'database')
     worker_cap = workbench_conf.getint('workbench', 'worker_cap')
     samples_cap = workbench_conf.getint('workbench', 'samples_cap')
-
-    # API keys just get tossed into API_KEYS dict
-    workbench_keys.API_KEYS['vt_apikey'] = workbench_conf.get('workbench', 'vt_apikey')
 
     # Parse the arguments (args overwrite configuration file settings)
     parser = argparse.ArgumentParser()
@@ -513,7 +505,4 @@ def main():
 
 # Test that just calls main
 def test():
-    main()
-
-if __name__ == '__main__':
-    main()
+    run()

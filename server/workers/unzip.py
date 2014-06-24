@@ -35,8 +35,11 @@ def test():
     c.connect("tcp://127.0.0.1:4242")
 
     # Generate input for the worker
-    md5 = c.store_sample('bad.zip', open('../../data/zip/bad.zip', 'rb').read(), 'zip')
-    md5_2 = c.store_sample('good.zip', open('../../data/zip/good.zip', 'rb').read(), 'zip')
+    import os
+    data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../data/zip/bad.zip')
+    md5 = c.store_sample('bad.zip', open(data_path, 'rb').read(), 'zip')
+    data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../data/zip/good.zip')
+    md5_2 = c.store_sample('good.zip', open(data_path, 'rb').read(), 'zip')
     input_data = c.get_sample(md5)
     input_data_2 = c.get_sample(md5_2)    
 

@@ -41,7 +41,9 @@ def test():
     c.connect("tcp://127.0.0.1:4242")
 
     # Store all the files in directory and make an md5 list
-    file_list = [os.path.join('../../data/pe/bad', child) for child in os.listdir('../../data/pe/bad')]
+    import os
+    data_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)),'../../data/pe/bad')
+    file_list = [os.path.join(data_dir, child) for child in os.listdir(data_dir)]
     md5_list = []
     for filename in file_list:
 

@@ -36,7 +36,9 @@ def test():
     c.connect("tcp://127.0.0.1:4242")
 
     # Generate input for the worker
-    md5 = c.store_sample('unknown.json', open('../../data/json/generated.json', 'rb').read(), 'json')
+    import os
+    data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),'../../data/json/generated.json')
+    md5 = c.store_sample('unknown.json', open(data_path, 'rb').read(), 'json')
     input_data = c.get_sample(md5)
     input_data.update(c.work_request('meta', md5))
 

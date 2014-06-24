@@ -1,8 +1,9 @@
 
 ''' VTQuery worker '''
+import os
 import requests
 import collections
-import workbench_keys
+import ConfigParser
 
 class VTQuery(object):
     ''' This worker query Virus Total, an apikey needs to be provided '''
@@ -11,11 +12,11 @@ class VTQuery(object):
     def __init__(self, apikey=None):
         ''' VTQuery Init'''
 
-        # Grab our API key
-        if apikey:
-            self.apikey = apikey
-        else:
-            self.apikey = workbench_keys.API_KEYS['vt_apikey']
+        # Grab API key from configuration file
+        config_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../config.ini')
+        conf = ConfigParser.ConfigParser()
+        conf.read(config_path)
+        self.apikey = conf.get('workbench', 'vt_apikey')
 
         # Make sure key isn't the dummy value
         if self.apikey == '123':
@@ -64,25 +65,20 @@ class VTQuery(object):
 def test():
     ''' vt_query.py: Unit test'''
 
-    import ConfigParser
-
-    # Grab API key from configuration file
-    workbench_conf = ConfigParser.ConfigParser()
-    workbench_conf.read('../config.ini')
-    vt_api = workbench_conf.get('workbench', 'vt_apikey')
-
     # This worker test requires a local server running
     import zerorpc
     c = zerorpc.Client()
     c.connect("tcp://127.0.0.1:4242")
 
     # Generate input for the worker
-    md5 = c.store_sample('bad_pdf', open('../../data/pdf/bad/067b3929f096768e864f6a04f04d4e54', 'rb').read(), 'pdf')
+    data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                             '../../data/pdf/bad/067b3929f096768e864f6a04f04d4e54')
+    md5 = c.store_sample('bad_pdf', open(data_path, 'rb').read(), 'pdf')
     input_data = c.get_sample(md5)
     input_data.update(c.work_request('meta', md5))
 
     # Execute the worker (unit test)
-    worker = VTQuery(vt_api)
+    worker = VTQuery()
     output = worker.execute(input_data)
     print '\n<<< Unit Test >>>'
     import pprint

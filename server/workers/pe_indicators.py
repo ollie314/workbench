@@ -418,8 +418,13 @@ def test():
     c.connect("tcp://127.0.0.1:4242")
 
     # Generate the input data for this worker
-    md5_bad = c.store_sample('bad', open('../../data/pe/bad/033d91aae8ad29ed9fbb858179271232', 'rb').read(), 'pe')
-    md5_good = c.store_sample('good', open('../../data/pe/good/4be7ec02133544cde7a580875e130208', 'rb').read(), 'pe')
+    import os
+    data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                             '../../data/pe/bad/033d91aae8ad29ed9fbb858179271232')
+    md5_bad = c.store_sample('bad', open(data_path, 'rb').read(), 'pe')
+    data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                             '../../data/pe/good/4be7ec02133544cde7a580875e130208')
+    md5_good = c.store_sample('good_pe', open(data_path, 'rb').read(), 'pe')
 
     # Execute the worker (unit test)
     worker = PEIndicators()

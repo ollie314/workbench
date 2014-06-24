@@ -211,7 +211,9 @@ def test():
     c.connect("tcp://127.0.0.1:4242")
 
     # Generate the input data for this worker
-    md5 = c.store_sample('kitchen_boss.pcap', open('../../data/pcap/kitchen_boss.pcap', 'rb').read(), 'pcap')
+    import os
+    data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../data/pcap/kitchen_boss.pcap')
+    md5 = c.store_sample('kitchen_boss.pcap', open(data_path, 'rb').read(), 'pcap')
     input_data = c.work_request('pcap_bro', md5)
 
     # Execute the worker (unit test)
