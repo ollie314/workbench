@@ -6,6 +6,7 @@ import argparse
 import ConfigParser
 
 def main():
+    ''' This client gets extracts URLs from PCAP files (via Bro logs) '''
     
     # Grab server info from configuration file
     workbench_conf = ConfigParser.ConfigParser()

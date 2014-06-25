@@ -1,6 +1,6 @@
 
 ''' view_zip worker '''
-import zerorpc
+import pprint
 
 class ViewZip(object):
     ''' ViewZip: Generates a view for Zip files '''
@@ -51,13 +51,11 @@ def test():
     worker = ViewZip()
     output = worker.execute(input_data)
     print '\n<<< Unit Test >>>'
-    import pprint
     pprint.pprint(output)
 
     # Execute the worker (server test)
     output = workbench.work_request('view_zip', md5)
     print '\n<<< Server Test >>>'
-    import pprint
     pprint.pprint(output)
 
 if __name__ == "__main__":

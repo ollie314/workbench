@@ -16,6 +16,7 @@ def md5_for_file(path, block_size=256*128):
 '''
 
 def main():
+    ''' This client pushes a big directory of different files into Workbench '''
     
     # Grab server info from configuration file
     workbench_conf = ConfigParser.ConfigParser()

@@ -6,6 +6,7 @@ import pprint
 import ConfigParser
 
 def main():
+    ''' This client looks for PEid signatures in PE Files '''
     
     # Grab server info from configuration file
     workbench_conf = ConfigParser.ConfigParser()

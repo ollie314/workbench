@@ -6,6 +6,7 @@ import argparse
 import ConfigParser
 
 def main():
+    ''' This client pushes a file into Workbench '''
     
     # Grab server info from configuration file
     workbench_conf = ConfigParser.ConfigParser()
