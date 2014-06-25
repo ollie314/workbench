@@ -43,23 +43,25 @@ class PEIndicators(object):
         self.pefile_handle = None
 
     def execute(self, input_data):
+        ''' Execute the PEIndicators worker '''
         raw_bytes = input_data['sample']['raw_bytes']
 
         ''' Analyze the output of pefile for any anomalous conditions. '''
         # Have the PE File module process the file
         try:
             self.pefile_handle = pefile.PE(data=raw_bytes, fast_load=False)
-        except Exception, error:
+        except pefile.PEFormatError, error:
             return {'error': str(error), 'indicator_list': [{'Error': 'PE module failed!'}]}
 
         indicators = []
-        indicators += [{'description': warn,'severity': 2, 'category': 'PE_WARN'} for warn in self.pefile_handle.get_warnings()]
+        indicators += [{'description': warn, 'severity': 2, 'category': 'PE_WARN'} 
+                       for warn in self.pefile_handle.get_warnings()]
 
         # Automatically invoke any method of this class that starts with 'check_'
         check_methods = self._get_check_methods()
         for check_method in check_methods:
             hit_data = check_method()
-            if (hit_data):
+            if hit_data:
                 indicators.append(hit_data)
 
         return {'indicator_list': indicators}
@@ -76,31 +78,33 @@ class PEIndicators(object):
 
         # Search for any of the possible matches
         match_hits = self._search_within_pe_warnings(pe_warning_matches)
-        if (match_hits):
-            return {'description': 'Corrupted import table','severity': 3, \
+        if match_hits:
+            return {'description': 'Corrupted import table', 'severity': 3,
                     'category': 'MALFORMED', 'attributes': match_hits}
         else:
             return None
 
     def check_checksum_is_zero(self):
         ''' Checking for a checksum of zero '''
-        if (self.pefile_handle.OPTIONAL_HEADER):
-            if (not self.pefile_handle.OPTIONAL_HEADER.CheckSum):
+        if self.pefile_handle.OPTIONAL_HEADER:
+            if not self.pefile_handle.OPTIONAL_HEADER.CheckSum:
                 return {'description': 'Checksum of Zero', 'severity': 1, 'category': 'MALFORMED'}
         return None
 
     def check_checksum_mismatch(self):
         ''' Checking for a checksum that doesn't match the generated checksum '''
-        if (self.pefile_handle.OPTIONAL_HEADER):
-            if (self.pefile_handle.OPTIONAL_HEADER.CheckSum != self.pefile_handle.generate_checksum()):
-                return {'description': 'Reported Checksum does not match actual checksum', 'severity':2, 'category': 'MALFORMED'}
+        if self.pefile_handle.OPTIONAL_HEADER:
+            if self.pefile_handle.OPTIONAL_HEADER.CheckSum != self.pefile_handle.generate_checksum():
+                return {'description': 'Reported Checksum does not match actual checksum', 
+                        'severity': 2, 'category': 'MALFORMED'}
         return None
 
     def check_empty_section_name(self):
         ''' Checking for an empty section name '''
         for section in self.pefile_handle.sections:
-            if (not section.Name):
-                return {'description': 'Section with no name, tamper indication', 'severity':3, 'category': 'MALFORMED'}
+            if not section.Name:
+                return {'description': 'Section with no name, tamper indication', 
+                        'severity': 3, 'category': 'MALFORMED'}
         return None
 
     def check_nonstandard_section_name(self):
@@ -115,9 +119,9 @@ class PEIndicators(object):
             name = convert_to_ascii_null_term(section.Name).lower()
             if (name not in std_sections):
                 non_std_sections.append(name)
-        if (non_std_sections):
-            return{'description': 'Section(s) with a non-standard name, tamper indication', 'severity': 3, \
-                    'category': 'MALFORMED', 'attributes': non_std_sections}
+        if non_std_sections:
+            return{'description': 'Section(s) with a non-standard name, tamper indication', 
+                   'severity': 3, 'category': 'MALFORMED', 'attributes': non_std_sections}
 
         return None
 
@@ -137,7 +141,8 @@ class PEIndicators(object):
         # Just pad the size to be equal to the alignment and check for mismatch
         last_virtual_size += section_alignment - (last_virtual_size % section_alignment)
         if (last_virtual_address + last_virtual_size) != total_image_size:
-            return {'description': 'Image size does not match reported size', 'severity': 3, 'category': 'MALFORMED'}
+            return {'description': 'Image size does not match reported size', 
+                    'severity': 3, 'category': 'MALFORMED'}
 
         return None
 
@@ -147,7 +152,7 @@ class PEIndicators(object):
 
         # Search for any of the possible matches
         match_hits = self._search_within_pe_warnings(matches)
-        if (match_hits):
+        if match_hits:
             return {'description': 'Overlapping sections', 'severity': 3, 'category': 'MALFORMED'}
 
     def check_section_unaligned(self):
@@ -155,12 +160,12 @@ class PEIndicators(object):
         file_alignment = self.pefile_handle.OPTIONAL_HEADER.FileAlignment
         unaligned_sections = []
         for section in self.pefile_handle.sections:
-            if (section.PointerToRawData % file_alignment):
+            if section.PointerToRawData % file_alignment:
                 unaligned_sections.append(section.Name)
 
         # If we had any unaligned sections, return them
-        if (unaligned_sections):
-            return {'description': 'Unaligned section, tamper indication', \
+        if unaligned_sections:
+            return {'description': 'Unaligned section, tamper indication',
                     'severity': 3, 'category': 'MALFORMED', 'attributes': unaligned_sections}
         return None
 
@@ -169,15 +174,15 @@ class PEIndicators(object):
         total_image_size = self.pefile_handle.OPTIONAL_HEADER.SizeOfImage
 
         for section in self.pefile_handle.sections:
-            if (section.PointerToRawData + section.SizeOfRawData > total_image_size):
-                return {'description': 'Oversized section, storing addition data within the PE', \
+            if section.PointerToRawData + section.SizeOfRawData > total_image_size:
+                return {'description': 'Oversized section, storing addition data within the PE',
                         'severity': 3, 'category': 'MALFORMED', 'attributes': section.Name}
 
         return None
 
     def check_dll_with_no_exports(self):
         ''' Checking if the PE is a DLL with no exports'''
-        if (self.pefile_handle.is_dll() and not hasattr(self.pefile_handle,'DIRECTORY_ENTRY_EXPORT')):
+        if self.pefile_handle.is_dll() and not hasattr(self.pefile_handle,'DIRECTORY_ENTRY_EXPORT'):
             return {'description':'DLL with NO export symbols', 'severity':3, 'category':'MALFORMED'}
         else:
             return None
@@ -189,8 +194,8 @@ class PEIndicators(object):
                    'internetreadfile', 'internetwritefile', 'netshareenum', 'recv', 'send',
                    'urldownloadtofile', 'wsastartup']
         matching_imports = self._search_for_import_symbols(imports)
-        if (matching_imports):
-            return  {'description':'Imported symbols related to network communication', 'severity':1, \
+        if matching_imports:
+            return {'description':'Imported symbols related to network communication', 'severity': 1,
                      'category':'COMMUNICATION', 'attributes':matching_imports}
         else:
             return None
@@ -202,8 +207,8 @@ class PEIndicators(object):
                    'samiconnect', 'samigetprivatedata', 'samqueryinformationuse']
         matching_imports = self._search_for_import_symbols(imports)
         if (matching_imports):
-            return  {'description': 'Imported symbols related to elevating or attaining new privileges', 'severity': 2, \
-                     'category': 'CREDENTIALS', 'attributes': matching_imports}
+            return {'description': 'Imported symbols related to elevating or attaining new privileges', 
+                     'severity': 2, 'category': 'CREDENTIALS', 'attributes': matching_imports}
         else:
             return None
 
@@ -213,8 +218,8 @@ class PEIndicators(object):
                    'getdc', 'savedc', 'getforgroundwindow', 'getkeystate', 'mapvirtualkey'
                    'registerhotkey', 'setwindowshookex']
         matching_imports = self._search_for_import_symbols(imports)
-        if (matching_imports):
-            return  {'description': 'Imported symbols related to keylogging activities', 'severity': 2, \
+        if matching_imports:
+            return {'description': 'Imported symbols related to keylogging activities', 'severity': 2,
                      'category': 'KEYLOGGING', 'attributes': matching_imports}
         else:
             return None
@@ -226,8 +231,8 @@ class PEIndicators(object):
                    'ntquerydirectoryfile', 'regopenkey', 'rtlcreateregistrykey', 'rtlwriteregistryvalue',
                    'wow64disablewow64fsredirection']
         matching_imports = self._search_for_import_symbols(imports)
-        if (matching_imports):
-            return  {'description': 'Imported symbols related to changing system state', 'severity': 1, \
+        if matching_imports:
+            return {'description': 'Imported symbols related to changing system state', 'severity': 1,
                      'category': 'SYSTEM_STATE', 'attributes': matching_imports}
         else:
             return None
@@ -236,8 +241,8 @@ class PEIndicators(object):
         ''' Checking if the PE imports known methods associated with probing the system'''
         imports = ['findfirstfile', 'findnextfile', 'findresource', 'getsystemdefaultlangid', 'getversionex']
         matching_imports = self._search_for_import_symbols(imports)
-        if (matching_imports):
-            return  {'description': 'Imported symbols related to probing the system', 'severity': 2, \
+        if matching_imports:
+            return {'description': 'Imported symbols related to probing the system', 'severity': 2,
                      'category': 'SYSTEM_PROBE', 'attributes': matching_imports}
         else:
             return None
@@ -246,9 +251,9 @@ class PEIndicators(object):
         ''' Checking if the PE imports known methods associated with system security or integrity'''
         imports = ['enableexecuteprotectionsupport', 'mapviewoffile', 'sfcterminatewatcherthread']
         matching_imports = self._search_for_import_symbols(imports)
-        if (matching_imports):
-            return  {'description': 'Imported symbols related to system security and integrity', 'severity': 3, \
-                     'category': 'SYSTEM_INTEGRITY', 'attributes': matching_imports}
+        if matching_imports:
+            return {'description': 'Imported symbols related to system security and integrity', 
+                     'severity': 3, 'category': 'SYSTEM_INTEGRITY', 'attributes': matching_imports}
         else:
             return None
 
@@ -256,8 +261,8 @@ class PEIndicators(object):
         ''' Checking if the PE imports known methods associated with encryption'''
         imports = ['crypt']
         matching_imports = self._search_for_import_symbols(imports)
-        if (matching_imports):
-            return  {'description': 'Imported symbols related to encryption', 'severity': 3, \
+        if matching_imports:
+            return {'description': 'Imported symbols related to encryption', 'severity': 3,
                      'category': 'ENCRYPTION', 'attributes': matching_imports}
         else:
             return None
@@ -267,8 +272,8 @@ class PEIndicators(object):
         imports = ['checkremotedebbugerpresent', 'isdebuggerpresent', 'ntqueryinformationprocess',
                    'outputdebugstring', 'queryperformancecounter', 'gettickcount', 'findwindow']
         matching_imports = self._search_for_import_symbols(imports)
-        if (matching_imports):
-            return  {'description': 'Imported symbols related to anti-debugging', 'severity': 3, \
+        if matching_imports:
+            return {'description': 'Imported symbols related to anti-debugging', 'severity': 3,
                      'category': 'ANTI_DEBUG', 'attributes': matching_imports}
         else:
             return None
@@ -277,10 +282,10 @@ class PEIndicators(object):
         ''' Checking if the PE imports known methods associated with COM or services'''
         imports = ['cocreateinstance', 'controlservice', 'createservice', 'dllcanunloadnow',
                    'dllgetclassobject', 'dllinstall', 'dllregisterserver', 'dllunregisterserver',
-                   'oleinitialize','openscmanager','startservicectrldispatcher']
+                   'oleinitialize', 'openscmanager', 'startservicectrldispatcher']
         matching_imports = self._search_for_import_symbols(imports)
-        if (matching_imports):
-            return  {'description': 'Imported symbols related to COM or Services', 'severity': 3, \
+        if matching_imports:
+            return {'description': 'Imported symbols related to COM or Services', 'severity': 3,
                      'category': 'COM_SERVICES', 'attributes': matching_imports}
         else:
             return None
@@ -294,9 +299,9 @@ class PEIndicators(object):
                    'setthreadcontext', 'suspendthread', 'thread32first', 'thread32next',
                    'toolhelp32readprocessmemory', 'virtualallocex', 'virtualprotectex', 'writeprocessmemory']
         matching_imports = self._search_for_import_symbols(imports)
-        if (matching_imports):
-            return  {'description': 'Imported symbols related to process manipulation/injection', 'severity': 3, \
-                     'category': 'PROCESS_MANIPULATION', 'attributes': matching_imports}
+        if matching_imports:
+            return {'description': 'Imported symbols related to process manipulation/injection', 
+                     'severity': 3, 'category': 'PROCESS_MANIPULATION', 'attributes': matching_imports}
         else:
             return None
 
@@ -305,8 +310,8 @@ class PEIndicators(object):
         imports = ['createprocess', 'netschedulejobadd', 'peeknamedpipe', 'shellexecute',
                    'system', 'winexec']
         matching_imports = self._search_for_import_symbols(imports)
-        if (matching_imports):
-            return  {'description': 'Imported symbols related to spawning a new process', 'severity': 2, \
+        if matching_imports:
+            return {'description': 'Imported symbols related to spawning a new process', 'severity': 2,
                      'category': 'PROCESS_SPAWN', 'attributes': matching_imports}
         else:
             return None
@@ -315,20 +320,20 @@ class PEIndicators(object):
         ''' Checking if the PE imports known methods associated with loading libraries, resources, etc in a sneaky way'''
         imports = ['getprocaddress', 'ldrloaddll', 'loadlibrary', 'loadresource']
         matching_imports = self._search_for_import_symbols(imports)
-        if (matching_imports):
-            return  {'description': 'Imported symbols related to loading libraries, resources, etc in a sneaky way', \
+        if matching_imports:
+            return {'description': 'Imported symbols related to loading libraries, resources, in a sneaky way',
                      'severity': 2, 'category': 'STEALTH_LOAD', 'attributes': matching_imports}
         else:
             return None
 
     def check_invalid_entry_point(self):
         ''' Checking the PE File warning for an invalide entry point '''
-        matches = [ 'Possibly corrupt file. AddressOfEntryPoint lies outside the file. AddressOfEntryPoint:',
-                    'AddressOfEntryPoint lies outside the sections\' boundaries. AddressOfEntryPoint:']
+        matches = ['Possibly corrupt file. AddressOfEntryPoint lies outside the file. AddressOfEntryPoint:',
+                   'AddressOfEntryPoint lies outside the sections\' boundaries. AddressOfEntryPoint:']
         # Search for any of the possible matches
         match_hits = self._search_within_pe_warnings(matches)
-        if (match_hits):
-            return {'description': 'Invalid Entry Point', 'severity': 3, \
+        if match_hits:
+            return {'description': 'Invalid Entry Point', 'severity': 3,
                     'category': 'OBFUSCATION', 'attributes': match_hits}
         else:
             return None
@@ -345,7 +350,7 @@ class PEIndicators(object):
         ''' Just encapsulating a search that takes place fairly often '''
         pattern = '|'.join(re.escape(match) for match in matches)
         exp = re.compile(pattern)
-        if (any(exp.search(warning) for warning in self.pefile_handle.get_warnings())):
+        if any(exp.search(warning) for warning in self.pefile_handle.get_warnings()):
             return True
 
         return False
@@ -367,7 +372,7 @@ class PEIndicators(object):
                     symbol_list.append(symbol.name.lower())
         symbol_matches = []
         for symbol in symbol_list:
-            if (exp.search(symbol)):
+            if exp.search(symbol):
                 symbol_matches.append(symbol)
         return symbol_matches
 
@@ -378,11 +383,11 @@ class PEIndicators(object):
         symbol_list = []
         try:
             for symbol in self.pefile_handle.DIRECTORY_ENTRY_EXPORT.symbols:
-                if (symbol.name):
+                if symbol.name:
                     symbol_list.append(symbol.name.lower())
             symbol_matches = []
             for symbol in symbol_list:
-                if (exp.search(symbol)):
+                if exp.search(symbol):
                     symbol_matches.append(symbol)
             return symbol_matches
         except AttributeError:
@@ -395,16 +400,16 @@ class PEIndicators(object):
                 value = getattr(self, key)
             except AttributeError:
                 continue
-            if (inspect.ismethod(value) and key.startswith('check_')):
+            if inspect.ismethod(value) and key.startswith('check_'):
                 results.append(value)
         return results
 
 
 # Helper functions
-def convert_to_ascii_null_term(s):
+def convert_to_ascii_null_term(string):
     ''' Convert string to null terminated ascii string '''
-    s = s.split('\x00', 1)[0]
-    return s.decode('ascii', 'ignore')
+    string = string.split('\x00', 1)[0]
+    return string.decode('ascii', 'ignore')
 
 
 # Unit test: Create the class, the proper input and run the execute() method for a test

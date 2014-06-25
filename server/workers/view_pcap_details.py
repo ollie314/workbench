@@ -1,51 +1,40 @@
 ''' view_pcap_details worker '''
 import zerorpc
+import pprint
+
 
 class ViewPcapDetails(object):
     ''' ViewPcapDetails: Generates a view for a pcap sample (depends on Bro)'''
     dependencies = ['view_pcap']
 
     def __init__(self):
+        ''' Initialization of ViewPcapDetails '''
         self.workbench = zerorpc.Client()
         self.workbench.connect("tcp://127.0.0.1:4242")
 
     def execute(self, input_data):
-        
+        ''' ViewPcapDetails execute method '''
+
         # Copy info from input
         view = input_data['view_pcap']
-        
+
         # Grab a couple of handles
         extracted_files = input_data['view_pcap']['extracted_files']
-        
+
         # Dump a couple of fields
         del view['extracted_files']        
 
-        # Gather additional info from the Bro logs
-        '''
-        bro_logs = input_data['view_pcap']['bro_logs']
-        view['bro_log_meta'] = [self.workbench.work_request('meta', md5) for md5 in bro_logs]
-        '''
-
         # Grab additional info about the extracted files
         view['extracted_files'] = [self.workbench.work_request('meta_deep', md5, 
-            ['md5','sha256','entropy','ssdeep','file_size','file_type']) for md5 in extracted_files]
+            ['md5', 'sha256', 'entropy', 'ssdeep', 'file_size', 'file_type']) for md5 in extracted_files]
 
-
-        '''
-        # Okay this view is going to also take a peek at the bro output logs
-        for name, md5 in input_data['pcap_bro'].iteritems():
-            if '_log' in name:
-                view[name] = []
-                stream = self.workbench.stream_sample(md5, 20)
-                for row in itertools.islice(stream, 0, 1):
-                    view[name].append(row)
-        '''
         return view
 
     def __del__(self):
         ''' Class Cleanup '''
         # Close zeroRPC client
         self.workbench.close()
+
 
 # Unit test: Create the class, the proper input and run the execute() method for a test
 def test():
@@ -68,13 +57,11 @@ def test():
     worker = ViewPcapDetails()
     output = worker.execute(input_data)
     print '\n<<< Unit Test >>>'
-    import pprint
     pprint.pprint(output)
 
     # Execute the worker (server test)
     output = workbench.work_request('view_pcap_details', md5)
     print '\n<<< Server Test >>>'
-    import pprint
     pprint.pprint(output)
 
 if __name__ == "__main__":

@@ -1,26 +1,27 @@
-''' PE peid worker. Uses the peid_userdb.txt database of signatures.
-'''
+''' PE peid worker, uses the peid_userdb.txt database of signatures '''
 import peutils
 import pefile
 import pkg_resources
+import pprint
 
 # Fixme: We want to load this once per module load
-g_peid_sigs = pkg_resources.resource_string(__name__, 'peid_userdb.txt')
+PEID_SIGS = pkg_resources.resource_string(__name__, 'peid_userdb.txt')
 
 class PEIDWorker(object):
     ''' This worker looks up pe_id signatures for a PE file. '''
     dependencies = ['sample']
 
     def __init__(self):
-        self.peid_sigs = g_peid_sigs
+        self.peid_sigs = PEID_SIGS
 
     def execute(self, input_data):
+        ''' Execute the PEIDWorker '''
         raw_bytes = input_data['sample']['raw_bytes']
 
         # Have the PE File module process the file
         try:
-            pefile_handle = pefile.PE(data=raw_bytes,fast_load=False)
-        except Exception, error:
+            pefile_handle = pefile.PE(data=raw_bytes, fast_load=False)
+        except pefile.PEFormatError, error:
             return {'error':  str(error), 'match_list': []}
 
         # Now get information from PEID module
@@ -32,6 +33,7 @@ class PEIDWorker(object):
         signatures = peutils.SignatureDatabase(data = self.peid_sigs)
         peid_match = signatures.match(pefile_handle)
         return peid_match if peid_match else []
+
 
 # Unit test: Create the class, the proper input and run the execute() method for a test
 def test():
@@ -54,13 +56,11 @@ def test():
     worker = PEIDWorker()
     output = worker.execute(input_data)
     print '\n<<< Unit Test >>>'
-    import pprint
     pprint.pprint(output)
 
     # Execute the worker (server test)
     output = workbench.work_request('pe_peid', md5)
     print '\n<<< Server Test >>>'
-    import pprint
     pprint.pprint(output)
 
 if __name__ == "__main__":

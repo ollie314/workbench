@@ -20,7 +20,7 @@ class YaraSigs(object):
         my_dir = os.path.dirname(os.path.realpath(__file__))
         yara_rule_path = os.path.join(my_dir, 'yara/rules')
         if not os.path.exists(yara_rule_path):
-            raise Exception('yara could not find yara rules directory under: %s' % os.getcwd())
+            raise RuntimeError('yara could not find yara rules directory under: %s' % os.getcwd())
 
         # Okay load in all the rules under the yara rule path
         self.rules = yara.load_rules(rules_rootpath=yara_rule_path) 
