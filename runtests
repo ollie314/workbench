@@ -3,7 +3,7 @@ echo '<<< Starting workbench server >>>'
 echo
 # Launch workbench server in the background
 cd server
-nosetests workbench &
+nosetests workbench &>/dev/null &
 # Get its PID
 workbench_pid=$!
 
