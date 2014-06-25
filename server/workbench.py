@@ -24,7 +24,7 @@ from server import data_store
 from server import els_indexer
 from server import neo_db
 from server import plugin_manager
-from server.workers.bro import bro_log_reader
+from server.bro import bro_log_reader
 
 class WorkBench():
     ''' Workbench: Open Source Security Framework '''
@@ -49,7 +49,7 @@ class WorkBench():
 
         # Create Plugin Manager
         self.plugin_meta = {}
-        plugin_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)),'workers')
+        plugin_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)),'../workers')
         self.plugin_manager = plugin_manager.PluginManager(self._new_plugin, plugin_dir=plugin_dir)
 
     #
@@ -479,6 +479,7 @@ def run():
     samples_cap = workbench_conf.getint('workbench', 'samples_cap')
 
     # Parse the arguments (args overwrite configuration file settings)
+    '''
     parser = argparse.ArgumentParser()
     parser.add_argument('-ds_uri', '--datastore_uri', type=str, default=None, help='machine used by workbench datastore')
     parser.add_argument('-db', '--database', type=str, default=None, help='database used by workbench server')
@@ -487,6 +488,7 @@ def run():
     # Overwrite if specified
     datastore_uri = args.datastore_uri if (args.datastore_uri) else datastore_uri
     database = args.database if (args.database) else database
+    '''
 
     # Spin up Workbench ZeroRPC
     try:

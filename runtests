@@ -5,7 +5,7 @@ echo
 echo
 echo '<<< Running all tests in server/workers >>>'
 echo
-server/workers/runtests
+workers/runtests
 mv .coverage .coverage.workers
 clients/runtests
 mv .coverage .coverage.clients
