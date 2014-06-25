@@ -78,7 +78,7 @@ exclude_patterns = ['_build']
 # documents.
 #default_role = None
 
-# If true, '()' will be appended to :func: etc. cross-reference text.
+# If true, '()' will be appended to :func: etworkbench. cross-reference text.
 #add_function_parentheses = True
 
 # If true, the current module name will be prepended to all description

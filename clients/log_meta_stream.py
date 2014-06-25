@@ -1,4 +1,4 @@
-
+''' This client get meta data about log files '''
 import zerorpc
 import os
 import pprint
@@ -6,6 +6,7 @@ import argparse
 import ConfigParser
 
 def main():
+    ''' This client get meta data about log files '''
     
     # Grab server info from configuration file
     workbench_conf = ConfigParser.ConfigParser()
@@ -21,8 +22,8 @@ def main():
     server = str(args.server)
 
     # Start up workbench connection
-    c = zerorpc.Client()
-    c.connect('tcp://'+server+':'+port)
+    workbench = zerorpc.Client()
+    workbench.connect('tcp://'+server+':'+port)
 
     # Test out some log files
     file_list = [os.path.join('../data/log', child) for child in os.listdir('../data/log')]
@@ -32,11 +33,11 @@ def main():
             # Skip OS generated files
             if '.DS_Store' in filename: continue
 
-            md5 = c.store_sample(filename, file.read(), 'log')
-            results = c.work_request('view_log_meta', md5)
+            md5 = workbench.store_sample(filename, file.read(), 'log')
+            results = workbench.work_request('view_log_meta', md5)
             print 'Filename: %s\n' % (filename)
             pprint.pprint(results)
-            stream_log = c.stream_sample(md5, 20)
+            stream_log = workbench.stream_sample(md5, 20)
             for row in stream_log:
                 print row
 

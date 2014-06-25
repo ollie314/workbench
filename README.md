@@ -4,6 +4,8 @@
 [![Coverage Status](https://coveralls.io/repos/SuperCowPowers/workbench/badge.png)](https://coveralls.io/r/SuperCowPowers/workbench)
 [![Code Health](https://landscape.io/github/SuperCowPowers/workbench/master/landscape.png)](https://landscape.io/github/SuperCowPowers/workbench/master)
 [![Project Stats](https://www.ohloh.net/p/workbench/widgets/project_thin_badge.gif)](https://www.ohloh.net/p/workbench)
+
+##### Please note the coverage/health (typically 95%) are super bad right now. It's a temporary issue that we're working on. :)
 Workbench
 =========
 #### A medium-data framework for security research and development teams.
@@ -99,8 +101,8 @@ Note: Workbench is continuously tested with python 2.7. We're currently working 
 ## Running It:
 #### Server (localhost or server machine)
 <pre>
-$ cd workbench/server
-$ python -O workbench.py
+$ cd workbench
+$ ./workbench
 </pre>
 #### Example Clients (use -s for remote server)
 There are about a dozen example clients showing how to use workbench on pcaps, PEfiles, pdfs, and log files. We even has a simple nodes.js client (looking for node devs to pop some pull requests :).

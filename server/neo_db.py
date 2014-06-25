@@ -1,9 +1,11 @@
 
 ''' NeoDB class for WorkBench '''
 
-class NeoDB():
+class NeoDB(object):
+    ''' NeoDB indexer for Workbench '''
 
     def __init__(self, uri='http://localhost:7474/db/data'):
+        ''' Initialization for NeoDB indexer '''
 
         # Get connection to Neo4j
         try:
@@ -17,7 +19,7 @@ class NeoDB():
 
     def add_node(self, node_id, name, labels):
         ''' Add the node with name and labels '''
-        node = self.graph_db.get_or_create_indexed_node('Node', 'node_id', node_id, {'node_id':node_id, 'name':name})
+        node = self.graph_db.get_or_create_indexed_node('Node', 'node_id', node_id, {'node_id': node_id, 'name': name})
         try:
             node.add_labels(*labels)
         except NotImplementedError:
@@ -46,23 +48,34 @@ class NeoDB():
         ''' Clear the Graph Database of all nodes and edges '''
         self.graph_db.clear()
 
-class NeoDBStub():
 
-    def __init__(self,  uri='http://localhost:7474/db/data'):
+class NeoDBStub(object):
+    ''' NeoDB Stub '''
+
+    def __init__(self, uri='http://localhost:7474/db/data'):
+        ''' NeoDB Stub '''
         print 'NeoDB Stub connected: %s' % (str(uri))
         print 'Install Neo4j and python bindings for Neo4j. See README.md'
 
     def add_node(self, node_id, name, labels):
+        ''' NeoDB Stub '''
         print 'NeoDB Stub getting called...'
+        print '%s %s %s %s' % (self, node_id, name, labels)
 
     def has_node(self, node_id):
+        ''' NeoDB Stub '''
         print 'NeoDB Stub getting called...'
+        print '%s %s' % (self, node_id)
 
     def add_rel(self, source_node_id, target_node_id, rel):
+        ''' NeoDB Stub '''
         print 'NeoDB Stub getting called...'
+        print '%s %s %s %s' % (self, source_node_id, target_node_id, rel)
 
     def clear_db(self):
+        ''' NeoDB Stub '''
         print 'NeoDB Stub getting called...'
+        print '%s' % (self)
 
 try:
     from py2neo import neo4j

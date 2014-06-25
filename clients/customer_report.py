@@ -1,10 +1,11 @@
-
+''' This client generates customer reports on all the samples in workbench '''
 import zerorpc
 import pprint
 import argparse
 import ConfigParser
 
 def main():
+    ''' This client generates customer reports on all the samples in workbench '''
     
     # Grab server info from configuration file
     workbench_conf = ConfigParser.ConfigParser()
@@ -20,10 +21,10 @@ def main():
     server = str(args.server)
 
     # Start up workbench connection
-    c = zerorpc.Client()
-    c.connect('tcp://'+server+':'+port)
+    workbench = zerorpc.Client()
+    workbench.connect('tcp://'+server+':'+port)
 
-    results = c.batch_work_request('view_customer', {})
+    results = workbench.batch_work_request('view_customer', {})
     pprint.pprint(list(results))
 
 def test():

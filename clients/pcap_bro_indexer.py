@@ -1,11 +1,13 @@
-
+''' This client pushes PCAPs -> Bro -> ELS Indexer '''
 import zerorpc
 import os
 import argparse
 import ConfigParser
 
+
 def main():
-    
+    ''' This client pushes PCAPs -> Bro -> ELS Indexer '''
+
     # Grab server info from configuration file
     workbench_conf = ConfigParser.ConfigParser()
     workbench_conf.read('config.ini')
@@ -20,23 +22,25 @@ def main():
     server = str(args.server)
 
     # Start up workbench connection
-    c = zerorpc.Client(timeout=300)
-    c.connect('tcp://'+server+':'+port)
+    workbench = zerorpc.Client(timeout=300)
+    workbench.connect('tcp://'+server+':'+port)
 
     # Test out getting the raw Bro logs from a PCAP file and sending results to an ELS indexer
     file_list = [os.path.join('../data/pcap', child) for child in os.listdir('../data/pcap')]
     for filename in file_list:
 
         # Skip OS generated files
-        if '.DS_Store' in filename: continue
+        if '.DS_Store' in filename: 
+            continue
 
-        with open(filename,'rb') as file:
-            md5 = c.store_sample(filename, file.read(), 'pcap')
+        with open(filename, 'rb') as pcap_file:
+            md5 = workbench.store_sample(filename, pcap_file.read(), 'pcap')
 
             # Index the view_pcap output (notice we can ask for any worker output)
             # Also (super important) it all happens on the server side.
-            c.index_worker_output('view_pcap', md5, 'pcap_bro',None)
+            workbench.index_worker_output('view_pcap', md5, 'pcap_bro', None)
             print '\n\n<<< PCAP Bro log Data: %s Indexed>>>' % (filename)
+
 
 def test():
     ''' pcap_bro_indexer test '''

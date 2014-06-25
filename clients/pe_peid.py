@@ -1,3 +1,4 @@
+''' This client looks for PEid signatures in PE Files '''
 import zerorpc
 import argparse
 import os
@@ -5,6 +6,7 @@ import pprint
 import ConfigParser
 
 def main():
+    ''' This client looks for PEid signatures in PE Files '''
     
     # Grab server info from configuration file
     workbench_conf = ConfigParser.ConfigParser()
@@ -20,8 +22,8 @@ def main():
     server = str(args.server)
 
     # Start up workbench connection
-    c = zerorpc.Client()
-    c.connect('tcp://'+server+':'+port)
+    workbench = zerorpc.Client()
+    workbench.connect('tcp://'+server+':'+port)
 
     # Test out PEFile -> peid
     file_list = [os.path.join('../data/pe/bad', child) for child in os.listdir('../data/pe/bad')]
@@ -32,8 +34,8 @@ def main():
         if '.DS_Store' in filename: continue
 
         with open(filename,'rb') as file:
-            md5 = c.store_sample(filename, file.read(), 'pe')
-            results = c.work_request('pe_peid', md5)
+            md5 = workbench.store_sample(filename, file.read(), 'pe')
+            results = workbench.work_request('pe_peid', md5)
             pprint.pprint(results)
 
 

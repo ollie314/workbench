@@ -1,4 +1,4 @@
-
+''' This client pulls PCAP 'views' (view summarize what's in a sample) '''
 import zerorpc
 import os
 import pprint
@@ -6,6 +6,7 @@ import argparse
 import ConfigParser
 
 def main():
+    ''' This client pulls PCAP 'views' (view summarize what's in a sample) '''
     
     # Grab server info from configuration file
     workbench_conf = ConfigParser.ConfigParser()
@@ -21,8 +22,8 @@ def main():
     server = str(args.server)
 
     # Start up workbench connection
-    c = zerorpc.Client(timeout=300)
-    c.connect('tcp://'+server+':'+port)
+    workbench = zerorpc.Client(timeout=300)
+    workbench.connect('tcp://'+server+':'+port)
 
     # Test out getting the raw Bro logs from a PCAP file
     # Note: you can get a super nice 'generator' python list of dict by using
@@ -35,8 +36,8 @@ def main():
 
         # Process the pcap file
         with open(filename,'rb') as file:
-            md5 = c.store_sample(filename, file.read(), 'pcap')
-            results = c.work_request('view_pcap', md5)
+            md5 = workbench.store_sample(filename, file.read(), 'pcap')
+            results = workbench.work_request('view_pcap', md5)
             print '\n<<< %s >>>' % filename
             pprint.pprint(results)
 

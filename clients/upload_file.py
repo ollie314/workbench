@@ -1,3 +1,4 @@
+''' This client pushes a file into Workbench '''
 import zerorpc
 import os
 import pprint
@@ -5,6 +6,7 @@ import argparse
 import ConfigParser
 
 def main():
+    ''' This client pushes a file into Workbench '''
     
     # Grab server info from configuration file
     workbench_conf = ConfigParser.ConfigParser()
@@ -21,8 +23,8 @@ def main():
     server = str(args.server)
 
     # Start up workbench connection
-    c = zerorpc.Client()
-    c.connect('tcp://'+server+':'+port)
+    workbench = zerorpc.Client()
+    workbench.connect('tcp://'+server+':'+port)
 
     # Upload the files into workbench
     my_file = args.loadfile
@@ -31,14 +33,14 @@ def main():
         # Check to see if workbench already has the file
         filename = os.path.basename(my_file)
         raw_bytes = f.read()
-        md5 = c.store_sample(filename, raw_bytes, 'log')
-        results = c.work_request('view', md5)
+        md5 = workbench.store_sample(filename, raw_bytes, 'log')
+        results = workbench.work_request('view', md5)
         print 'Filename: %s' % filename
         pprint.pprint(results)
 
     # You can also download a sample (commented out)
     '''
-    sample = c.get_sample(md5)
+    sample = workbench.get_sample(md5)
     raw_bytes = sample['sample']['raw_bytes']
     with open('mysample.log','wb') as f:
         f.write(raw_bytes)

@@ -1,3 +1,4 @@
+''' This client pushes a big directory of different files into Workbench '''
 import zerorpc
 import os
 import argparse
@@ -15,6 +16,7 @@ def md5_for_file(path, block_size=256*128):
 '''
 
 def main():
+    ''' This client pushes a big directory of different files into Workbench '''
     
     # Grab server info from configuration file
     workbench_conf = ConfigParser.ConfigParser()
@@ -32,8 +34,8 @@ def main():
     server = str(args.server)
 
     # Start up workbench connection
-    c = zerorpc.Client()
-    c.connect('tcp://'+server+':'+port)
+    workbench = zerorpc.Client()
+    workbench.connect('tcp://'+server+':'+port)
     
     # Grab all the filenames from the data directory
     data_dir = args.data_dir
@@ -48,11 +50,11 @@ def main():
             # Workbench if it already has this md5
             raw_bytes = f.read()
             md5 = hashlib.md5(raw_bytes).hexdigest()
-            if c.has_sample(md5):
+            if workbench.has_sample(md5):
                 print 'Workbench already has this sample %s' % md5
             else:
                 # Store the sample into workbench
-                md5 = c.store_sample(filename, raw_bytes, args.tag)
+                md5 = workbench.store_sample(filename, raw_bytes, args.tag)
                 print 'Filename %s uploaded: type_tag %s, md5 %s' % (filename, args.tag, md5)
 
 def test():

@@ -2,6 +2,8 @@
 ''' Workbench: Open Source Security Framework '''
 
 from gevent import monkey; monkey.patch_all(thread=False) # Monkey!
+from gevent import signal as gevent_signal
+import signal
 import os
 import argparse
 import zerorpc
@@ -15,26 +17,20 @@ import inspect
 import funcsigs
 import ConfigParser
 
-''' Add bro to path for bro_log_reader '''
-import sys
-sys.path.extend(['workers','workers/bro'])
-
-# Local modules
+# Workbench server imports
 try:
-    from . import data_store
-    from . import els_indexer
-    from . import neo_db
-    from . import plugin_manager
-    from . import bro_log_reader
-    from . import workbench_keys
-except ValueError:
+    from server import data_store
+    from server import els_indexer
+    from server import neo_db
+    from server import plugin_manager
+    from server.bro import bro_log_reader
+except ImportError:
     import data_store
     import els_indexer
     import neo_db
     import plugin_manager
-    import bro_log_reader
-    import workbench_keys
-
+    from bro import bro_log_reader    
+    
 
 class WorkBench():
     ''' Workbench: Open Source Security Framework '''
@@ -45,10 +41,10 @@ class WorkBench():
 
         # ELS Indexer
         try:
-            self.indexer = els_indexer.ELS_Indexer(**{'hosts': els_hosts} if els_hosts else {})
+            self.indexer = els_indexer.ELSIndexer(**{'hosts': els_hosts} if els_hosts else {})
         except SystemExit:
             print 'Could not connect to ELS. Is it running?'
-            self.indexer = els_indexer.ELS_StubIndexer(**{'uri': neo_uri} if neo_uri else {})
+            self.indexer = els_indexer.ELSStubIndexer(**{'uri': neo_uri} if neo_uri else {})
 
         # Neo4j DB
         try:
@@ -57,9 +53,10 @@ class WorkBench():
             print 'Could not connect to Neo4j DB. Is it running?  $ neo4j start'
             self.neo_db = neo_db.NeoDBStub(**{'uri': neo_uri} if neo_uri else {})
 
-        # Create Plugin Grabber
+        # Create Plugin Manager
         self.plugin_meta = {}
-        plugin_manager.PluginManager(self._new_plugin)
+        plugin_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)),'../workers')
+        self.plugin_manager = plugin_manager.PluginManager(self._new_plugin, plugin_dir=plugin_dir)
 
     #
     # Sample Methods
@@ -141,7 +138,7 @@ class WorkBench():
             generator = (row for row in json.loads(raw_bytes)[:max_rows])
             return generator
         else:
-            raise Exception('Cannot stream file %s with type_tag:%s' % (md5, type_tag))
+            raise RuntimeError('Cannot stream file %s with type_tag:%s' % (md5, type_tag))
 
     #
     # Index Methods
@@ -417,22 +414,22 @@ class WorkBench():
         ''' Returns help commands '''
 
         help_str =  '\nWelcome to Workbench: Here\'s a list of help commands:'
-        help_str += '\n\t - Run c.help_basic() for beginner help'
-        help_str += '\n\t - Run c.help_commands() for command help'
-        help_str += '\n\t - Run c.help_workers() for a list of workers'
-        help_str += '\n\t - Run c.help_advanced() for advanced help'
+        help_str += '\n\t - Run workbench.help_basic() for beginner help'
+        help_str += '\n\t - Run workbench.help_commands() for command help'
+        help_str += '\n\t - Run workbench.help_workers() for a list of workers'
+        help_str += '\n\t - Run workbench.help_advanced() for advanced help'
         help_str += '\n\nSee https://github.com/SuperCowPowers/workbench for more information'
         return help_str
 
     def help_basic(self):
         ''' Returns basic help commands '''
         help_str =  '\nWorkbench: Getting started...'
-        help_str += '\n\t - 1) $ print c.help_commands() for a list of commands'
-        help_str += '\n\t - 2) $ print c.help_command(\'store_sample\') for into on a specific command'
-        help_str += '\n\t - 3) $ print c.help_workers() for a list a workers'
-        help_str += '\n\t - 4) $ print c.help_worker(\'meta\') for info on a specific worker'
-        help_str += '\n\t - 5) $ my_md5 = c.store_sample(...)'
-        help_str += '\n\t - 6) $ output = c.work_request(\'meta\', my_md5)'
+        help_str += '\n\t - 1) $ print workbench.help_commands() for a list of commands'
+        help_str += '\n\t - 2) $ print workbench.help_command(\'store_sample\') for into on a specific command'
+        help_str += '\n\t - 3) $ print workbench.help_workers() for a list a workers'
+        help_str += '\n\t - 4) $ print workbench.help_worker(\'meta\') for info on a specific worker'
+        help_str += '\n\t - 5) $ my_md5 = workbench.store_sample(...)'
+        help_str += '\n\t - 6) $ output = workbench.work_request(\'meta\', my_md5)'
         return help_str
 
     def help_commands(self):
@@ -471,11 +468,16 @@ class WorkBench():
         return help_str
 
 
-def main():
+def run():
+    ''' Run the workbench server '''
 
-    # Load the configuration file
+    # Load the configuration file relative to this script location
+    config_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'config.ini')
     workbench_conf = ConfigParser.ConfigParser()
-    workbench_conf.read('config.ini')
+    config_ini = workbench_conf.read(config_path)
+    if not config_ini:
+        print 'Could not locate config.ini file, tried %s : exiting...' % config_path
+        exit(1)
 
     # Pull configuration settings
     datastore_uri = workbench_conf.get('workbench', 'datastore_uri')
@@ -483,10 +485,8 @@ def main():
     worker_cap = workbench_conf.getint('workbench', 'worker_cap')
     samples_cap = workbench_conf.getint('workbench', 'samples_cap')
 
-    # API keys just get tossed into API_KEYS dict
-    workbench_keys.API_KEYS['vt_apikey'] = workbench_conf.get('workbench', 'vt_apikey')
-
     # Parse the arguments (args overwrite configuration file settings)
+    '''
     parser = argparse.ArgumentParser()
     parser.add_argument('-ds_uri', '--datastore_uri', type=str, default=None, help='machine used by workbench datastore')
     parser.add_argument('-db', '--database', type=str, default=None, help='database used by workbench server')
@@ -495,25 +495,27 @@ def main():
     # Overwrite if specified
     datastore_uri = args.datastore_uri if (args.datastore_uri) else datastore_uri
     database = args.database if (args.database) else database
+    '''
 
     # Spin up Workbench ZeroRPC
     try:
         store_args = {'uri': datastore_uri, 'database': database, 'worker_cap':worker_cap, 'samples_cap':samples_cap}
-        s = zerorpc.Server(WorkBench(store_args=store_args), name='workbench')
-        s.bind('tcp://0.0.0.0:4242')
-        s.run()
+        workbench = zerorpc.Server(WorkBench(store_args=store_args), name='workbench')
+        workbench.bind('tcp://0.0.0.0:4242')
         print 'ZeroRPC %s' % ('tcp://0.0.0.0:4242')
+        gevent_signal(signal.SIGTERM, workbench.stop)
+        gevent_signal(signal.SIGINT, workbench.stop)
+        gevent_signal(signal.SIGKILL, workbench.stop)
+        workbench.run()
+        print '\nWorkbench Server Shutting Down...'
+        exit(0)        
     except zmq.error.ZMQError:
         print '\nInfo: Could not start Workbench server (no worries, probably already running...)\n'
-    except KeyboardInterrupt:
-        print '\nWorbench Server Exiting...'
-        s.stop()
-        s.close()
-        exit(0)
+
 
 # Test that just calls main
 def test():
-    main()
+    run()
 
 if __name__ == '__main__':
-    main()
+    run()

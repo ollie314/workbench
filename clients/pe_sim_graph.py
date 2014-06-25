@@ -1,20 +1,23 @@
+''' This client generates a similarity graph from features in PE Files '''
 import zerorpc
 import argparse
 import os
 import ConfigParser
 
-def add_it(c, file_list, labels):
+def add_it(workbench, file_list, labels):
+    ''' Add the given file_list to workbench as samples, also add them as nodes '''
     md5s = []
     for filename in file_list:
         if filename != '.DS_Store':
-            with open(filename, 'rb') as f:
-                md5 = c.store_sample(filename,  f.read(), 'pe')
-                c.add_node(md5, md5[:6], labels)
+            with open(filename, 'rb') as pe_file:
+                md5 = workbench.store_sample(filename,  pe_file.read(), 'pe')
+                workbench.add_node(md5, md5[:6], labels)
                 md5s.append(md5)
     return md5s
 
 
 def jaccard_sims(feature_list):
+    ''' Compute Jaccard similarities between all the observations in the feature list '''
 
     sim_info_list = []
     for feature_info in feature_list:
@@ -41,9 +44,10 @@ def jaccard_sim(features1, features2):
     except ZeroDivisionError:
         return 0
 
-    
+
 def main():
-    
+    ''' This client generates a similarity graph from features in PE Files '''
+
     # Grab server info from configuration file
     workbench_conf = ConfigParser.ConfigParser()
     workbench_conf.read('config.ini')
@@ -58,68 +62,66 @@ def main():
     server = str(args.server)
 
     # Start up workbench connection
-    c = zerorpc.Client()
-    c.connect('tcp://'+server+':'+port)
+    workbench = zerorpc.Client()
+    workbench.connect('tcp://'+server+':'+port)
 
     # Test out PEFile -> pe_deep_sim -> pe_jaccard_sim -> graph
     bad_files = [os.path.join('../data/pe/bad', child) for child in os.listdir('../data/pe/bad')][:25]
     good_files = [os.path.join('../data/pe/good', child) for child in os.listdir('../data/pe/good')][:25]
 
     # Clear any graph in the Neo4j database
-    c.clear_graph_db()
+    workbench.clear_graph_db()
 
     # First throw them into workbench and add them as nodes into the graph
-    md5s_bad = add_it(c, bad_files, ['pe', 'bad'])
-    md5s_good = add_it(c, good_files, ['pe', 'good'])
-    all_md5s = md5s_bad + md5s_good
+    all_md5s = add_it(workbench, bad_files, ['pe', 'bad']) + add_it(workbench, good_files, ['pe', 'good'])
 
     # Compute pe_features on all files of type pe, just pull back the sparse features
-    imports = c.batch_work_request('pe_features', 
-        {'md5_list': all_md5s, 'subkeys':['md5','sparse_features.imported_symbols']})
+    imports = workbench.batch_work_request('pe_features',
+        {'md5_list': all_md5s, 'subkeys':['md5', 'sparse_features.imported_symbols']})
 
     # Compute pe_features on all files of type pe, just pull back the sparse features
-    warnings = c.batch_work_request('pe_features', 
-        {'md5_list': all_md5s, 'subkeys':['md5','sparse_features.pe_warning_strings']})
+    warnings = workbench.batch_work_request('pe_features',
+        {'md5_list': all_md5s, 'subkeys':['md5', 'sparse_features.pe_warning_strings']})
 
     # Compute strings on all files of type pe, just pull back the string_list
-    strings = c.batch_work_request('strings', {'md5_list': all_md5s, 'subkeys':['md5','string_list']})
+    strings = workbench.batch_work_request('strings', {'md5_list': all_md5s, 'subkeys':['md5', 'string_list']})
 
     # Compute pe_peid on all files of type pe, just pull back the match_list
-    peids = c.batch_work_request('pe_peid', {'md5_list': all_md5s, 'subkeys':['md5','match_list']})
+    peids = workbench.batch_work_request('pe_peid', {'md5_list': all_md5s, 'subkeys':['md5', 'match_list']})
 
     # Organize the data a bit
-    imports = [{'md5': r['md5'],'features': r['imported_symbols']} for r in imports]
-    warnings = [{'md5': r['md5'],'features': r['pe_warning_strings']} for r in warnings]
-    strings = [{'md5': r['md5'],'features': r['string_list']} for r in strings]
-    peids = [{'md5': r['md5'],'features': r['match_list']} for r in peids]
+    imports = [{'md5': r['md5'], 'features': r['imported_symbols']} for r in imports]
+    warnings = [{'md5': r['md5'], 'features': r['pe_warning_strings']} for r in warnings]
+    strings = [{'md5': r['md5'], 'features': r['string_list']} for r in strings]
+    peids = [{'md5': r['md5'], 'features': r['match_list']} for r in peids]
 
     # Compute the Jaccard Index between imported systems and store as relationships
     sims = jaccard_sims(imports)
     for sim_info in sims:
-        c.add_rel(sim_info['source'], sim_info['target'], 'imports')
+        workbench.add_rel(sim_info['source'], sim_info['target'], 'imports')
 
     # Compute the Jaccard Index between warnings and store as relationships
     sims = jaccard_sims(warnings)
     for sim_info in sims:
-        c.add_rel(sim_info['source'], sim_info['target'], 'warnings')
+        workbench.add_rel(sim_info['source'], sim_info['target'], 'warnings')
 
     # Compute the Jaccard Index between strings and store as relationships
     sims = jaccard_sims(strings)
     for sim_info in sims:
-        c.add_rel(sim_info['source'], sim_info['target'], 'strings')
+        workbench.add_rel(sim_info['source'], sim_info['target'], 'strings')
 
     # Compute the Jaccard Index between peids and store as relationships
     sims = jaccard_sims(peids)
     for sim_info in sims:
-        c.add_rel(sim_info['source'], sim_info['target'], 'peids')
+        workbench.add_rel(sim_info['source'], sim_info['target'], 'peids')
 
     # Compute pe_deep_sim on all files of type pe
-    results = c.batch_work_request('pe_deep_sim', {'type_tag': 'pe'})
+    results = workbench.batch_work_request('pe_deep_sim', {'type_tag': 'pe'})
 
     # Store the ssdeep sims as relationships
     for result in list(results):
         for sim_info in result['sim_list']:
-            c.add_rel(result['md5'], sim_info['md5'], 'ssdeep')
+            workbench.add_rel(result['md5'], sim_info['md5'], 'ssdeep')
 
     # Let them know where they can get there graph
     print 'All done: go to http://localhost:7474/browser and execute this query: "%s"' % \
