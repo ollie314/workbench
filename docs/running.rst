@@ -15,7 +15,7 @@ Example Clients (use -s for remote server)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 There are about a dozen example clients showing how to use workbench on
-pcaps, PEfiles, pdfs, and log files. We even has a simple nodes.js
+pcaps, PEfiles, pdfs, and log files. We even have a simple nodes.js
 client (looking for node devs to pop some pull requests :).
 
 .. raw:: html
@@ -128,8 +128,30 @@ Workers should adhere to the following naming conventions (not enforced)
    'view\_'
 -  Examples: view\_log\_meta.py, view\_pdf.py, view\_pe.py
 
+Running Tests
+^^^^^^^^^^^^^
+
+Unit testing and sub-pipeline tests
+
+.. raw:: html
+
+   <pre>
+   $ cd workbench/server/workers
+   $ ./runtests
+   </pre>
+
+Full pipeline tests (clients exercise a larger set of components)
+
+.. raw:: html
+
+   <pre>
+   $ cd workbench/clients
+   $ ./runtests
+   </pre>
+
+
 Test Coverage
-~~~~~~~~~~~~~
+^^^^^^^^^^^^^
 
 If you want to run the test code coverage properly you'll need to create
 a ~/.noserc file with these options:
@@ -143,3 +165,35 @@ a ~/.noserc file with these options:
     cover-min-percentage=90
     cover-package=.
 
+
+Benign Error
+^^^^^^^^^^^^
+
+We have no idea why occasionaly you see this pop up in the server
+output. To our knowledge it literally has no impact on any functionality
+or robustness. If you know anything about this please help us out by
+opening an issue and pull request. :)
+
+.. raw:: html
+
+   <pre>
+   ERROR:zerorpc.channel:zerorpc.ChannelMultiplexer, unable to route event:
+   _zpc_more {'response_to': '67d7df3f-1f3e-45f4-b2e6-352260fa1507', 'zmqid':
+   ['\x00\x82*\x01\xea'], 'message_id': '67d7df42-1f3e-45f4-b2e6-352260fa1507',
+   'v': 3} [...]
+   </pre>
+
+VirusTotal Warning
+~~~~~~~~~~~~~~~~~~
+
+The vt\_query.py worker uses a shared 'low-volume' API key provided by
+SuperCowPowers LLC. When running the vt\_query worker the following
+warning happens quite often:
+
+::
+
+    "VirusTotal Query Error, no valid response... past per min quota?"
+
+If you'd like to use the vt\_query worker on a regular basis, you'll
+have to put your own VirusTotal API key in the
+workbench/server/config.ini file.

@@ -51,8 +51,8 @@ Installation tutorial
 to offical Bro Downloads
 `www.bro.org/download/ <http://www.bro.org/download>`_
 
-Install Indexers:
-~~~~~~~~~~~~~~~~~
+Install Indexers
+~~~~~~~~~~~~~~~~
 
 Mac/OSX
 ^^^^^^^
@@ -85,7 +85,8 @@ Ubuntu (14.04 and 12.04)
    -  Any issues see
       `elasticsearch\_webpage <http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/setup-service.html>`_
 
- - Pull the repository
+Pull the repository
+~~~~~~~~~~~~~~~~~~~
 
 .. raw:: html
 
@@ -96,8 +97,8 @@ Ubuntu (14.04 and 12.04)
 **Warning!: The repository contains malcious data samples, be careful,
 exclude the workbench directory from AV, etc...**
 
-Python Modules:
-^^^^^^^^^^^^^^^
+Install Python Modules
+~~~~~~~~~~~~~~~~~~~~~~
 
 Note: Workbench is continuously tested with python 2.7. We're currently
 working on Python 3 support (`Issue
@@ -108,61 +109,8 @@ working on Python 3 support (`Issue
 -  Go have a large cup of coffee...
 
 
-Testing:
---------
-
-Unit testing and sub-pipeline tests
-
-.. raw:: html
-
-   <pre>
-   $ cd workbench/server/workers
-   $ ./runtests
-   </pre>
-
-Full pipeline tests (clients exercise a larger set of components)
-
-.. raw:: html
-
-   <pre>
-   $ cd workbench/clients
-   $ ./runtests
-   </pre>
-
-Benign Error
-~~~~~~~~~~~~
-
-We have no idea why occasionaly you see this pop up in the server
-output. To our knowledge it literally has no impact on any functionality
-or robustness. If you know anything about this please help us out by
-opening an issue and pull request. :)
-
-.. raw:: html
-
-   <pre>
-   ERROR:zerorpc.channel:zerorpc.ChannelMultiplexer, unable to route event:
-   _zpc_more {'response_to': '67d7df3f-1f3e-45f4-b2e6-352260fa1507', 'zmqid':
-   ['\x00\x82*\x01\xea'], 'message_id': '67d7df42-1f3e-45f4-b2e6-352260fa1507',
-   'v': 3} [...]
-   </pre>
-
-VirusTotal Warning
-~~~~~~~~~~~~~~~~~~
-
-The vt\_query.py worker uses a shared 'low-volume' API key provided by
-SuperCowPowers LLC. When running the vt\_query worker the following
-warning happens quite often:
-
-::
-
-    "VirusTotal Query Error, no valid response... past per min quota?"
-
-If you'd like to use the vt\_query worker on a regular basis, you'll
-have to put your own VirusTotal API key in the
-workbench/server/config.ini file.
-
 Optional Tools
-~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^
 
 **Robomongo**
 
