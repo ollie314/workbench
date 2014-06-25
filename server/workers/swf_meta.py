@@ -1,12 +1,14 @@
 ''' SWFMeta worker: This is a stub the real class (under the experimental 
                     directory has too many dependencies)
 '''
+import pprint
 
-class SWFMeta():
+class SWFMeta(object):
     ''' This worker computes a bunch of meta-data about a SWF file '''
     dependencies = ['sample', 'meta']
 
     def execute(self, input_data):
+        ''' Execute the SWFMeta worker '''
 
         # Add the meta data to the output
         output = input_data['meta']
@@ -32,13 +34,11 @@ def test():
     worker = SWFMeta()
     output = worker.execute(input_data)
     print '\n<<< Unit Test >>>'
-    import pprint
     pprint.pprint(output)
 
     # Execute the worker (server test)
     output = workbench.work_request('swf_meta', md5)
     print '\n<<< Server Test >>>'
-    import pprint
     pprint.pprint(output)
 
 

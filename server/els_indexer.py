@@ -61,12 +61,12 @@ class ELSStubIndexer(object):
     def index_data(self, data, index_name='meta', doc_type='unknown'):
         ''' Stub Indexer '''
         print 'ELS Stub Indexer getting called...'
-        print '%s %s' % (self, data, index_name, doc_type)
+        print '%s %s %s %s' % (self, data, index_name, doc_type)
 
     def search(self, index_name, query):
         ''' Stub Indexer '''
         print 'ELS Stub Indexer getting called...'
-        print '%s %s' % (self, index_name, query)
+        print '%s %s %s' % (self, index_name, query)
 
 try:
     import elasticsearch

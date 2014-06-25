@@ -1,11 +1,13 @@
 
 ''' view_log_meta worker '''
+import pprint
 
 class ViewLogMeta(object):
     ''' ViewLogMeta: Generates a view for meta data on the sample '''
     dependencies = ['log_meta']
 
     def execute(self, input_data):
+        ''' Execute the ViewLogMeta worker '''
 
         # Deprecation unless something more interesting happens with this class
         return input_data['log_meta']
@@ -29,13 +31,11 @@ def test():
     worker = ViewLogMeta()
     output = worker.execute(input_data)
     print '\n<<< Unit Test >>>'
-    import pprint
     pprint.pprint(output)
 
     # Execute the worker (server test)
     output = workbench.work_request('view_log_meta', md5)
     print '\n<<< Server Test >>>'
-    import pprint
     pprint.pprint(output)
 
 if __name__ == "__main__":

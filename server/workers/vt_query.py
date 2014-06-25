@@ -63,7 +63,7 @@ class VTQuery(object):
 
 # Unit test: Create the class, the proper input and run the execute() method for a test
 def test():
-    ''' vt_query.py: Unit test'''
+    ''' -- vt_query.py test -- '''
 
     # This worker test requires a local server running
     import zerorpc

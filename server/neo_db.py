@@ -65,12 +65,12 @@ class NeoDBStub(object):
     def has_node(self, node_id):
         ''' NeoDB Stub '''
         print 'NeoDB Stub getting called...'
-        print '%s %s %s %s' % (self, node_id)
+        print '%s %s' % (self, node_id)
 
     def add_rel(self, source_node_id, target_node_id, rel):
         ''' NeoDB Stub '''
         print 'NeoDB Stub getting called...'
-        print '%s %s %s %s' % (self, source_node_id, target_node_id, labels)
+        print '%s %s %s %s' % (self, source_node_id, target_node_id, rel)
 
     def clear_db(self):
         ''' NeoDB Stub '''

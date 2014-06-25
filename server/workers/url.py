@@ -1,15 +1,18 @@
 
 ''' URLS worker: Tries to extract URL from strings output '''
 import re
+import pprint
 
 class URLS(object):
     ''' This worker looks for url patterns in strings output '''
     dependencies = ['strings']
 
     def __init__(self):
+        ''' Initialize the URL worker '''
         self.url_match = re.compile(r'http[s]?://[^\s<>"]+|www\.[^\s<>"]+', re.MULTILINE)
 
     def execute(self, input_data):
+        ''' Execute the URL worker '''
         string_output = input_data['strings']['string_list']
         flatten = ' '.join(string_output)
         urls = self.url_match.findall(flatten)
@@ -36,13 +39,11 @@ def test():
     worker = URLS()
     output = worker.execute(input_data)
     print '\n<<< Unit Test >>>'
-    import pprint
     pprint.pprint(output)
 
     # Execute the worker (server test)
     output = workbench.work_request('url', md5)
     print '\n<<< Server Test >>>'
-    import pprint
     pprint.pprint(output)
 
 if __name__ == "__main__":

@@ -3,8 +3,8 @@
 import zerorpc
 
 if __name__ == "__main__":
-    ''' This connects to the workbench server and tells it to clear the database..whee...'''
 
+    # Connect to workbench and tell it to clear itself
     workbench = zerorpc.Client()
     workbench.connect("tcp://127.0.0.1:4242")
     workbench.clear_db()

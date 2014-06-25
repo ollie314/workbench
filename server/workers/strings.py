@@ -1,15 +1,18 @@
 
 ''' Strings worker '''
 import re
+import pprint
 
 class Strings(object):
     ''' This worker extracts all the strings from any type of file '''
     dependencies = ['sample']
 
     def __init__(self):
+        ''' Initialize the Strings worker '''
         self.find_strings = re.compile(r'[^\x00-\x1F\x7F-\xFF]{4,}', re.MULTILINE)
 
     def execute(self, input_data):
+        ''' Execute the Strings worker '''
         raw_bytes = input_data['sample']['raw_bytes']
         strings = self.find_strings.findall(raw_bytes)
         return {'string_list': strings}
@@ -34,13 +37,11 @@ def test():
     worker = Strings()
     output = worker.execute(input_data)
     print '\n<<< Unit Test >>>'
-    import pprint
     pprint.pprint(output)
 
     # Execute the worker (server test)
     output = workbench.work_request('strings', md5)
     print '\n<<< Server Test >>>'
-    import pprint
     pprint.pprint(output)
 
 if __name__ == "__main__":
