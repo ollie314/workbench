@@ -1,4 +1,4 @@
-
+''' This client shows workbench extacting files from a zip file '''
 import zerorpc
 import os
 import pprint

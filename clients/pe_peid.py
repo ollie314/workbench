@@ -1,3 +1,4 @@
+''' This client looks for PEid signatures in PE Files '''
 import zerorpc
 import argparse
 import os

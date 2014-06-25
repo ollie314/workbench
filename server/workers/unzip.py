@@ -3,6 +3,7 @@
 import StringIO
 import zipfile
 import zerorpc
+import pprint
 
 class Unzip(object):
     ''' This worker unzips a zipped file '''
@@ -13,6 +14,7 @@ class Unzip(object):
         self.workbench.connect("tcp://127.0.0.1:4242")
 
     def execute(self, input_data):
+        ''' Execute the Unzip worker '''
         raw_bytes = input_data['sample']['raw_bytes']
         zipfile_output = zipfile.ZipFile(StringIO.StringIO(raw_bytes))
         payload_md5s = []
@@ -47,7 +49,6 @@ def test():
     worker = Unzip()
     output = worker.execute(input_data)
     print '\n<<< Unit Test >>>'
-    import pprint
     pprint.pprint(output)
 
     # For coverage
@@ -56,7 +57,6 @@ def test():
     # Execute the worker (server test)
     output = workbench.work_request('unzip', md5)
     print '\n<<< Server Test >>>'
-    import pprint
     pprint.pprint(output)
 
 if __name__ == "__main__":

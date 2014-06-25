@@ -1,3 +1,4 @@
+''' This client pushes a file into Workbench '''
 import zerorpc
 import os
 import pprint

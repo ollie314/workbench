@@ -1,3 +1,4 @@
+''' This client pushes PE Files -> ELS Indexer '''
 import zerorpc
 import argparse
 import os

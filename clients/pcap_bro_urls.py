@@ -1,4 +1,4 @@
-
+''' This client gets extracts URLs from PCAP files (via Bro logs) '''
 import zerorpc
 import os
 import pprint

@@ -1,4 +1,4 @@
-
+''' This client generates customer reports on all the samples in workbench '''
 import zerorpc
 import pprint
 import argparse

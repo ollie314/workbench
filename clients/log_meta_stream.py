@@ -1,4 +1,4 @@
-
+''' This client get meta data about log files '''
 import zerorpc
 import os
 import pprint

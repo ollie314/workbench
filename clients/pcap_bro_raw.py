@@ -1,4 +1,4 @@
-
+''' This client gets the raw bro logs from PCAP files '''
 import zerorpc
 import os
 import argparse

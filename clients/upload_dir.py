@@ -1,3 +1,4 @@
+''' This client pushes a big directory of different files into Workbench '''
 import zerorpc
 import os
 import argparse

@@ -1,3 +1,4 @@
+''' This client generates a similarity graph from features in PE Files '''
 import zerorpc
 import argparse
 import os
