@@ -101,14 +101,14 @@ class TCPDumpToWorkbench(object):
         try:
             self.tcpdump_process = subprocess.Popen(exec_args.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         except OSError:
-            raise Exception('Could not run tcpdump executable (either not installed or not in path): %s' % (exec_args))
+            raise RuntimeError('Could not run tcpdump executable (either not installed or not in path): %s' % (exec_args))
         out, err = self.tcpdump_process.communicate()
         if out:
             print 'standard output of subprocess: %s' % out
         if err:
-            raise Exception('%s\ntcpdump had output on stderr: %s' % (exec_args, err))
+            raise RuntimeError('%s\ntcpdump had output on stderr: %s' % (exec_args, err))
         if self.tcpdump_process.returncode:
-            raise Exception('%s\ntcpdump had returncode: %d' % (exec_args, self.tcpdump_process.returncode))
+            raise RuntimeError('%s\ntcpdump had returncode: %d' % (exec_args, self.tcpdump_process.returncode))
 
     def __exit__(self, type, value, traceback):
         ''' Class Cleanup '''

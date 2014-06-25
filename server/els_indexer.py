@@ -3,6 +3,7 @@
 
 
 class ELSIndexer(object):
+    ''' ELSIndexer class for WorkBench '''
 
     def __init__(self, hosts=None):
         ''' Initialization for the Elastic Search Indexer '''
@@ -17,7 +18,7 @@ class ELSIndexer(object):
             info = self.els_search.info()
             version = info['version']
             print 'ELS Indexer connected: %s %s %s %s' % (str(hosts), info['name'],
-                version['number'], version['lucene_version'])
+                                                          version['number'], version['lucene_version'])
         except elasticsearch.exceptions.ConnectionError:
             print 'ELS connection failed! Is your ELS server running?'
             exit(1)
@@ -47,6 +48,7 @@ class ELSIndexer(object):
             print error_str
             raise RuntimeError(error_str)
 
+
 class ELSStubIndexer(object):
     ''' ELS Stub '''
 
@@ -54,14 +56,17 @@ class ELSStubIndexer(object):
         ''' Stub Indexer '''
         print 'ELS Stub Indexer connected: %s' % (str(hosts))
         print 'Install ElasticSearch and python bindings for ELS indexer. See README.md'
+        print '%s %s' % (self, hosts)
 
     def index_data(self, data, index_name='meta', doc_type='unknown'):
         ''' Stub Indexer '''
         print 'ELS Stub Indexer getting called...'
+        print '%s %s' % (self, data, index_name, doc_type)
 
     def search(self, index_name, query):
         ''' Stub Indexer '''
         print 'ELS Stub Indexer getting called...'
+        print '%s %s' % (self, index_name, query)
 
 try:
     import elasticsearch

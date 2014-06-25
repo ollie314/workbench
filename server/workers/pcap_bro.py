@@ -24,7 +24,7 @@ class PcapBro(object):
         if os.path.exists(bro_dir):
             return bro_dir
         else:
-            raise Exception('pcap_bro could not find bro directory under: %s' % os.getcwd())
+            raise RuntimeError('pcap_bro could not find bro directory under: %s' % os.getcwd())
 
     def setup_pcap_inputs(self, input_data):
         ''' Write the PCAPs to disk for Bro to process and return the pcap filenames '''
@@ -114,14 +114,14 @@ class PcapBro(object):
         try:
             sp = gevent.subprocess.Popen(exec_args, stdout=gevent.subprocess.PIPE, stderr=gevent.subprocess.PIPE)
         except OSError:
-            raise Exception('Could not run bro executable (either not installed or not in path): %s' % (exec_args))
+            raise RuntimeError('Could not run bro executable (either not installed or not in path): %s' % (exec_args))
         out, err = sp.communicate()
         if out:
             print 'standard output of subprocess: %s' % out
         if err:
-            raise Exception('%s\npcap_bro had output on stderr: %s' % (exec_args, err))
+            raise RuntimeError('%s\npcap_bro had output on stderr: %s' % (exec_args, err))
         if sp.returncode:
-            raise Exception('%s\npcap_bro had returncode: %d' % (exec_args, sp.returncode))
+            raise RuntimeError('%s\npcap_bro had returncode: %d' % (exec_args, sp.returncode))
 
     @contextlib.contextmanager
     def make_temp_directory(self):
