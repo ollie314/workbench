@@ -6,14 +6,16 @@ import shutil
 import gevent.subprocess
 import glob
 import zerorpc
+import pprint
+
 
 class PcapBro(object):
     ''' This worker runs Bro scripts on a pcap file '''
     dependencies = ['sample']
 
     def __init__(self):
-        self.c = zerorpc.Client()
-        self.c.connect("tcp://127.0.0.1:4242")
+        self.workbench = zerorpc.Client()
+        self.workbench.connect("tcp://127.0.0.1:4242")
         self.orig_dir = os.getcwd()
 
     def get_bro_script_path(self):
@@ -33,22 +35,21 @@ class PcapBro(object):
         if 'sample' in input_data:
             raw_bytes = input_data['sample']['raw_bytes']
             filename = os.path.basename(input_data['sample']['filename'])
-            file_list.append({'filename':filename, 'bytes':raw_bytes})
+            file_list.append({'filename': filename, 'bytes': raw_bytes})
         else:
             for md5 in input_data['sample_set']['md5_list']:
-                sample = self.c.get_sample(md5)['sample']
+                sample = self.workbench.get_sample(md5)['sample']
                 raw_bytes = sample['raw_bytes']
                 filename = os.path.basename(sample['filename'])
-                file_list.append({'filename':filename, 'bytes':raw_bytes})
+                file_list.append({'filename': filename, 'bytes': raw_bytes})
 
         # Write the pcaps to disk and keep the filenames for Bro to process
         for file_info in file_list:
-            with open(file_info['filename'],'wb') as pcap_file:
+            with open(file_info['filename'], 'wb') as pcap_file:
                 pcap_file.write(file_info['bytes'])
 
         # Return filenames
         return [file_info['filename'] for file_info in file_list]
-
 
     def execute(self, input_data):
         ''' Execute '''
@@ -82,7 +83,7 @@ class PcapBro(object):
                 output_name = os.path.splitext(output_log)[0] + '_log'
                 with open(output_log, 'rb') as bro_file:
                     raw_bytes = bro_file.read()
-                    my_output[output_name] = self.c.store_sample(output_name, raw_bytes, 'bro')
+                    my_output[output_name] = self.workbench.store_sample(output_name, raw_bytes, 'bro')
 
             # Scrape any extracted files
             print 'pcap_bro: Scraping extracted files...'
@@ -97,7 +98,7 @@ class PcapBro(object):
                     else:
                         type_tag = output_name[-3:]
                     raw_bytes = extracted_file.read()
-                    my_output['extracted_files'].append(self.c.store_sample(output_name, raw_bytes, type_tag))
+                    my_output['extracted_files'].append(self.workbench.store_sample(output_name, raw_bytes, type_tag))
 
         # Construct back-pointers to the PCAPs
         if 'sample' in input_data:
@@ -109,6 +110,7 @@ class PcapBro(object):
         return my_output
 
     def subprocess_manager(self, exec_args):
+        ''' Bro subprocess manager '''
         try:
             sp = gevent.subprocess.Popen(exec_args, stdout=gevent.subprocess.PIPE, stderr=gevent.subprocess.PIPE)
         except OSError:
@@ -123,6 +125,7 @@ class PcapBro(object):
 
     @contextlib.contextmanager
     def make_temp_directory(self):
+        ''' Bro temporary directory context manager '''
         temp_dir = tempfile.mkdtemp()
         try:
             yield temp_dir
@@ -135,7 +138,7 @@ class PcapBro(object):
     def __del__(self):
         ''' Class Cleanup '''
         # Close zeroRPC client
-        self.c.close()
+        self.workbench.close()
 
 
 # Unit test: Create the class, the proper input and run the execute() method for a test
@@ -144,55 +147,50 @@ def test():
 
     # This worker test requires a local server running
     import zerorpc
-    c = zerorpc.Client()
-    c.connect("tcp://127.0.0.1:4242")
+    workbench = zerorpc.Client()
+    workbench.connect("tcp://127.0.0.1:4242")
 
     # Generate the input data for this worker
-    import os
     data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../data/pcap/http.pcap')
-    md5 = c.store_sample('http.pcap', open(data_path, 'rb').read(), 'pcap')
-    input_data = c.get_sample(md5)
+    md5 = workbench.store_sample('http.pcap', open(data_path, 'rb').read(), 'pcap')
+    input_data = workbench.get_sample(md5)
 
     # Execute the worker (unit test)
     worker = PcapBro()
     output = worker.execute(input_data)
     print '\n<<< Unit Test >>>'
-    import pprint
     pprint.pprint(output)
 
     # Execute the worker (server test)
-    output = c.work_request('pcap_bro', md5)
+    output = workbench.work_request('pcap_bro', md5)
     print '\n<<< Server Test >>>'
-    import pprint
     pprint.pprint(output)
 
     # Open a bunch of pcaps
-    import os
     data_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../data/pcap')
     file_list = [os.path.join(data_dir, child) for child in os.listdir(data_dir)]
     pcap_md5s = []
     for filename in file_list:
 
         # Skip OS generated files
-        if '.DS_Store' in filename: continue
+        if '.DS_Store' in filename: 
+            continue
 
-        with open(filename,'rb') as f:
-            pcap_md5s.append(c.store_sample(filename, f.read(), 'pcap'))
+        with open(filename, 'rb') as pcap_file:
+            pcap_md5s.append(workbench.store_sample(filename, pcap_file.read(), 'pcap'))
 
     # Now store the sample set
-    set_md5 = c.store_sample_set(pcap_md5s)
+    set_md5 = workbench.store_sample_set(pcap_md5s)
     print set_md5
 
     # Execute the worker (unit test)
-    output = worker.execute({'sample_set':{'md5_list':pcap_md5s}})
+    output = worker.execute({'sample_set': {'md5_list': pcap_md5s}})
     print '\n<<< Unit Test >>>'
-    import pprint
     pprint.pprint(output)
 
     # Execute the worker (server test)
-    output = c.work_request('pcap_bro', set_md5)
+    output = workbench.work_request('pcap_bro', set_md5)
     print '\n<<< Server Test >>>'
-    import pprint
     pprint.pprint(output)
 
 if __name__ == "__main__":

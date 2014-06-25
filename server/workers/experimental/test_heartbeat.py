@@ -25,8 +25,8 @@ def test():
 
     # This worker test requires a local server running
     import zerorpc
-    c = zerorpc.Client()
-    c.connect("tcp://127.0.0.1:4242")
+    workbench = zerorpc.Client()
+    workbench.connect("tcp://127.0.0.1:4242")
     
     # Execute the worker (unit test)
     print '\n<<< Unit Test >>>'
@@ -38,7 +38,7 @@ def test():
     # Execute the worker (server test)
     print '\n<<< Server Test >>>'
     try:
-        output = c.work_request('test_heartbeat','123')
+        output = workbench.work_request('test_heartbeat','123')
         raise RuntimeError('Heartbeat did not fail... unexpected, investigate!')
     except zerorpc.exceptions.LostRemote:
         print 'Heartbeat failed as expected.. so success!'

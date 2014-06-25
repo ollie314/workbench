@@ -21,24 +21,24 @@ def main():
     server = str(args.server)
 
     # Start up workbench connection
-    c = zerorpc.Client()
-    c.connect('tcp://'+server+':'+port)
+    workbench = zerorpc.Client()
+    workbench.connect('tcp://'+server+':'+port)
 
     # Test out zip data
     file_list = [os.path.join('../data/zip', child) for child in os.listdir('../data/zip')]
     for filename in file_list:
         with open(filename,'rb') as file:
-            md5 = c.store_sample(filename, file.read(), 'zip')
-            results = c.work_request('view', md5)
+            md5 = workbench.store_sample(filename, file.read(), 'zip')
+            results = workbench.work_request('view', md5)
             print 'Filename: %s ' % (filename)
             pprint.pprint(results)
 
             # The unzip worker gives you a list of md5s back
             # Run meta on all the unzipped files.
-            results = c.work_request('unzip', md5)
+            results = workbench.work_request('unzip', md5)
             print '\n*** Filename: %s ***' % (filename)
             for child_md5 in results['unzip']['payload_md5s']:
-                pprint.pprint(c.work_request('meta', child_md5))
+                pprint.pprint(workbench.work_request('meta', child_md5))
 
 
 def test():

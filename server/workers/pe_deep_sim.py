@@ -9,8 +9,8 @@ class PEDeepSim(object):
     dependencies = ['meta_deep']
 
     def __init__(self):
-        self.c = zerorpc.Client()
-        self.c.connect("tcp://127.0.0.1:4242")
+        self.workbench = zerorpc.Client()
+        self.workbench.connect("tcp://127.0.0.1:4242")
 
     def execute(self, input_data):
         ''' Execute method '''
@@ -18,7 +18,7 @@ class PEDeepSim(object):
         my_md5 = input_data['meta_deep']['md5']
 
         # For every PE sample in the database compute my ssdeep fuzzy match
-        results = self.c.batch_work_request('meta_deep', {'type_tag':'pe','subkeys':['md5','ssdeep']})
+        results = self.workbench.batch_work_request('meta_deep', {'type_tag':'pe','subkeys':['md5','ssdeep']})
         sim_list = []
         for result in results:
             if result['md5'] != my_md5:
@@ -32,7 +32,7 @@ class PEDeepSim(object):
     def __del__(self):
         ''' Class Cleanup '''
         # Close zeroRPC client
-        self.c.close()
+        self.workbench.close()
 
 # Unit test: Create the class, the proper input and run the execute() method for a test
 def test():
@@ -40,15 +40,15 @@ def test():
 
     # This worker test requires a local server running
     import zerorpc
-    c = zerorpc.Client()
-    c.connect("tcp://127.0.0.1:4242")
+    workbench = zerorpc.Client()
+    workbench.connect("tcp://127.0.0.1:4242")
 
     # Generate input for the worker
     import os
     data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
                              '../../data/pe/bad/033d91aae8ad29ed9fbb858179271232')
-    md5 = c.store_sample('bad', open(data_path, 'rb').read(), 'pe')
-    input_data = c.work_request('meta_deep', md5)
+    md5 = workbench.store_sample('bad', open(data_path, 'rb').read(), 'pe')
+    input_data = workbench.work_request('meta_deep', md5)
 
     # Execute the worker (unit test)
     worker = PEDeepSim()
@@ -58,7 +58,7 @@ def test():
     pprint.pprint(output)
 
     # Execute the worker (server test)
-    output = c.work_request('pe_deep_sim', md5)
+    output = workbench.work_request('pe_deep_sim', md5)
     print '\n<<< Server Test >>>'
     import pprint
     pprint.pprint(output)

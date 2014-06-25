@@ -19,11 +19,11 @@ def test():
     ''' view_pcap_meta.py: Unit test'''
     # This worker test requires a local server as it relies on the recursive dependencies
     import zerorpc
-    c = zerorpc.Client()
-    c.connect("tcp://127.0.0.1:4242")
+    workbench = zerorpc.Client()
+    workbench.connect("tcp://127.0.0.1:4242")
 
-    md5 = c.store_sample('http.pcap', open('../../data/pcap/http.pcap', 'rb').read(), 'pcap')
-    output = c.work_request('view_pcap_meta', md5)
+    md5 = workbench.store_sample('http.pcap', open('../../data/pcap/http.pcap', 'rb').read(), 'pcap')
+    output = workbench.work_request('view_pcap_meta', md5)
     print 'ViewPcap: '
     import pprint
     pprint.pprint(output)

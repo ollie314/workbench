@@ -21,8 +21,8 @@ def test():
 
     # This worker test requires a local server running
     import zerorpc
-    c = zerorpc.Client()
-    c.connect("tcp://127.0.0.1:4242")
+    workbench = zerorpc.Client()
+    workbench.connect("tcp://127.0.0.1:4242")
 
     # Execute the worker (unit test)
     print '\n<<< Unit Test >>>'
@@ -36,7 +36,7 @@ def test():
 
     # Execute the worker (server test) (note no unit test as the test is testing server timeouts)
     try:
-        c.work_request('test_timeout','123')
+        workbench.work_request('test_timeout','123')
         raise RuntimeError('Timeout did not fail... unexpected, investigate!')
     except zerorpc.exceptions.TimeoutExpired:
         print 'Timeout failed as expected.. so success!'

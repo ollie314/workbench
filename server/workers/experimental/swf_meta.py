@@ -54,13 +54,13 @@ def test():
     
     # This worker test requires a local server running
     import zerorpc
-    c = zerorpc.Client()
-    c.connect("tcp://127.0.0.1:4242")
+    workbench = zerorpc.Client()
+    workbench.connect("tcp://127.0.0.1:4242")
 
     # Generate the input data for this worker
-    md5 = c.store_sample('unknown.swf', open('../../data/swf/unknown.swf', 'rb').read(), 'pe')
-    input_data = c.get_sample(md5)
-    input_data.update(c.work_request('meta', md5))
+    md5 = workbench.store_sample('unknown.swf', open('../../data/swf/unknown.swf', 'rb').read(), 'pe')
+    input_data = workbench.get_sample(md5)
+    input_data.update(workbench.work_request('meta', md5))
 
     # Execute the worker
     worker = SWFMeta()

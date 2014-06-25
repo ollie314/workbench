@@ -6,8 +6,8 @@ class ViewPcap(object):
     dependencies = ['pcap_bro']
 
     def __init__(self):
-        self.c = zerorpc.Client()
-        self.c.connect("tcp://127.0.0.1:4242")
+        self.workbench = zerorpc.Client()
+        self.workbench.connect("tcp://127.0.0.1:4242")
 
     def execute(self, input_data):
         ''' Execute '''
@@ -24,7 +24,7 @@ class ViewPcap(object):
     def __del__(self):
         ''' Class Cleanup '''
         # Close zeroRPC client
-        self.c.close()
+        self.workbench.close()
 
 # Unit test: Create the class, the proper input and run the execute() method for a test
 def test():
@@ -32,16 +32,16 @@ def test():
 
     # This worker test requires a local server running
     import zerorpc
-    c = zerorpc.Client()
-    c.connect("tcp://127.0.0.1:4242")
+    workbench = zerorpc.Client()
+    workbench.connect("tcp://127.0.0.1:4242")
 
     # Generate input for the worker
     import os
     data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
                              '../../data/pcap/winmediaplayer.pcap')
-    md5 = c.store_sample('winmedia.pcap', open(data_path, 'rb').read(), 'pcap')
-    input_data = c.get_sample(md5)
-    input_data.update(c.work_request('pcap_bro', md5))
+    md5 = workbench.store_sample('winmedia.pcap', open(data_path, 'rb').read(), 'pcap')
+    input_data = workbench.get_sample(md5)
+    input_data.update(workbench.work_request('pcap_bro', md5))
 
     # Execute the worker (unit test)
     worker = ViewPcap()
@@ -51,7 +51,7 @@ def test():
     pprint.pprint(output)
 
     # Execute the worker (server test)
-    output = c.work_request('view_pcap', md5)
+    output = workbench.work_request('view_pcap', md5)
     print '\n<<< Server Test >>>'
     import pprint
     pprint.pprint(output)

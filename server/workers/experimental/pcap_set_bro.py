@@ -12,7 +12,7 @@ class PcapSetBro(pcap_bro.PcapBro):
         # Setup handles for the set of md5s.
         filenames = []
         for md5 in input_data['sample_set']['md5_list']:
-            sample = self.c.get_sample(md5)['sample']
+            sample = self.workbench.get_sample(md5)['sample']
             raw_bytes = sample['raw_bytes']
             filename = os.path.basename(sample['filename'])
             with open(filename,'wb') as pcap_file:
@@ -26,8 +26,8 @@ def test():
     ''' pcap_set_bro.py: Unit test'''
     # This worker test requires a local server as it relies on the recursive dependencies
     import zerorpc
-    c = zerorpc.Client()
-    c.connect("tcp://127.0.0.1:4242")
+    workbench = zerorpc.Client()
+    workbench.connect("tcp://127.0.0.1:4242")
 
     # Open a bunch of pcaps
     data_dir = '../../data/pcap'
@@ -39,10 +39,10 @@ def test():
         if '.DS_Store' in filename: continue        
 
         with open(filename,'rb') as f:
-            pcap_md5s.append(c.store_sample(filename, f.read(), 'pcap'))
+            pcap_md5s.append(workbench.store_sample(filename, f.read(), 'pcap'))
 
     # Now store the sample set
-    set_md5 = c.store_sample_set(pcap_md5s)
+    set_md5 = workbench.store_sample_set(pcap_md5s)
     print set_md5
 
     # Execute the worker (unit test)
@@ -53,7 +53,7 @@ def test():
     pprint.pprint(output)
 
     # Execute the worker (server test)
-    output = c.work_request('pcap_set_bro', set_md5)
+    output = workbench.work_request('pcap_set_bro', set_md5)
     print '\n<<< Server Test >>>'
     import pprint
     pprint.pprint(output)

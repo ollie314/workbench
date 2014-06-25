@@ -21,8 +21,8 @@ def main():
     server = str(args.server)
 
     # Start up workbench connection
-    c = zerorpc.Client(timeout=300)
-    c.connect('tcp://'+server+':'+port)
+    workbench = zerorpc.Client(timeout=300)
+    workbench.connect('tcp://'+server+':'+port)
 
     # Loop through all the pcaps and collect a set of urls(hosts) from the http_log files
     urls = set()
@@ -33,13 +33,13 @@ def main():
         if '.DS_Store' in filename: continue
 
         with open(filename,'rb') as file:
-            pcap_md5 = c.store_sample(filename, file.read(), 'pcap')
-            results = c.work_request('pcap_bro', pcap_md5)
+            pcap_md5 = workbench.store_sample(filename, file.read(), 'pcap')
+            results = workbench.work_request('pcap_bro', pcap_md5)
 
             # Just grab the http log
             if 'http_log' in results['pcap_bro']:
                 log_md5 = results['pcap_bro']['http_log']
-                http_data = c.stream_sample(log_md5, None)  # None Means all data
+                http_data = workbench.stream_sample(log_md5, None)  # None Means all data
                 urls = set( row['host'] for row in http_data)
                 print '<<< %s >>>' % filename
                 pprint.pprint(list(urls))

@@ -20,8 +20,8 @@ def main():
     server = str(args.server)
 
     # Start up workbench connection
-    c = zerorpc.Client(timeout=300)
-    c.connect('tcp://'+server+':'+port)
+    workbench = zerorpc.Client(timeout=300)
+    workbench.connect('tcp://'+server+':'+port)
 
 
     # Test out getting the raw Bro logs from a PCAP file
@@ -34,15 +34,15 @@ def main():
         if '.DS_Store' in filename: continue
 
         with open(filename,'rb') as file:
-            md5 = c.store_sample(filename, file.read(), 'pcap')
-            results = c.work_request('pcap_bro', md5)
+            md5 = workbench.store_sample(filename, file.read(), 'pcap')
+            results = workbench.work_request('pcap_bro', md5)
 
             # Results is just a dictionary of Bro log file names and their MD5s in workbench
             for log_name, md5 in results['pcap_bro'].iteritems():
 
                 # Just want the logs
                 if log_name.endswith('_log'):
-                    bro_log = c.get_sample(md5)['sample']['raw_bytes']
+                    bro_log = workbench.get_sample(md5)['sample']['raw_bytes']
                     print '\n\n<<< Bro log: %s >>>\n %s' % (log_name, bro_log)
 def test():
     ''' pcap_bro_raw test '''

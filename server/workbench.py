@@ -35,10 +35,10 @@ class WorkBench():
 
         # ELS Indexer
         try:
-            self.indexer = els_indexer.ELS_Indexer(**{'hosts': els_hosts} if els_hosts else {})
+            self.indexer = els_indexer.ELSIndexer(**{'hosts': els_hosts} if els_hosts else {})
         except SystemExit:
             print 'Could not connect to ELS. Is it running?'
-            self.indexer = els_indexer.ELS_StubIndexer(**{'uri': neo_uri} if neo_uri else {})
+            self.indexer = els_indexer.ELSStubIndexer(**{'uri': neo_uri} if neo_uri else {})
 
         # Neo4j DB
         try:
@@ -408,22 +408,22 @@ class WorkBench():
         ''' Returns help commands '''
 
         help_str =  '\nWelcome to Workbench: Here\'s a list of help commands:'
-        help_str += '\n\t - Run c.help_basic() for beginner help'
-        help_str += '\n\t - Run c.help_commands() for command help'
-        help_str += '\n\t - Run c.help_workers() for a list of workers'
-        help_str += '\n\t - Run c.help_advanced() for advanced help'
+        help_str += '\n\t - Run workbench.help_basic() for beginner help'
+        help_str += '\n\t - Run workbench.help_commands() for command help'
+        help_str += '\n\t - Run workbench.help_workers() for a list of workers'
+        help_str += '\n\t - Run workbench.help_advanced() for advanced help'
         help_str += '\n\nSee https://github.com/SuperCowPowers/workbench for more information'
         return help_str
 
     def help_basic(self):
         ''' Returns basic help commands '''
         help_str =  '\nWorkbench: Getting started...'
-        help_str += '\n\t - 1) $ print c.help_commands() for a list of commands'
-        help_str += '\n\t - 2) $ print c.help_command(\'store_sample\') for into on a specific command'
-        help_str += '\n\t - 3) $ print c.help_workers() for a list a workers'
-        help_str += '\n\t - 4) $ print c.help_worker(\'meta\') for info on a specific worker'
-        help_str += '\n\t - 5) $ my_md5 = c.store_sample(...)'
-        help_str += '\n\t - 6) $ output = c.work_request(\'meta\', my_md5)'
+        help_str += '\n\t - 1) $ print workbench.help_commands() for a list of commands'
+        help_str += '\n\t - 2) $ print workbench.help_command(\'store_sample\') for into on a specific command'
+        help_str += '\n\t - 3) $ print workbench.help_workers() for a list a workers'
+        help_str += '\n\t - 4) $ print workbench.help_worker(\'meta\') for info on a specific worker'
+        help_str += '\n\t - 5) $ my_md5 = workbench.store_sample(...)'
+        help_str += '\n\t - 6) $ output = workbench.work_request(\'meta\', my_md5)'
         return help_str
 
     def help_commands(self):
@@ -491,16 +491,16 @@ def run():
     # Spin up Workbench ZeroRPC
     try:
         store_args = {'uri': datastore_uri, 'database': database, 'worker_cap':worker_cap, 'samples_cap':samples_cap}
-        s = zerorpc.Server(WorkBench(store_args=store_args), name='workbench')
-        s.bind('tcp://0.0.0.0:4242')
-        s.run()
+        workbench = zerorpc.Server(WorkBench(store_args=store_args), name='workbench')
+        workbench.bind('tcp://0.0.0.0:4242')
+        workbench.run()
         print 'ZeroRPC %s' % ('tcp://0.0.0.0:4242')
     except zmq.error.ZMQError:
         print '\nInfo: Could not start Workbench server (no worries, probably already running...)\n'
     except KeyboardInterrupt:
         print '\nWorbench Server Exiting...'
-        s.stop()
-        s.close()
+        workbench.stop()
+        workbench.close()
         exit(0)
 
 # Test that just calls main

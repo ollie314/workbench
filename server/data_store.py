@@ -21,8 +21,8 @@ class DataStore():
         # Get connection to mongo
         self.db_name = database
         self.uri = 'mongodb://'+uri+'/'+self.db_name
-        self.c = pymongo.MongoClient(self.uri, use_greenlets=True)
-        self.db = self.c.get_default_database()
+        self.mongo = pymongo.MongoClient(self.uri, use_greenlets=True)
+        self.db = self.mongo.get_default_database()
 
         # Get the gridfs handle
         self.gridfs_handle = gridfs.GridFS(self.db)
@@ -205,7 +205,7 @@ class DataStore():
     def clear_db(self):
         ''' Drop the entire workbench database... Whee! '''
         print 'Dropping the entire workbench database... Whee!'
-        self.c.drop_database(self.db_name)
+        self.workbench.drop_database(self.db_name)
 
     def periodic_ops(self):
         ''' Run periodic operations on the the data store
@@ -225,10 +225,10 @@ class DataStore():
 
         # Remove collections that we don't want to cap
         try:
-            all_c.remove('system.indexes')
-            all_c.remove('fs.chunks')
-            all_c.remove('fs.files')
-            all_c.remove(self.sample_collection)
+            all_workbench.remove('system.indexes')
+            all_workbench.remove('fs.chunks')
+            all_workbench.remove('fs.files')
+            all_workbench.remove(self.sample_collection)
         except ValueError:
             pass
 

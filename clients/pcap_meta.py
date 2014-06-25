@@ -21,8 +21,8 @@ def main():
     server = str(args.server)
 
     # Start up workbench connection
-    c = zerorpc.Client()
-    c.connect('tcp://'+server+':'+port)
+    workbench = zerorpc.Client()
+    workbench.connect('tcp://'+server+':'+port)
 
     # Test out PCAP data
     file_list = [os.path.join('../data/pcap', child) for child in os.listdir('../data/pcap')]
@@ -32,8 +32,8 @@ def main():
         if '.DS_Store' in filename: continue
 
         with open(filename,'rb') as file:
-            md5 = c.store_sample(filename, file.read(), 'pcap')
-            results = c.work_request('view_pcap', md5)
+            md5 = workbench.store_sample(filename, file.read(), 'pcap')
+            results = workbench.work_request('view_pcap', md5)
             print 'Filename: %s results:' % (filename)
             pprint.pprint(results)
 

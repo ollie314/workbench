@@ -84,18 +84,18 @@ class TCPDumpToWorkbench(object):
         ''' Store a file into workbench '''
         
         # Spin up workbench
-        self.c = zerorpc.Client()
-        self.c.connect("tcp://127.0.0.1:4242")   
+        self.workbench = zerorpc.Client()
+        self.workbench.connect("tcp://127.0.0.1:4242")   
 
         # Open the file and send it to workbench
         storage_name = "streaming_pcap" + str(self.pcap_index)
         print filename, storage_name
         with open(filename,'rb') as file:
-            self.c.store_sample(storage_name, file.read(), 'pcap')
+            self.workbench.store_sample(storage_name, file.read(), 'pcap')
         self.pcap_index += 1
 
         # Close workbench client
-        self.c.close()
+        self.workbench.close()
 
     def subprocess_manager(self, exec_args):
         try:
@@ -139,8 +139,8 @@ def main():
     print 'Dumping PCAPs to Workbench server. Use ^C to stop this script...'
 
     # Spin up workbench client
-    c = zerorpc.Client()
-    c.connect(server+':'+port)
+    workbench = zerorpc.Client()
+    workbench.connect(server+':'+port)
 
     # Spin up our tcpdumper
     try:
