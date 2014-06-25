@@ -1,10 +1,11 @@
-
+''' This client pushes PCAPs -> MetaDaa -> ELS Indexer '''
 import zerorpc
 import os
 import argparse
 import ConfigParser
 
 def main():
+    ''' This client pushes PCAPs -> MetaDaa -> ELS Indexer '''
     
     # Grab server info from configuration file
     workbench_conf = ConfigParser.ConfigParser()
@@ -30,8 +31,8 @@ def main():
         # Skip OS generated files
         if '.DS_Store' in filename: continue
 
-        with open(filename,'rb') as file:
-            md5 = workbench.store_sample(filename, file.read(), 'pcap')
+        with open(filename,'rb') as pcap_file:
+            md5 = workbench.store_sample(filename, pcap_file.read(), 'pcap')
 
             # Index the view_pcap output (notice we can ask for any worker output)
             # Also (super important) it all happens on the server side.

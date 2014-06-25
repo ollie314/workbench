@@ -1,6 +1,8 @@
 
 ''' view_zip worker '''
+import os
 import zerorpc
+import pprint
 
 class ViewZip(object):
     ''' ViewZip: Generates a view for Zip files '''
@@ -11,6 +13,7 @@ class ViewZip(object):
         self.workbench.connect("tcp://127.0.0.1:4242")
 
     def execute(self, input_data):
+        ''' Execute the ViewZip worker '''
 
         # Just a small check to make sure we haven't been called on the wrong file type
         if (input_data['meta']['mime_type'] != 'application/zip'):
@@ -31,15 +34,13 @@ class ViewZip(object):
 
 # Unit test: Create the class, the proper input and run the execute() method for a test
 def test():
-    ''' view_zip.py: Unit test'''
+    ''' -- view_zip.py test -- '''
 
     # This worker test requires a local server running
-    import zerorpc
     workbench = zerorpc.Client()
     workbench.connect("tcp://127.0.0.1:4242")
 
     # Generate input for the worker
-    import os
     data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../data/zip/bad.zip')
     md5 = workbench.store_sample('bad.zip', open(data_path, 'rb').read(), 'zip')
     input_data = workbench.get_sample(md5)
@@ -50,13 +51,11 @@ def test():
     worker = ViewZip()
     output = worker.execute(input_data)
     print '\n<<< Unit Test >>>'
-    import pprint
     pprint.pprint(output)
 
     # Execute the worker (server test)
     output = workbench.work_request('view_zip', md5)
     print '\n<<< Server Test >>>'
-    import pprint
     pprint.pprint(output)
 
 if __name__ == "__main__":

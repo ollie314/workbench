@@ -1,4 +1,4 @@
-
+''' This client pulls PCAP meta data '''
 import zerorpc
 import os
 import pprint
@@ -6,6 +6,7 @@ import argparse
 import ConfigParser
 
 def main():
+    ''' This client pulls PCAP meta data '''
     
     # Grab server info from configuration file
     workbench_conf = ConfigParser.ConfigParser()

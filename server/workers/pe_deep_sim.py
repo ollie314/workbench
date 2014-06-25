@@ -1,7 +1,10 @@
 
 ''' PE SSDeep Similarity worker '''
+
+import os
 import ssdeep as ssd
 import zerorpc
+import pprint
 from operator import itemgetter
 
 class PEDeepSim(object):
@@ -39,12 +42,10 @@ def test():
     ''' pe_deep_sim.py: Unit test '''
 
     # This worker test requires a local server running
-    import zerorpc
     workbench = zerorpc.Client()
     workbench.connect("tcp://127.0.0.1:4242")
 
     # Generate input for the worker
-    import os
     data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
                              '../../data/pe/bad/033d91aae8ad29ed9fbb858179271232')
     md5 = workbench.store_sample('bad', open(data_path, 'rb').read(), 'pe')
@@ -54,13 +55,11 @@ def test():
     worker = PEDeepSim()
     output = worker.execute(input_data)
     print '\n<<< Unit Test >>>'
-    import pprint
     pprint.pprint(output)
 
     # Execute the worker (server test)
     output = workbench.work_request('pe_deep_sim', md5)
     print '\n<<< Server Test >>>'
-    import pprint
     pprint.pprint(output)
 
 if __name__ == "__main__":

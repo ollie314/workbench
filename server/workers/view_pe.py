@@ -1,12 +1,13 @@
 
 ''' view_pe worker '''
-
+import pprint
 
 class ViewPEFile(object):
     ''' Generates a high level summary view for PE files that incorporates a large set of workers '''
     dependencies = ['meta', 'strings', 'pe_peid', 'pe_indicators', 'pe_classifier']
 
     def execute(self, input_data):
+        ''' Execute the ViewPEFile worker '''
 
         # Just a small check to make sure we haven't been called on the wrong file type
         if (input_data['meta']['mime_type'] != 'application/x-dosexec'):
@@ -54,13 +55,11 @@ def test():
     worker = ViewPEFile()
     output = worker.execute(input_data)
     print '\n<<< Unit Test >>>'
-    import pprint
     pprint.pprint(output)
 
     # Execute the worker (server test)
     output = workbench.work_request('view_pe', md5)
     print '\n<<< Server Test >>>'
-    import pprint
     pprint.pprint(output)
 
 if __name__ == "__main__":

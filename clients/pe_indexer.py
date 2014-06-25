@@ -1,3 +1,4 @@
+''' This client pushes PE Files -> ELS Indexer '''
 import zerorpc
 import argparse
 import os
@@ -5,6 +6,7 @@ import pprint
 import ConfigParser
 
 def main():
+    ''' This client pushes PE Files -> ELS Indexer '''
     
     # Grab server info from configuration file
     workbench_conf = ConfigParser.ConfigParser()

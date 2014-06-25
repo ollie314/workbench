@@ -1,3 +1,4 @@
+''' This client generates a similarity graph from features in PE Files '''
 import zerorpc
 import argparse
 import os
@@ -45,6 +46,7 @@ def jaccard_sim(features1, features2):
 
 
 def main():
+    ''' This client generates a similarity graph from features in PE Files '''
 
     # Grab server info from configuration file
     workbench_conf = ConfigParser.ConfigParser()

@@ -4,12 +4,13 @@ import os
 import requests
 import collections
 import ConfigParser
+import pprint
 
 class VTQuery(object):
     ''' This worker query Virus Total, an apikey needs to be provided '''
     dependencies = ['meta']
     
-    def __init__(self, apikey=None):
+    def __init__(self):
         ''' VTQuery Init'''
 
         # Grab API key from configuration file
@@ -27,6 +28,7 @@ class VTQuery(object):
                         'verbose_msg', 'scans']
 
     def execute(self, input_data):
+        ''' Execute the VTQuery worker '''
         md5 = input_data['meta']['md5']
         response = requests.get('https://www.virustotal.com/vtapi/v2/file/report', 
                                 params={'apikey':self.apikey,'resource':md5, 'allinfo':1})
@@ -81,13 +83,11 @@ def test():
     worker = VTQuery()
     output = worker.execute(input_data)
     print '\n<<< Unit Test >>>'
-    import pprint
     pprint.pprint(output)
 
     # Execute the worker (server test)
     output = workbench.work_request('vt_query', md5)
     print '\n<<< Server Test >>>'
-    import pprint
     pprint.pprint(output)
 
 if __name__ == "__main__":

@@ -1,5 +1,6 @@
 ''' view_pcap worker '''
 import zerorpc
+import pprint
 
 class ViewPcap(object):
     ''' ViewPcap: Generates a view for a pcap sample (depends on Bro)'''
@@ -47,13 +48,11 @@ def test():
     worker = ViewPcap()
     output = worker.execute(input_data)
     print '\n<<< Unit Test >>>'
-    import pprint
     pprint.pprint(output)
 
     # Execute the worker (server test)
     output = workbench.work_request('view_pcap', md5)
     print '\n<<< Server Test >>>'
-    import pprint
     pprint.pprint(output)
 
 if __name__ == "__main__":

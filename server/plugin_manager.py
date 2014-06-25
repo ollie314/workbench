@@ -79,7 +79,7 @@ class PluginManager(FileSystemEventHandler):
                 mod_time = datetime.utcfromtimestamp(os.path.getmtime(f))
                 self.plugin_callback(plugin_info, mod_time)
 
-    ''' Currently disabled: Need to thing about this funcitonality '''
+    # Currently disabled: Need to thing about this funcitonality
     '''
     def run_test(self, handler):
         previousDir = os.getcwd()
@@ -141,6 +141,7 @@ def test():
     # This test actually does more than it appears. The workers
     # directory will get scanned and stuff will get loaded, etworkbench.
     def new_plugin(plugin, mod_time):
+        ''' new plugin callback '''
         print '%s %s' % (plugin, mod_time)
 
     # Create Plugin Manager

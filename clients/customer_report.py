@@ -1,10 +1,11 @@
-
+''' This client generates customer reports on all the samples in workbench '''
 import zerorpc
 import pprint
 import argparse
 import ConfigParser
 
 def main():
+    ''' This client generates customer reports on all the samples in workbench '''
     
     # Grab server info from configuration file
     workbench_conf = ConfigParser.ConfigParser()
