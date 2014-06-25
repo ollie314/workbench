@@ -42,3 +42,25 @@ Git Example
     $ <code for a bit>; git push
     $ Go to github and hit 'New pull request'
 
+
+Bounties (Rewards for contributing to Workbench)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Top Bounties**
+
+-  `Bro Scripts for OWASP Top 10 (1000 Cow Points)`_
+-  `Python based SWF Decompiler/Decompression (500 Cow Points)`_
+-  `Deep PDF Static Analysis (500 Cow Points)`_
+-  `Worker for Cab File extraction (100 Cow Points)`_
+
+**FAQ about Cow Points**
+
+-  Are Cow Points worth anything? : No
+-  Will Cow Points ever be worth anything? : Maybe
+-  Are Cow Points officially tracked? : Yes
+-  Will I receive good Karma for Cow Points? : Yes
+
+.. _Bro Scripts for OWASP Top 10 (1000 Cow Points): /../../issues/27
+.. _Python based SWF Decompiler/Decompression (500 Cow Points): /../../issues/28
+.. _Deep PDF Static Analysis (500 Cow Points): /../../issues/29
+.. _Worker for Cab File extraction (100 Cow Points): /../../issues/30

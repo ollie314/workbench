@@ -107,32 +107,6 @@ working on Python 3 support (`Issue
 -  pip install -r requirements.txt
 -  Go have a large cup of coffee...
 
-Running It:
------------
-
-Server (localhost or server machine)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. raw:: html
-
-   <pre>
-   $ cd workbench
-   $ ./workbench
-   </pre>
-
-Example Clients (use -s for remote server)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-There are about a dozen example clients showing how to use workbench on
-pcaps, PEfiles, pdfs, and log files. We even has a simple nodes.js
-client (looking for node devs to pop some pull requests :).
-
-.. raw:: html
-
-   <pre>
-   $ cd workbench/clients
-   $ python simple_workbench_client.py [-s tcp://mega.server.com]
-   </pre>
 
 Testing:
 --------
