@@ -1,5 +1,7 @@
 
 ''' view_zip worker '''
+import os
+import zerorpc
 import pprint
 
 class ViewZip(object):
@@ -35,12 +37,10 @@ def test():
     ''' -- view_zip.py test -- '''
 
     # This worker test requires a local server running
-    import zerorpc
     workbench = zerorpc.Client()
     workbench.connect("tcp://127.0.0.1:4242")
 
     # Generate input for the worker
-    import os
     data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../data/zip/bad.zip')
     md5 = workbench.store_sample('bad.zip', open(data_path, 'rb').read(), 'zip')
     input_data = workbench.get_sample(md5)

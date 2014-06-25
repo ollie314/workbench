@@ -1,5 +1,7 @@
 ''' pcap_http_graph worker '''
+import os
 import zerorpc
+import pprint
 
 class PcapHTTPGraph(object):
     ''' This worker generates a graph from a PCAP (depends on Bro) '''
@@ -152,12 +154,10 @@ class PcapHTTPGraph(object):
 def test():
     ''' pcap_http_graph.py: Unit test '''
     # This worker test requires a local server as it relies on the recursive dependencies
-    import zerorpc
     workbench = zerorpc.Client(timeout=300)
     workbench.connect("tcp://127.0.0.1:4242")
 
     # Generate the input data for this worker
-    import os
     data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../data/pcap/kitchen_boss.pcap')
     md5 = workbench.store_sample('kitchen_boss.pcap', open(data_path, 'rb').read(), 'pcap')
     input_data = workbench.work_request('pcap_bro', md5)
@@ -166,13 +166,11 @@ def test():
     worker = PcapHTTPGraph()
     output = worker.execute(input_data)
     print '\n<<< Unit Test >>>'
-    import pprint
     pprint.pprint(output)
 
     # Execute the worker (server test)
     output = workbench.work_request('pcap_http_graph', md5)
     print '\n<<< Server Test >>>'
-    import pprint
     pprint.pprint(output)
 
 if __name__ == "__main__":
