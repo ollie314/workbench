@@ -1,11 +1,9 @@
 
 ''' Workbench: Open Source Security Framework '''
 
-if __name__ == '__main__':
-    print 'Do not call this file directly. Run the workbench script'
-    exit(1)
-
 from gevent import monkey; monkey.patch_all(thread=False) # Monkey!
+from gevent import signal as gevent_signal
+import signal
 import os
 import argparse
 import zerorpc
@@ -20,11 +18,19 @@ import funcsigs
 import ConfigParser
 
 # Workbench server imports
-from server import data_store
-from server import els_indexer
-from server import neo_db
-from server import plugin_manager
-from server.workers.bro import bro_log_reader
+try:
+    from server import data_store
+    from server import els_indexer
+    from server import neo_db
+    from server import plugin_manager
+    from server.bro import bro_log_reader
+except ImportError:
+    import data_store
+    import els_indexer
+    import neo_db
+    import plugin_manager
+    from bro import bro_log_reader    
+    
 
 class WorkBench():
     ''' Workbench: Open Source Security Framework '''
@@ -49,7 +55,7 @@ class WorkBench():
 
         # Create Plugin Manager
         self.plugin_meta = {}
-        plugin_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)),'workers')
+        plugin_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)),'../workers')
         self.plugin_manager = plugin_manager.PluginManager(self._new_plugin, plugin_dir=plugin_dir)
 
     #
@@ -463,6 +469,7 @@ class WorkBench():
 
 
 def run():
+    ''' Run the workbench server '''
 
     # Load the configuration file relative to this script location
     config_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'config.ini')
@@ -479,6 +486,7 @@ def run():
     samples_cap = workbench_conf.getint('workbench', 'samples_cap')
 
     # Parse the arguments (args overwrite configuration file settings)
+    '''
     parser = argparse.ArgumentParser()
     parser.add_argument('-ds_uri', '--datastore_uri', type=str, default=None, help='machine used by workbench datastore')
     parser.add_argument('-db', '--database', type=str, default=None, help='database used by workbench server')
@@ -487,22 +495,27 @@ def run():
     # Overwrite if specified
     datastore_uri = args.datastore_uri if (args.datastore_uri) else datastore_uri
     database = args.database if (args.database) else database
+    '''
 
     # Spin up Workbench ZeroRPC
     try:
         store_args = {'uri': datastore_uri, 'database': database, 'worker_cap':worker_cap, 'samples_cap':samples_cap}
         workbench = zerorpc.Server(WorkBench(store_args=store_args), name='workbench')
         workbench.bind('tcp://0.0.0.0:4242')
-        workbench.run()
         print 'ZeroRPC %s' % ('tcp://0.0.0.0:4242')
+        gevent_signal(signal.SIGTERM, workbench.stop)
+        gevent_signal(signal.SIGINT, workbench.stop)
+        gevent_signal(signal.SIGKILL, workbench.stop)
+        workbench.run()
+        print '\nWorkbench Server Shutting Down...'
+        exit(0)        
     except zmq.error.ZMQError:
         print '\nInfo: Could not start Workbench server (no worries, probably already running...)\n'
-    except KeyboardInterrupt:
-        print '\nWorbench Server Exiting...'
-        workbench.stop()
-        workbench.close()
-        exit(0)
+
 
 # Test that just calls main
 def test():
+    run()
+
+if __name__ == '__main__':
     run()

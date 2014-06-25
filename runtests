@@ -1,12 +1,30 @@
 echo
 echo '<<< Starting workbench server >>>'
 echo
-./workbench &
+# Launch workbench server in the background
+cd server
+nosetests workbench &
+# Get its PID
+workbench_pid=$!
+
 echo
-echo '<<< Running all tests in server/workers >>>'
+echo '<<< Running worker tests >>>'
 echo
-server/workers/runtests
-mv .coverage .coverage.workers
-clients/runtests
-mv .coverage .coverage.clients
+cd ../workers
+./runtests
+
+echo
+echo '<<< Running client tests >>>'
+echo
+cd ../clients
+./runtests
+cd ..
+
+echo '<<< Sending SIGINT to Worbench Server >>>'
+kill -SIGINT $workbench_pid
+
+echo '<<< Collecting coverage files >>>'
+mv workers/.coverage .coverage.workers
+mv clients/.coverage .coverage.clients
+mv server/.coverage .coverage.server
 coverage combine
