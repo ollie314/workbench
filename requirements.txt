@@ -6,7 +6,7 @@ py2neo
 pymongo
 requests
 cython
-ssdeep
+ssdeep==2.9-0.3
 watchdog
 yara
 zerorpc
