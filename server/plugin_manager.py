@@ -12,8 +12,10 @@ from watchdog.events import FileSystemEventHandler
 import inspect
 
 class PluginManager(FileSystemEventHandler):
+    ''' Plugin Manager for Workbench '''
 
     def __init__(self, plugin_callback, plugin_dir = 'workers'):
+        ''' Initialize the Plugin Manager for Workbench '''
 
         # Set the callback
         self.plugin_callback = plugin_callback
@@ -77,6 +79,8 @@ class PluginManager(FileSystemEventHandler):
                 mod_time = datetime.utcfromtimestamp(os.path.getmtime(f))
                 self.plugin_callback(plugin_info, mod_time)
 
+    ''' Currently disabled: Need to thing about this funcitonality '''
+    '''
     def run_test(self, handler):
         previousDir = os.getcwd()
         os.chdir(self.plugin_path)
@@ -89,6 +93,7 @@ class PluginManager(FileSystemEventHandler):
             return False
         finally:
             os.chdir(previousDir)
+    '''
 
     def validate(self, handler):
         ''' Validate the plugin, each plugin must have the following:
@@ -98,7 +103,7 @@ class PluginManager(FileSystemEventHandler):
         '''
 
         # Check for the test method first
-        methods = [name for name,value in inspect.getmembers(handler, callable)]
+        methods = [name for name,_value in inspect.getmembers(handler, callable)]
         if 'test' not in methods:
             print 'Failure for plugin: %s' % (handler.__name__)
             print 'Validation Error: The file must have a top level test() method'
@@ -115,9 +120,11 @@ class PluginManager(FileSystemEventHandler):
         print 'Validation Error: Worker class is required to have a dependencies list and an execute method'
 
     def plugin_class_validation(self, plugin_class):
+        ''' Plugin validation 
+            - Every workbench plugin must have a dependencies list (even if it's empty)
+            - Every workbench plugin must have an execute method.
+        '''
 
-        # Every workbench plugin must have a dependencies list (even if it's empty)
-        # Every workbench plugin must have an execute method.
         try:
             getattr(plugin_class, 'dependencies')
             getattr(plugin_class, 'execute')
@@ -129,11 +136,12 @@ class PluginManager(FileSystemEventHandler):
 
 # Just create the class and run it for a test
 def test():
+    ''' -- plugin_manager.py test -- '''
 
     # This test actually does more than it appears. The workers
     # directory will get scanned and stuff will get loaded, etworkbench.
     def new_plugin(plugin, mod_time):
-        pass
+        print '%s %s' % (plugin, mod_time)
 
     # Create Plugin Manager
     plugin_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)),'workers')
