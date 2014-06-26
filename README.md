@@ -10,9 +10,10 @@ Workbench
 #### A medium-data framework for security research and development teams.
 Workbench focuses on simplicity, transparency, and easy on-site customization. As an open source python project it provides light-weight task management, execution and pipelining for a loosely-coupled set of python classes. Please see our set of IPython notebooks below for examples.
 
-- Workbench Documentation: [Workbench Docs](http://workbench.readthedocs.org/en/latest/)
-- Users Email List: [workbench-users](https://groups.google.com/forum/#!forum/workbench-users)
-- Developers Email List: [workbench-devs](https://groups.google.com/forum/#!forum/workbench-devs)
+### Useful Links
+- **[Workbench Documentation](http://workbench.readthedocs.org/en/latest/)**
+- [User Email List](https://groups.google.com/forum/#!forum/workbench-users) (anyone can join)
+- [Developers Email Lis](https://groups.google.com/forum/#!forum/workbench-devs) (anyone can join)
 
 ## Workbench Examples
 * **<a href="http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/notebooks/PCAP_to_Graph.ipynb">PCAP to Graph</a>** (A short teaser)
