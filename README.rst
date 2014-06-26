@@ -1,4 +1,4 @@
-.. image:: ../images/workbench.jpg
+.. image:: http://raw.github.com/supercowpowers/workbench/master/images/workbench.jpg
     :alt: workbench
     :width: 300
     :align: right
@@ -64,7 +64,7 @@ Workbench Examples
 
 Pull the repository
 -------------------
-.. image:: ../images/warning.jpg
+.. image:: http://raw.github.com/supercowpowers/workbench/master/images/warning.jpg
     :alt: warning
     :width: 80
     :align: left
@@ -73,3 +73,6 @@ Pull the repository
 	
 	git clone https://github.com/supercowpowers/workbench.git
 
+Read the Documentation
+----------------------
+Workbech Documentation: Workbench_Docs_
