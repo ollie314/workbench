@@ -17,10 +17,19 @@ Please note the coverage/health (typically 95%) are super bad right now. It’s 
 Contents:
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
 
    about
-   install
+   installation
    running
-   contribute
+   contributing
+   authors
+   history
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
 

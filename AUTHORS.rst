@@ -5,9 +5,13 @@ Credits
 Development Lead
 ----------------
 
-* Brian Wylie <briford@supercowpowers.com>
+* Brian Wylie <https://github.com/brifordwylie>
 
 Contributors
 ------------
 
-None yet. Why not be the first?
+* Ankush Chadda <https://github.com/iamkhush>
+* KevtheHermit <https://github.com/kevthehermit>
+* Anthony Kasza <https://github.com/anthonykasza>
+* Jeffery Baumes <https://github.com/jeffbaumes>
+
