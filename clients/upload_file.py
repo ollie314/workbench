@@ -15,7 +15,8 @@ def main():
     port = workbench_conf.getint('workbench', 'server_port') 
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('-f', '--loadfile', type=str, default='../data/log/system.log', help='File to import into the workbench server')
+    parser.add_argument('-f', '--loadfile', type=str, default='../data/log/system.log',
+                        help='File to import into the workbench server')
     parser.add_argument('-p', '--port', type=int, default=port, help='port used by workbench server')
     parser.add_argument('-s', '--server', type=str, default=server, help='location of workbench server')
     args = parser.parse_args()

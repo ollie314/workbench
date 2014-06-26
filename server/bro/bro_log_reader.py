@@ -8,7 +8,7 @@ import optparse
 import time
 
 
-class BroLogReader():
+class BroLogReader(object):
     ''' This class implements a python based Bro Log Reader. '''
 
     def __init__(self, convert_datetimes=True):
@@ -16,7 +16,7 @@ class BroLogReader():
         self.delimiter = '\t'
         self.convert_datetimes = convert_datetimes
 
-    def read_log(self, logfile, max_rows=None):
+    def read_log(self, logfile):
         ''' The read_log method is a generator for rows in a Bro log.
             Usage: rows = my_bro_reader.read_log(logfile)
                    for row in rows:
@@ -29,7 +29,7 @@ class BroLogReader():
         logfile.seek(0)
 
         # First parse the header of the bro log
-        field_names, field_types = self._parse_bro_header(logfile)
+        field_names, _ = self._parse_bro_header(logfile)
 
         # Note: SO stupid to write a csv reader, but csv.DictReader on Bro
         #       files was doing something weird with generator output that
