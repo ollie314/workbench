@@ -4,6 +4,7 @@
 [![Code Health](https://landscape.io/github/SuperCowPowers/workbench/master/landscape.png)](https://landscape.io/github/SuperCowPowers/workbench/master)
 [![Project Stats](https://www.ohloh.net/p/workbench/widgets/project_thin_badge.gif)](https://www.ohloh.net/p/workbench)
 [![Stories in Ready](https://badge.waffle.io/supercowpowers/workbench.png?label=ready&title=Ready)](https://waffle.io/supercowpowers/workbench)
+[![Stories in Ready](https://badge.waffle.io/supercowpowers/workbench.png?label=in progress&title=In Progress)](https://waffle.io/supercowpowers/workbench)
 
 Workbench
 =========
