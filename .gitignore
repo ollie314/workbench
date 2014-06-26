@@ -48,4 +48,4 @@ _build
 config.ini
 
 # Ignore pulled data 
-data/mem_images
+workbench/data/mem_images
