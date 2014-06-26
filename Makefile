@@ -1,18 +1,17 @@
-.PHONY: clean-pyc clean-build docs clean
+.PHONY: help clean clean-pyc clean-build list test test-all coverage docs release sdist
 
 help:
 	@echo "clean-build - remove build artifacts"
 	@echo "clean-pyc - remove Python file artifacts"
 	@echo "lint - check style with flake8"
 	@echo "test - run tests quickly with the default Python"
-	@echo "test-all - run tests on every Python version with tox"
+	@echo "testall - run tests on every Python version with tox"
 	@echo "coverage - check code coverage quickly with the default Python"
 	@echo "docs - generate Sphinx HTML documentation, including API docs"
 	@echo "release - package and upload a release"
-	@echo "dist - package"
+	@echo "sdist - package"
 
 clean: clean-build clean-pyc
-	rm -fr htmlcov/
 
 clean-build:
 	rm -fr build/
@@ -25,10 +24,10 @@ clean-pyc:
 	find . -name '*~' -exec rm -f {} +
 
 lint:
-	flake8 workbench tests
+	flake8 workbench test
 
 test:
-	python setup.py test
+	py.test
 
 test-all:
 	tox
@@ -51,7 +50,7 @@ release: clean
 	python setup.py sdist upload
 	python setup.py bdist_wheel upload
 
-dist: clean
+sdist: clean
 	python setup.py sdist
-	python setup.py bdist_wheel
+	python setup.py bdist_wheel upload
 	ls -l dist

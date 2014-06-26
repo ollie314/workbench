@@ -4,54 +4,47 @@
 import os
 import sys
 
-
 try:
     from setuptools import setup
 except ImportError:
     from distutils.core import setup
 
 
+if sys.argv[-1] == 'publish':
+    os.system('python setup.py sdist upload')
+    sys.exit()
+
 readme = open('README.rst').read()
+doclink = """
+Documentation
+-------------
+
+The full documentation is at http://workbench.rtfd.org."""
 history = open('HISTORY.rst').read().replace('.. :changelog:', '')
-
-requirements = [
-    # TODO: put package requirements here
-]
-
-test_requirements = [
-    # TODO: put package test requirements here
-]
 
 setup(
     name='workbench',
     version='0.1.0',
-    description='Workbench: A medium-data framework for security research and development teams.',
-    long_description=readme + '\n\n' + history,
+    description='A medium-data framework for security research and development teams.',
+    long_description=readme + '\n\n' + doclink + '\n\n' + history,
     author='Brian Wylie',
     author_email='briford@supercowpowers.com',
     url='https://github.com/brifordwylie/workbench',
     packages=[
         'workbench',
     ],
-    package_dir={'workbench':
-                 'workbench'},
+    package_dir={'workbench': 'workbench'},
     include_package_data=True,
-    install_requires=requirements,
-    license="BSD",
+    install_requires=[
+    ],
+    license='MIT',
     zip_safe=False,
-    keywords='workbench',
+    keywords='workbench, security, python',
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
         'Intended Audience :: Developers',
-        'License :: OSI Approved :: BSD License',
+        'License :: OSI Approved :: MIT License',
         'Natural Language :: English',
-        "Programming Language :: Python :: 2",
-        'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.3',
-        'Programming Language :: Python :: 3.4',
     ],
-    test_suite='tests',
-    tests_require=test_requirements
 )
