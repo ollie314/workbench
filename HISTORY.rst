@@ -3,7 +3,7 @@
 History
 -------
 
-0.1.0 (2014-04-01)
+0.1 (2014-06-10)
 ---------------------
 
-* First release on PyPI.
+* First release of workbench for alpha developers and users.

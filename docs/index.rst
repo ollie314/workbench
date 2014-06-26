@@ -1,30 +1,49 @@
-Welcome to Workbench's documentation!
-=====================================
+Workbench Documentation
+=======================
+**A medium-data framework for security research and development teams.**
 
-|Build Status| |Coverage Status| |Code Health| |Project Stats|
+Workbench focuses on simplicity, transparency, and easy on-site customization. 
+As an open source python project it provides light-weight task management, execution and pipelining for a loosely-coupled set of python classes. 
 
-Please note the coverage/health (typically 95%) are super bad right now. It’s a temporary issue that we’re working on. :)
+|Build Status| |Coverage Status| |Code Health| |Project Stats| |Project Ready| |Project InProgress|
 
-.. |Build Status| image:: https://travis-ci.org/SuperCowPowers/workbench.svg?branch=master
-   :target: https://travis-ci.org/SuperCowPowers/workbench
+.. |Build Status| image:: https://travis-ci.org/SuperCowPowers/workbench.png?branch=master
+    :target: https://travis-ci.org/SuperCowPowers/workbench
+
 .. |Coverage Status| image:: https://coveralls.io/repos/SuperCowPowers/workbench/badge.png
-   :target: https://coveralls.io/r/SuperCowPowers/workbench
+    :target: https://coveralls.io/r/SuperCowPowers/workbench
+
 .. |Code Health| image:: https://landscape.io/github/SuperCowPowers/workbench/master/landscape.png
-   :target: https://landscape.io/github/SuperCowPowers/workbench/master
+    :target: https://landscape.io/github/SuperCowPowers/workbench/master
+
 .. |Project Stats| image:: https://www.ohloh.net/p/workbench/widgets/project_thin_badge.gif
-   :target: https://www.ohloh.net/p/workbench
+    :target: https://www.ohloh.net/p/workbench
+
+.. |Project Ready| image:: https://badge.waffle.io/supercowpowers/workbench.png?label=ready&title=Ready
+    :target: https://waffle.io/supercowpowers/workbench
+
+.. |Project InProgress| image:: https://badge.waffle.io/supercowpowers/workbench.png?label=in progress&title=In Progress
+    :target: https://waffle.io/supercowpowers/workbench
+
+.. |Fury| image:: https://badge.fury.io/py/workbench.png
+    :target: http://badge.fury.io/py/workbench
+
+.. |PyPI| image:: https://pypip.in/d/workbench/badge.png
+    :target: https://pypi.python.org/pypi/workbench
+
 
 Contents:
 
 .. toctree::
    :maxdepth: 2
 
-   about
+   readme
    installation
    running
    contributing
    authors
    history
+   project_details
 
 Indices and tables
 ==================
