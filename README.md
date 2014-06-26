@@ -5,18 +5,16 @@
 [![Code Health](https://landscape.io/github/SuperCowPowers/workbench/master/landscape.png)](https://landscape.io/github/SuperCowPowers/workbench/master)
 [![Project Stats](https://www.ohloh.net/p/workbench/widgets/project_thin_badge.gif)](https://www.ohloh.net/p/workbench)
 
-##### Please note the coverage/health (typically 95%) are super bad right now. It's a temporary issue that we're working on. :)
 Workbench
 =========
 #### A medium-data framework for security research and development teams.
 Workbench focuses on simplicity, transparency, and easy on-site customization. As an open source python project it provides light-weight task management, execution and pipelining for a loosely-coupled set of python classes. Please see our set of IPython notebooks below for examples.
 
+- Workbench Documentation: [Workbench Docs](http://workbench.readthedocs.org/en/latest/)
 - Users Email List: [workbench-users](https://groups.google.com/forum/#!forum/workbench-users)
 - Developers Email List: [workbench-devs](https://groups.google.com/forum/#!forum/workbench-devs)
 
 ## Workbench Examples
-Please note that all of these notebooks are 'clients' hitting the workbench server. Making your own client is super easy! See [Making a Client](README_more.md### Making your own Client)
-
 * **<a href="http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/notebooks/PCAP_to_Graph.ipynb">PCAP to Graph</a>** (A short teaser)
 * **<a href="http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/notebooks/Workbench_Demo.ipynb">Workbench Demo</a>**
 * **<a href="http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/notebooks/Adding_Worker.ipynb">Adding a new Worker</a>** (super hawt)
