@@ -11,6 +11,8 @@ As an open source python project it provides light-weight task management, execu
 
 |Project Ready| |Project InProgress| |Gitter chat|
 
+|Requirements|
+
 .. |Build Status| image:: https://travis-ci.org/SuperCowPowers/workbench.png?branch=master
     :target: https://travis-ci.org/SuperCowPowers/workbench
 
@@ -31,6 +33,10 @@ As an open source python project it provides light-weight task management, execu
 
 .. |Gitter chat| image:: https://badges.gitter.im/SuperCowPowers/workbench.png
 	:target: https://gitter.im/SuperCowPowers/workbench
+
+.. |Requirements| image:: https://requires.io/github/SuperCowPowers/workbench/requirements.png?branch=master
+	:target: https://requires.io/github/SuperCowPowers/workbench/requirements/?branch=master
+	:alt: Requirements Status
 
 .. |Fury| image:: https://badge.fury.io/py/workbench.png
     :target: http://badge.fury.io/py/workbench
