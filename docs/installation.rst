@@ -45,7 +45,7 @@ Ubuntu (14.04 and 12.04)
 
 If using the Debian package above doesn't work out: - Check out the
 Installation tutorial
-`here <https://www.digitalocean.com/community/articles/how-to-install-bro-ids-2-2-on-ubuntu-12-04>`_
+`here <https://www.digitalocean.com/community/tutorials/how-to-install-bro-ids-2-2-on-ubuntu-12-04>`_
 - or this one
 `here <http://www.justbeck.com/getting-started-with-bro-ids/>`_ - or go
 to offical Bro Downloads
@@ -180,21 +180,3 @@ and follow the instructions (like first 5 lines)
    $ cd scapy-2.*
    $ sudo python setup.py install
    </pre>
-
-Deprecated Instructions for Ubuntu 12.04
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Ubuntu (tested on 12.04)
-^^^^^^^^^^^^^^^^^^^^^^^^
-
--  Mongo: Go through the steps given at `MongoDB Installation
-   Tutorial <http://docs.mongodb.org/manual/tutorial/install-mongodb-on-ubuntu/>`_
--  Bro IDS: Check out the Installation tutorial
-   `here <https://www.digitalocean.com/community/articles/how-to-install-bro-ids-2-2-on-ubuntu-12-04>`_
--  Yara: Read the installation instructions
-   `here <https://github.com/plusvic/yara/releases/latest>`_
--  sudo apt-get install libmagic-dev
--  sudo apt-get install libxml2-dev
--  sudo apt-get install libxslt-dev
--  sudo apt-get install libevent-dev
-
