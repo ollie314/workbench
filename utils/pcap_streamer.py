@@ -111,7 +111,7 @@ class TCPDumpToWorkbench(object):
         if self.tcpdump_process.returncode:
             raise RuntimeError('%s\ntcpdump had returncode: %d' % (exec_args, self.tcpdump_process.returncode))
 
-    def __exit__(self, value, traceback):
+    def __exit__(self, func_type, value, traceback):
         ''' Class Cleanup '''
         print '\nTCP Dumper.. Cleaning up :)'
 

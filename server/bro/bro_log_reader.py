@@ -29,7 +29,7 @@ class BroLogReader(object):
         logfile.seek(0)
 
         # First parse the header of the bro log
-        field_names, _ = self._parse_bro_header(logfile)
+    field_names, _linez = self._parse_bro_header(logfile)
 
         # Note: SO stupid to write a csv reader, but csv.DictReader on Bro
         #       files was doing something weird with generator output that
@@ -130,6 +130,6 @@ if __name__ == '__main__':
 
     # Create a BRO log file reader and pull from the logfile
     BRO_LOG = BroLogReader()
-    RECORDS = BRO_LOG.read_log(open(OPTIONS.logfile, 'rb'), max_rows=10)
+    RECORDS = BRO_LOG.read_log(open(OPTIONS.logfile, 'rb'))
     for row in RECORDS:
         print row
