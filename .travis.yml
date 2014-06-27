@@ -1,14 +1,7 @@
 language: python
-python:
-    - 2.7
 env:
-    - TOX_ENV=py26
     - TOX_ENV=py27
-    - TOX_ENV=py32
-    - TOX_ENV=py33
     - TOX_ENV=pypy
-    - TOX_ENV=docs
-    - TOX_ENV=pep8
 services:
   - mongodb
   - elasticsearch
@@ -24,6 +17,7 @@ before_install:
     - export PATH=/opt/bro/bin:$PATH
 #    - wget https://s3-us-west-2.amazonaws.com/workbench-data/mem_images/exemplar4.vmem -o data/memory_images/exemplar4.vmem
 install:
+    - pip install tox
     - pip install -r requirements.txt
     - pip install coveralls
     - pip install git+https://github.com/newbrough/coverage.git
