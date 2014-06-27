@@ -5,6 +5,16 @@ import pprint
 import argparse
 import ConfigParser
 
+# We're not using this but it might be handy to someone
+'''
+def md5_for_file(path, block_size=256*128):
+    md5 = hashlib.md5()
+    with open(path,'rb') as f:
+        for chunk in iter(lambda: f.read(block_size), b''):
+            md5.update(chunk)
+    return md5.hexdigest()
+'''
+
 def main():
     ''' This client pushes a file into Workbench '''
     
