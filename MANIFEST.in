@@ -3,3 +3,7 @@ include CONTRIBUTING.rst
 include HISTORY.rst
 include LICENSE
 include README.rst
+include workbench/workers/peid_userdb.txt
+recursive-include workbench/data *
+recursive-include workbench.workers/bro *
+recursive-include workbench.workers/yara *

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 
 __author__ = 'Brian Wylie'
 __email__ = 'briford@supercowpowers.com'
