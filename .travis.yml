@@ -18,9 +18,7 @@ before_install:
 #    - wget https://s3-us-west-2.amazonaws.com/workbench-data/mem_images/exemplar4.vmem -o data/memory_images/exemplar4.vmem
 install:
     - pip install tox
-    - pip install -r requirements.txt
     - pip install coveralls
-    - pip install git+https://github.com/newbrough/coverage.git
 script: 
     # - coverage run --source=workbench setup.py test
     - tox -e $TOX_ENV
