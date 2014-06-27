@@ -3,8 +3,10 @@
 [![Coverage Status](https://coveralls.io/repos/SuperCowPowers/workbench/badge.png)](https://coveralls.io/r/SuperCowPowers/workbench)
 [![Code Health](https://landscape.io/github/SuperCowPowers/workbench/master/landscape.png)](https://landscape.io/github/SuperCowPowers/workbench/master)
 [![Project Stats](https://www.ohloh.net/p/workbench/widgets/project_thin_badge.gif)](https://www.ohloh.net/p/workbench)
-[![Stories in Ready](https://badge.waffle.io/supercowpowers/workbench.png?label=ready&title=Ready)](https://waffle.io/supercowpowers/workbench)
-[![Stories in Ready](https://badge.waffle.io/supercowpowers/workbench.png?label=in progress&title=In Progress)](https://waffle.io/supercowpowers/workbench)
+
+[![Stories](https://badge.waffle.io/supercowpowers/workbench.png?label=on_deck&title=On_Deck)](https://waffle.io/supercowpowers/workbench)
+[![Stories](https://badge.waffle.io/supercowpowers/workbench.png?label=in_progress&title=In_Progress)](https://waffle.io/supercowpowers/workbench)
+[![Gitter chat](https://badges.gitter.im/SuperCowPowers/workbench.png)](https://gitter.im/SuperCowPowers/workbench)
 
 Workbench
 =========
