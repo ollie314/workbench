@@ -32,6 +32,9 @@ As an open source python project it provides light-weight task management, execu
 .. |Project InProgress| image:: https://badge.waffle.io/supercowpowers/workbench.png?label=In Progress&title=In Progress
     :target: https://waffle.io/supercowpowers/workbench
 
+.. |Gitter chat| image:: https://badges.gitter.im/SuperCowPowers/workbench.png
+	:target: https://gitter.im/SuperCowPowers/workbench
+
 .. |Fury| image:: https://badge.fury.io/py/workbench.png
     :target: http://badge.fury.io/py/workbench
 
