@@ -42,7 +42,7 @@ setup(
     long_description=readme + '\n\n' + doclink + '\n\n' + history,
     author='Brian Wylie',
     author_email='briford@supercowpowers.com',
-    url='https://github.com/brifordwylie/workbench',
+    url='https://github.com/SuperCowPowers/workbench',
     packages=['workbench','workbench.clients', 'workbench.server',
 	      'workbench.server.bro', 'workbench.workers','workbench.utils'],
     package_dir={'workbench': 'workbench'},
