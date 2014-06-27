@@ -24,7 +24,7 @@ before_install:
     - export PATH=/opt/bro/bin:$PATH
 #    - wget https://s3-us-west-2.amazonaws.com/workbench-data/mem_images/exemplar4.vmem -o data/memory_images/exemplar4.vmem
 install:
-    - pip install -r requirements.txt --use-mirrors
+    - pip install -r requirements.txt
     - pip install coveralls
     - pip install git+https://github.com/newbrough/coverage.git
 script: 
