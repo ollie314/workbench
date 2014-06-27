@@ -5,7 +5,9 @@ Workbench Documentation
 Workbench focuses on simplicity, transparency, and easy on-site customization. 
 As an open source python project it provides light-weight task management, execution and pipelining for a loosely-coupled set of python classes. 
 
-|Build Status| |Coverage Status| |Code Health| |Project Stats| |Project Ready| |Project InProgress|
+|Build Status| |Coverage Status| |Code Health| |Project Stats|
+
+|Project Ready| |Project InProgress| |Gitter chat|
 
 .. |Build Status| image:: https://travis-ci.org/SuperCowPowers/workbench.png?branch=master
     :target: https://travis-ci.org/SuperCowPowers/workbench
@@ -19,11 +21,14 @@ As an open source python project it provides light-weight task management, execu
 .. |Project Stats| image:: https://www.ohloh.net/p/workbench/widgets/project_thin_badge.gif
     :target: https://www.ohloh.net/p/workbench
 
-.. |Project Ready| image:: https://badge.waffle.io/supercowpowers/workbench.png?label=ready&title=Ready
+.. |Project Ready| image:: https://badge.waffle.io/supercowpowers/workbench.png?label=on_deck&title=On_Deck
     :target: https://waffle.io/supercowpowers/workbench
 
-.. |Project InProgress| image:: https://badge.waffle.io/supercowpowers/workbench.png?label=in progress&title=In Progress
+.. |Project InProgress| image:: https://badge.waffle.io/supercowpowers/workbench.png?label=in_progress&title=In_Progress
     :target: https://waffle.io/supercowpowers/workbench
+
+.. |Gitter chat| image:: https://badges.gitter.im/SuperCowPowers/workbench.png
+	:target: https://gitter.im/SuperCowPowers/workbench
 
 .. |Fury| image:: https://badge.fury.io/py/workbench.png
     :target: http://badge.fury.io/py/workbench

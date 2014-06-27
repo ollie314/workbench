@@ -1,8 +1,3 @@
-.. image:: http://raw.github.com/supercowpowers/workbench/master/images/workbench.jpg
-    :alt: workbench
-    :width: 300
-    :align: right
-
 ===============================
 About Workbench
 ===============================
@@ -13,6 +8,7 @@ Workbench focuses on simplicity, transparency, and easy on-site customization.
 As an open source python project it provides light-weight task management, execution and pipelining for a loosely-coupled set of python classes. 
 
 |Build Status| |Coverage Status| |Code Health| |Project Stats|
+
 |Project Ready| |Project InProgress| |Gitter chat|
 
 .. |Build Status| image:: https://travis-ci.org/SuperCowPowers/workbench.png?branch=master
@@ -27,10 +23,10 @@ As an open source python project it provides light-weight task management, execu
 .. |Project Stats| image:: https://www.ohloh.net/p/workbench/widgets/project_thin_badge.gif
     :target: https://www.ohloh.net/p/workbench
 
-.. |Project Ready| image:: https://badge.waffle.io/supercowpowers/workbench.png?label=ready&title=Ready
+.. |Project Ready| image:: https://badge.waffle.io/supercowpowers/workbench.png?label=on_deck&title=On_Deck
     :target: https://waffle.io/supercowpowers/workbench
 
-.. |Project InProgress| image:: https://badge.waffle.io/supercowpowers/workbench.png?label=In Progress&title=In Progress
+.. |Project InProgress| image:: https://badge.waffle.io/supercowpowers/workbench.png?label=In_Progress&title=In_Progress
     :target: https://waffle.io/supercowpowers/workbench
 
 .. |Gitter chat| image:: https://badges.gitter.im/SuperCowPowers/workbench.png
@@ -72,7 +68,7 @@ Pull the repository
     :alt: warning
     :width: 80
     :align: left
-.. warning:: Be Careful!: The repository contains malcious data samples, be careful, exclude the workbench directory from AV, etc...
+.. warning:: Caution!: The repository contains malcious data samples, be careful, exclude the workbench directory from AV, etc...
 .. code:: sh
 	
 	git clone https://github.com/supercowpowers/workbench.git
