@@ -12,7 +12,8 @@ About Workbench
 Workbench focuses on simplicity, transparency, and easy on-site customization. 
 As an open source python project it provides light-weight task management, execution and pipelining for a loosely-coupled set of python classes. 
 
-|Build Status| |Coverage Status| |Code Health| |Project Stats| |Project Ready| |Project InProgress|
+|Build Status| |Coverage Status| |Code Health| |Project Stats|
+|Project Ready| |Project InProgress| |Gitter chat|
 
 .. |Build Status| image:: https://travis-ci.org/SuperCowPowers/workbench.png?branch=master
     :target: https://travis-ci.org/SuperCowPowers/workbench
