@@ -29,7 +29,7 @@ class BroLogReader(object):
         logfile.seek(0)
 
         # First parse the header of the bro log
-    field_names, _linez = self._parse_bro_header(logfile)
+        field_names, _linez = self._parse_bro_header(logfile)
 
         # Note: SO stupid to write a csv reader, but csv.DictReader on Bro
         #       files was doing something weird with generator output that
