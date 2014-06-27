@@ -1,13 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import os
-import sys
-
-try:
-    from setuptools import setup
-except ImportError:
-    from distutils.core import setup
+import os, sys
+from setuptools import setup
+from setuptools.command.test import test as TestCommand
 
 
 if sys.argv[-1] == 'publish':
