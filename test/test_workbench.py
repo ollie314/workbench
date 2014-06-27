@@ -2,7 +2,7 @@
 Tests for `workbench` module.
 """
 import pytest
-from workbench import workbench
+import workbench
 
 
 class TestWorkbench(object):
