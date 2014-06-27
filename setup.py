@@ -19,16 +19,21 @@ Documentation
 The full documentation is at http://workbench.rtfd.org. '''
 history = open('HISTORY.rst').read().replace('.. :changelog:', '')
 
-class PyTest(TestCommand):
+class Tox(TestCommand):
+    user_options = [('tox-args=', 'a', "Arguments to pass to tox")]
+    def initialize_options(self):
+        TestCommand.initialize_options(self)
+        self.tox_args = None
     def finalize_options(self):
         TestCommand.finalize_options(self)
         self.test_args = []
         self.test_suite = True
-
     def run_tests(self):
-        import pytest
-        errcode = pytest.main(self.test_args)
-        sys.exit(errcode)
+        #import here, cause outside the eggs aren't loaded
+        import tox
+        import shlex
+        errno = tox.cmdline(args=shlex.split(self.tox_args))
+        sys.exit(errno)
 
 setup(
     name='workbench',
@@ -43,8 +48,8 @@ setup(
     package_dir={'workbench': 'workbench'},
     include_package_data=True,
     scripts = ['workbench/workbench'],
-    tests_require=['pytest'],
-    cmdclass={'test': PyTest},
+    tests_require=['tox'],
+    cmdclass = {'test': Tox},
     install_requires=[],
     license='MIT',
     zip_safe=False,
