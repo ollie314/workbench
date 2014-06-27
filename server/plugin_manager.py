@@ -79,21 +79,6 @@ class PluginManager(FileSystemEventHandler):
                 mod_time = datetime.utcfromtimestamp(os.path.getmtime(f))
                 self.plugin_callback(plugin_info, mod_time)
 
-    # Currently disabled: Need to thing about this funcitonality
-    '''
-    def run_test(self, handler):
-        previousDir = os.getcwd()
-        os.chdir(self.plugin_path)
-        try:
-            handler.test()
-            return True
-        except AttributeError:
-            print 'Failure for plugin: %s' % (handler.__name__)
-            print 'The file must have a top level test() method that runs'
-            return False
-        finally:
-            os.chdir(previousDir)
-    '''
 
     def validate(self, handler):
         ''' Validate the plugin, each plugin must have the following:
@@ -103,7 +88,7 @@ class PluginManager(FileSystemEventHandler):
         '''
 
         # Check for the test method first
-        methods = [name for name,_value in inspect.getmembers(handler, callable)]
+        methods = [name for name,_ in inspect.getmembers(handler, callable)]
         if 'test' not in methods:
             print 'Failure for plugin: %s' % (handler.__name__)
             print 'Validation Error: The file must have a top level test() method'

@@ -36,15 +36,17 @@ class PEFileWorker(object):
                                  'iat_rva', 'major_version', 'minor_version', 'number_of_bound_import_symbols',
                                  'number_of_bound_imports', 'number_of_export_symbols', 'number_of_import_symbols',
                                  'number_of_imports', 'number_of_rva_and_sizes', 'number_of_sections', 'pe_warnings',
-                                 'std_section_names', 'total_size_pe', 'virtual_address', 'virtual_size', 'virtual_size_2',
-                                 'datadir_IMAGE_DIRECTORY_ENTRY_BASERELOC_size', 'datadir_IMAGE_DIRECTORY_ENTRY_RESOURCE_size',
+                                 'std_section_names', 'total_size_pe', 'virtual_address', 'virtual_size',
+                                 'virtual_size_2', 'datadir_IMAGE_DIRECTORY_ENTRY_BASERELOC_size',
+                                 'datadir_IMAGE_DIRECTORY_ENTRY_RESOURCE_size',
                                  'datadir_IMAGE_DIRECTORY_ENTRY_IAT_size', 'datadir_IMAGE_DIRECTORY_ENTRY_IMPORT_size',
-                                 'pe_char', 'pe_dll', 'pe_driver', 'pe_exe', 'pe_i386', 'pe_majorlink', 'pe_minorlink',
-                                 'sec_entropy_data', 'sec_entropy_rdata', 'sec_entropy_reloc', 'sec_entropy_text',
-                                 'sec_entropy_rsrc', 'sec_rawptr_rsrc', 'sec_rawsize_rsrc', 'sec_vasize_rsrc',
-                                 'sec_raw_execsize', 'sec_rawptr_data', 'sec_rawptr_text', 'sec_rawsize_data',
-                                 'sec_rawsize_text', 'sec_va_execsize', 'sec_vasize_data', 'sec_vasize_text',
-                                 'size_code', 'size_image', 'size_initdata', 'size_uninit'])
+                                 'pe_char', 'pe_dll', 'pe_driver', 'pe_exe', 'pe_i386', 'pe_majorlink', 
+                                 'pe_minorlink', 'sec_entropy_data', 'sec_entropy_rdata',
+                                 'sec_entropy_reloc', 'sec_entropy_text', 'sec_entropy_rsrc', 'sec_rawptr_rsrc',
+                                 'sec_rawsize_rsrc', 'sec_vasize_rsrc', 'sec_raw_execsize', 'sec_rawptr_data',
+                                 'sec_rawptr_text', 'sec_rawsize_data', 'sec_rawsize_text', 'sec_va_execsize',
+                                 'sec_vasize_data', 'sec_vasize_text', 'size_code', 'size_image', 'size_initdata',
+                                 'size_uninit'])
 
         self.set_sparse_features(['imported_symbols', 'section_names', 'pe_warning_strings'])
 

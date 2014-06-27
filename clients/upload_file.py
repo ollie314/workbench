@@ -5,6 +5,16 @@ import pprint
 import argparse
 import ConfigParser
 
+# We're not using this but it might be handy to someone
+'''
+def md5_for_file(path, block_size=256*128):
+    md5 = hashlib.md5()
+    with open(path,'rb') as f:
+        for chunk in iter(lambda: f.read(block_size), b''):
+            md5.update(chunk)
+    return md5.hexdigest()
+'''
+
 def main():
     ''' This client pushes a file into Workbench '''
     
@@ -15,7 +25,8 @@ def main():
     port = workbench_conf.getint('workbench', 'server_port') 
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('-f', '--loadfile', type=str, default='../data/log/system.log', help='File to import into the workbench server')
+    parser.add_argument('-f', '--loadfile', type=str, default='../data/log/system.log',
+                        help='File to import into the workbench server')
     parser.add_argument('-p', '--port', type=int, default=port, help='port used by workbench server')
     parser.add_argument('-s', '--server', type=str, default=server, help='location of workbench server')
     args = parser.parse_args()

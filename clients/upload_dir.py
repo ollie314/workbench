@@ -5,15 +5,6 @@ import argparse
 import ConfigParser
 import hashlib
 
-# We're not using this but it might be handy to someone
-'''
-def md5_for_file(path, block_size=256*128):
-    md5 = hashlib.md5()
-    with open(path,'rb') as f:
-        for chunk in iter(lambda: f.read(block_size), b''):
-            md5.update(chunk)
-    return md5.hexdigest()
-'''
 
 def main():
     ''' This client pushes a big directory of different files into Workbench '''
@@ -25,7 +16,8 @@ def main():
     port = workbench_conf.getint('workbench', 'server_port') 
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('-d', '--data-dir', type=str, default='../data/pdf/bad', help='Directory of files to import into the workbench server')
+    parser.add_argument('-d', '--data-dir', type=str, default='../data/pdf/bad', help='Directory\
+                         of files to import into the workbench server')
     parser.add_argument('-t', '--tag', type=str, default='log', help='Type_tag of the files being imported')    
     parser.add_argument('-p', '--port', type=int, default=port, help='port used by workbench server')
     parser.add_argument('-s', '--server', type=str, default=server, help='location of workbench server')

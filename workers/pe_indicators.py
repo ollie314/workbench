@@ -46,7 +46,7 @@ class PEIndicators(object):
         ''' Execute the PEIndicators worker '''
         raw_bytes = input_data['sample']['raw_bytes']
 
-        ''' Analyze the output of pefile for any anomalous conditions. '''
+        # Analyze the output of pefile for any anomalous conditions.
         # Have the PE File module process the file
         try:
             self.pefile_handle = pefile.PE(data=raw_bytes, fast_load=False)
@@ -196,7 +196,7 @@ class PEIndicators(object):
         matching_imports = self._search_for_import_symbols(imports)
         if matching_imports:
             return {'description':'Imported symbols related to network communication', 'severity': 1,
-                     'category':'COMMUNICATION', 'attributes':matching_imports}
+                    'category':'COMMUNICATION', 'attributes':matching_imports}
         else:
             return None
 
@@ -208,7 +208,7 @@ class PEIndicators(object):
         matching_imports = self._search_for_import_symbols(imports)
         if (matching_imports):
             return {'description': 'Imported symbols related to elevating or attaining new privileges', 
-                     'severity': 2, 'category': 'CREDENTIALS', 'attributes': matching_imports}
+                    'severity': 2, 'category': 'CREDENTIALS', 'attributes': matching_imports}
         else:
             return None
 
@@ -220,7 +220,7 @@ class PEIndicators(object):
         matching_imports = self._search_for_import_symbols(imports)
         if matching_imports:
             return {'description': 'Imported symbols related to keylogging activities', 'severity': 2,
-                     'category': 'KEYLOGGING', 'attributes': matching_imports}
+                    'category': 'KEYLOGGING', 'attributes': matching_imports}
         else:
             return None
 
@@ -233,7 +233,7 @@ class PEIndicators(object):
         matching_imports = self._search_for_import_symbols(imports)
         if matching_imports:
             return {'description': 'Imported symbols related to changing system state', 'severity': 1,
-                     'category': 'SYSTEM_STATE', 'attributes': matching_imports}
+                    'category': 'SYSTEM_STATE', 'attributes': matching_imports}
         else:
             return None
 
@@ -243,7 +243,7 @@ class PEIndicators(object):
         matching_imports = self._search_for_import_symbols(imports)
         if matching_imports:
             return {'description': 'Imported symbols related to probing the system', 'severity': 2,
-                     'category': 'SYSTEM_PROBE', 'attributes': matching_imports}
+                    'category': 'SYSTEM_PROBE', 'attributes': matching_imports}
         else:
             return None
 
@@ -253,7 +253,7 @@ class PEIndicators(object):
         matching_imports = self._search_for_import_symbols(imports)
         if matching_imports:
             return {'description': 'Imported symbols related to system security and integrity', 
-                     'severity': 3, 'category': 'SYSTEM_INTEGRITY', 'attributes': matching_imports}
+                    'severity': 3, 'category': 'SYSTEM_INTEGRITY', 'attributes': matching_imports}
         else:
             return None
 
@@ -263,7 +263,7 @@ class PEIndicators(object):
         matching_imports = self._search_for_import_symbols(imports)
         if matching_imports:
             return {'description': 'Imported symbols related to encryption', 'severity': 3,
-                     'category': 'ENCRYPTION', 'attributes': matching_imports}
+                    'category': 'ENCRYPTION', 'attributes': matching_imports}
         else:
             return None
 
@@ -274,7 +274,7 @@ class PEIndicators(object):
         matching_imports = self._search_for_import_symbols(imports)
         if matching_imports:
             return {'description': 'Imported symbols related to anti-debugging', 'severity': 3,
-                     'category': 'ANTI_DEBUG', 'attributes': matching_imports}
+                    'category': 'ANTI_DEBUG', 'attributes': matching_imports}
         else:
             return None
 
@@ -286,7 +286,7 @@ class PEIndicators(object):
         matching_imports = self._search_for_import_symbols(imports)
         if matching_imports:
             return {'description': 'Imported symbols related to COM or Services', 'severity': 3,
-                     'category': 'COM_SERVICES', 'attributes': matching_imports}
+                    'category': 'COM_SERVICES', 'attributes': matching_imports}
         else:
             return None
 
@@ -301,7 +301,7 @@ class PEIndicators(object):
         matching_imports = self._search_for_import_symbols(imports)
         if matching_imports:
             return {'description': 'Imported symbols related to process manipulation/injection', 
-                     'severity': 3, 'category': 'PROCESS_MANIPULATION', 'attributes': matching_imports}
+                    'severity': 3, 'category': 'PROCESS_MANIPULATION', 'attributes': matching_imports}
         else:
             return None
 
@@ -312,7 +312,7 @@ class PEIndicators(object):
         matching_imports = self._search_for_import_symbols(imports)
         if matching_imports:
             return {'description': 'Imported symbols related to spawning a new process', 'severity': 2,
-                     'category': 'PROCESS_SPAWN', 'attributes': matching_imports}
+                    'category': 'PROCESS_SPAWN', 'attributes': matching_imports}
         else:
             return None
 
@@ -322,7 +322,7 @@ class PEIndicators(object):
         matching_imports = self._search_for_import_symbols(imports)
         if matching_imports:
             return {'description': 'Imported symbols related to loading libraries, resources, in a sneaky way',
-                     'severity': 2, 'category': 'STEALTH_LOAD', 'attributes': matching_imports}
+                    'severity': 2, 'category': 'STEALTH_LOAD', 'attributes': matching_imports}
         else:
             return None
 

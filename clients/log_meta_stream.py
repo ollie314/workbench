@@ -28,12 +28,12 @@ def main():
     # Test out some log files
     file_list = [os.path.join('../data/log', child) for child in os.listdir('../data/log')]
     for filename in file_list:
-        with open(filename,'rb') as file:
+        with open(filename,'rb') as f:
 
             # Skip OS generated files
             if '.DS_Store' in filename: continue
 
-            md5 = workbench.store_sample(filename, file.read(), 'log')
+            md5 = workbench.store_sample(filename, f.read(), 'log')
             results = workbench.work_request('view_log_meta', md5)
             print 'Filename: %s\n' % (filename)
             pprint.pprint(results)
