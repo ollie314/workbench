@@ -44,6 +44,7 @@ setup(
     include_package_data=True,
     scripts = ['workbench/workbench'],
     tests_require=['pytest'],
+    cmdclass={'test': PyTest},
     install_requires=[],
     license='MIT',
     zip_safe=False,
@@ -54,8 +55,5 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Natural Language :: English',
         'Programming Language :: Python :: 2.7',
-    ],
-    extras_require={
-        'testing': ['pytest'],
-    }    
+    ]
 )
