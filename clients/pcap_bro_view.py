@@ -35,8 +35,8 @@ def main():
         if '.DS_Store' in filename: continue
 
         # Process the pcap file
-        with open(filename,'rb') as file:
-            md5 = workbench.store_sample(filename, file.read(), 'pcap')
+        with open(filename,'rb') as f:
+            md5 = workbench.store_sample(filename, f.read(), 'pcap')
             results = workbench.work_request('view_pcap', md5)
             print '\n<<< %s >>>' % filename
             pprint.pprint(results)
