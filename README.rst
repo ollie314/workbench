@@ -45,7 +45,7 @@ As an open source python project it provides light-weight task management, execu
 
 Pull the repository
 -------------------
-Warning! The repository contains malcious data samples, be careful, exclude the workbench directory from AV, etc...
+Warning! The repository contains malcious samples, be careful, exclude the workbench directory from AV, etc...
 
 .. code:: sh
 	
