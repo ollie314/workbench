@@ -70,7 +70,7 @@ Pull the repository
 -------------------
 .. image:: http://raw.github.com/supercowpowers/workbench/master/images/warning.jpg
     :alt: warning
-    :width: 80
+    :width: 80 px
     :align: left
 .. warning:: Caution!: The repository contains malcious data samples, be careful, exclude the workbench directory from AV, etc...
 .. code:: sh
