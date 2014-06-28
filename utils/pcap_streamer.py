@@ -90,8 +90,8 @@ class TCPDumpToWorkbench(object):
         # Open the file and send it to workbench
         storage_name = "streaming_pcap" + str(self.pcap_index)
         print filename, storage_name
-        with open(filename,'rb') as file:
-            self.workbench.store_sample(storage_name, file.read(), 'pcap')
+        with open(filename,'rb') as f:
+            self.workbench.store_sample(storage_name, f.read(), 'pcap')
         self.pcap_index += 1
 
         # Close workbench client
@@ -101,7 +101,8 @@ class TCPDumpToWorkbench(object):
         try:
             self.tcpdump_process = subprocess.Popen(exec_args.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         except OSError:
-            raise RuntimeError('Could not run tcpdump executable (either not installed or not in path): %s' % (exec_args))
+            raise RuntimeError('Could not run tcpdump executable (either not \
+                               installed or not in path): %s' % (exec_args))
         out, err = self.tcpdump_process.communicate()
         if out:
             print 'standard output of subprocess: %s' % out
@@ -110,7 +111,7 @@ class TCPDumpToWorkbench(object):
         if self.tcpdump_process.returncode:
             raise RuntimeError('%s\ntcpdump had returncode: %d' % (exec_args, self.tcpdump_process.returncode))
 
-    def __exit__(self, type, value, traceback):
+    def __exit__(self, func_type, value, traceback):
         ''' Class Cleanup '''
         print '\nTCP Dumper.. Cleaning up :)'
 
