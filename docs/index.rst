@@ -9,8 +9,6 @@ As an open source python project it provides light-weight task management, execu
 
 |Project Ready| |Project InProgress| |Gitter chat|
 
-|Requirements|
-
 .. |Build Status| image:: https://travis-ci.org/SuperCowPowers/workbench.png?branch=master
     :target: https://travis-ci.org/SuperCowPowers/workbench
 
@@ -30,11 +28,11 @@ As an open source python project it provides light-weight task management, execu
     :target: https://waffle.io/supercowpowers/workbench
 
 .. |Gitter chat| image:: https://badges.gitter.im/SuperCowPowers/workbench.png
-	:target: https://gitter.im/SuperCowPowers/workbench
+    :target: https://gitter.im/SuperCowPowers/workbench
 
 .. |Requirements| image:: https://requires.io/github/SuperCowPowers/workbench/requirements.png?branch=master
-	:target: https://requires.io/github/SuperCowPowers/workbench/requirements/?branch=master
-	:alt: Requirements Status
+    :target: https://requires.io/github/SuperCowPowers/workbench/requirements/?branch=master
+    :alt: Requirements Status
 
 .. |Fury| image:: https://badge.fury.io/py/workbench.png
     :target: http://badge.fury.io/py/workbench
@@ -46,20 +44,33 @@ As an open source python project it provides light-weight task management, execu
 Contents:
 
 .. toctree::
-   :maxdepth: 2
+    :maxdepth: 1
 
-   readme
-   installation
-   running
-   contributing
-   authors
-   history
-   project_details
+    readme
+    installation
+    running
+    contributing
+    project_details
+    authors
+    history
+
+Workbench Server (Auto Generated)
+=================================
+
+.. toctree::
+    :maxdepth: 2
+
+    workbench.server
+
+Workers (Auto Generated)
+========================
+
+.. toctree::
+    :maxdepth: 2
+
+    workbench.workers
 
 Indices and tables
 ==================
-
 * :ref:`genindex`
 * :ref:`modindex`
-* :ref:`search`
-
