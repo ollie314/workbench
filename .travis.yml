@@ -1,6 +1,7 @@
 language: python
 env:
     - TOX_ENV=py27
+    - TOX_ENV=docs
 services:
   - mongodb
   - elasticsearch
