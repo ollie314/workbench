@@ -53,6 +53,7 @@ Contents:
     project_details
     installation
     running
+    faq
     contributing
     authors
     history
