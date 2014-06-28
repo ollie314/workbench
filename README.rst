@@ -51,20 +51,6 @@ As an open source python project it provides light-weight task management, execu
 .. _Users_Email_List: https://groups.google.com/forum/#!forum/workbench-users
 .. _Developers_Email_List: https://groups.google.com/forum/#!forum/workbench-devs
 
-Workbench Examples
---------------------
-- `PCAP to Graph <http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/notebooks/PCAP_to_Graph.ipynb>`_ (Short and Awesome)
-- `Workbench Demo <http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/notebooks/Workbench_Demo.ipynb>`_
-- `Adding a new Worker <http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/notebooks/Adding_Worker.ipynb>`_ (Super Hawt)
-- `PCAP to Dataframe <http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/notebooks/PCAP_to_Dataframe.ipynb>`_
-- `PCAP DriveBy Analysis <http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/notebooks/PCAP_DriveBy.ipynb>`_
-- `Using Neo4j for PE File Sim Graph <http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/notebooks/PE_SimGraph.ipynb>`_
-- `Generator Pipelines Notebook <http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/notebooks/Generator_Pipelines.ipynb>`_
-- WIP Notebooks
-	- `Network Stream Analysis Notebook <http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/notebooks/Network_Stream.ipynb>`_
-	- `PE File Static Analysis Notebook <http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/notebooks/PE_Static_Analysis.ipynb>`_
-
-
 
 Pull the repository
 -------------------

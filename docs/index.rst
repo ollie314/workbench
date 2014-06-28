@@ -1,13 +1,16 @@
-Workbench Documentation
-=======================
-**A medium-data framework for security research and development teams.**
-
-Workbench focuses on simplicity, transparency, and easy on-site customization. 
-As an open source python project it provides light-weight task management, execution and pipelining for a loosely-coupled set of python classes. 
+.. image:: http://raw.github.com/supercowpowers/workbench/master/images/workbench.jpg
 
 |Build Status| |Coverage Status| |Code Health| |Project Stats|
 
 |Project Ready| |Project InProgress| |Gitter chat|
+
+Workbench
+=========
+
+**A medium-data framework for security research and development teams.**
+
+Workbench focuses on simplicity, transparency, and easy on-site customization. 
+As an open source python project it provides light-weight task management, execution and pipelining for a loosely-coupled set of python classes. 
 
 .. |Build Status| image:: https://travis-ci.org/SuperCowPowers/workbench.png?branch=master
     :target: https://travis-ci.org/SuperCowPowers/workbench
@@ -42,15 +45,15 @@ As an open source python project it provides light-weight task management, execu
 
 
 Contents:
+^^^^^^^^
 
 .. toctree::
     :maxdepth: 1
 
-    readme
+    project_details
     installation
     running
     contributing
-    project_details
     authors
     history
 
@@ -69,8 +72,3 @@ Workers (Auto Generated)
     :maxdepth: 2
 
     workbench.workers
-
-Indices and tables
-==================
-* :ref:`genindex`
-* :ref:`modindex`
