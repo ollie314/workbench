@@ -486,7 +486,7 @@ class WorkBench():
             plugin['test']()
             return True
         except AttributeError:
-            print 'Failure for plugin: %s' % (handler.__name__)
+            print 'Failure for plugin: %s' % (worker)
             print 'Could not find a top level test() method'
             return False
 
