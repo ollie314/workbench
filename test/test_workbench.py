@@ -13,7 +13,7 @@ class TestWorkbench(object):
         p.start()
 
         # Start up workbench connection
-        workbench = zerorpc.Client()
+        workbench = zerorpc.Client(timeout=300)
         workbench.connect('tcp://localhost:4242')
 
         # Get all the dynamically loaded workers
