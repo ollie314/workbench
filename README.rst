@@ -1,6 +1,3 @@
-.. image:: http://raw.github.com/supercowpowers/workbench/master/images/workbench.jpg
-	:align: center
-
 |Build Status| |Coverage Status| |Code Health| |Project Stats|
 
 |Project Ready| |Project InProgress| |Gitter chat|
