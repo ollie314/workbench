@@ -1,6 +1,4 @@
-|Build Status| |Coverage Status| |Code Health| |Project Stats|
-
-|Project Ready| |Project InProgress| |Gitter chat|
+|Build Status| |Coverage Status| |Code Health| |Project Stats| |Project Ready| |Project InProgress| |Gitter chat|
 
 Workbench
 =========
