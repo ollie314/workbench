@@ -1,14 +1,3 @@
-About Workbench
-===============
-
-A medium-data framework for security research and development teams.
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Workbench focuses on simplicity, transparency, and easy on-site
-customization. As an open source python project it provides light-weight
-task management, execution and pipelining for a loosely-coupled set of
-python classes.
-
 Detailed Project Description
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 

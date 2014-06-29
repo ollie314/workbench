@@ -1,6 +1,7 @@
 language: python
-python:
-  - 2.7
+env:
+    - TOX_ENV=py27
+    - TOX_ENV=docs
 services:
   - mongodb
   - elasticsearch
@@ -14,13 +15,11 @@ before_install:
     - wget https://s3-us-west-2.amazonaws.com/workbench-data/packages/Bro-2.2-Linux-x86_64_flex.deb
     - sudo dpkg -i Bro-2.2-Linux-x86_64_flex.deb
     - export PATH=/opt/bro/bin:$PATH
-    - cp .noserc ~/.noserc
 #    - wget https://s3-us-west-2.amazonaws.com/workbench-data/mem_images/exemplar4.vmem -o data/memory_images/exemplar4.vmem
 install:
-  - pip install -r requirements.txt
-  - pip install coveralls
-  - pip install git+https://github.com/newbrough/coverage.git
-script:
-  ./runtests
+    - pip install tox
+    - pip install coveralls
+script: 
+    - tox -e $TOX_ENV
 after_success:
-  coveralls
+    - coveralls

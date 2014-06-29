@@ -1,12 +1,12 @@
 |Build Status| |Coverage Status| |Code Health| |Project Stats| |Project Ready| |Project InProgress| |Gitter chat|
 
+Note: the coverage is about 90%, the issue is with reporting. (See Issue #137)
+
 Workbench
 =========
 
-**A medium-data framework for security research and development teams.**
-
 Workbench focuses on simplicity, transparency, and easy on-site customization. 
-As an open source python project it provides light-weight task management, execution and pipelining for a loosely-coupled set of python classes. 
+As an open source python project it provides light-weight task management, execution and pipelining for a loosely-coupled set of python classes.
 
 .. |Build Status| image:: https://travis-ci.org/SuperCowPowers/workbench.png?branch=master
     :target: https://travis-ci.org/SuperCowPowers/workbench
@@ -23,15 +23,15 @@ As an open source python project it provides light-weight task management, execu
 .. |Project Ready| image:: https://badge.waffle.io/supercowpowers/workbench.png?label=on_deck&title=On_Deck
     :target: https://waffle.io/supercowpowers/workbench
 
-.. |Project InProgress| image:: https://badge.waffle.io/supercowpowers/workbench.png?label=in_progress&title=In_Progress
+.. |Project InProgress| image:: https://badge.waffle.io/supercowpowers/workbench.png?label=In_Progress&title=In_Progress
     :target: https://waffle.io/supercowpowers/workbench
 
 .. |Gitter chat| image:: https://badges.gitter.im/SuperCowPowers/workbench.png
-    :target: https://gitter.im/SuperCowPowers/workbench
+	:target: https://gitter.im/SuperCowPowers/workbench
 
 .. |Requirements| image:: https://requires.io/github/SuperCowPowers/workbench/requirements.png?branch=master
-    :target: https://requires.io/github/SuperCowPowers/workbench/requirements/?branch=master
-    :alt: Requirements Status
+	:target: https://requires.io/github/SuperCowPowers/workbench/requirements/?branch=master
+	:alt: Requirements Status
 
 .. |Fury| image:: https://badge.fury.io/py/workbench.png
     :target: http://badge.fury.io/py/workbench
@@ -40,32 +40,23 @@ As an open source python project it provides light-weight task management, execu
     :target: https://pypi.python.org/pypi/workbench
 
 
-Contents:
-^^^^^^^^
+Pull the repository
+-------------------
+Warning! The repository contains malcious samples, be careful, exclude the workbench directory from AV, etc...
 
-.. toctree::
-    :maxdepth: 1
+.. code:: sh
+	
+	git clone https://github.com/supercowpowers/workbench.git
 
-    project_details
-    installation
-    running
-    faq
-    contributing
-    authors
-    history
+Read the Documentation
+----------------------
+Workbech Documentation: Workbench_Docs_
 
-Workbench Server (Auto Generated)
-=================================
+Email Lists (Forums)
+--------------------
+- Users Email List: Users_Email_List_
+- Developers Email List: Developers_Email_List_
 
-.. toctree::
-    :maxdepth: 2
-
-    workbench.server
-
-Workers (Auto Generated)
-========================
-
-.. toctree::
-    :maxdepth: 2
-
-    workbench.workers
+.. _Workbench_Docs: http://workbench.readthedocs.org/en/latest/
+.. _Users_Email_List: https://groups.google.com/forum/#!forum/workbench-users
+.. _Developers_Email_List: https://groups.google.com/forum/#!forum/workbench-devs

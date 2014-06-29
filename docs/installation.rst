@@ -7,7 +7,7 @@ Workbench Client:
 
 ::
 
-    $ pip install zerorpc; echo 'Done!'
+    $ pip install zerorpc;
 
 Workbench Server:
 ~~~~~~~~~~~~~~~~~
@@ -45,7 +45,7 @@ Ubuntu (14.04 and 12.04)
 
 If using the Debian package above doesn't work out: - Check out the
 Installation tutorial
-`here <https://www.digitalocean.com/community/articles/how-to-install-bro-ids-2-2-on-ubuntu-12-04>`_
+`here <https://www.digitalocean.com/community/tutorials/how-to-install-bro-ids-2-2-on-ubuntu-12-04>`_
 - or this one
 `here <http://www.justbeck.com/getting-started-with-bro-ids/>`_ - or go
 to offical Bro Downloads
@@ -85,17 +85,19 @@ Ubuntu (14.04 and 12.04)
    -  Any issues see
       `elasticsearch\_webpage <http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/setup-service.html>`_
 
+
 Pull the repository
 ~~~~~~~~~~~~~~~~~~~
 
+.. image:: http://raw.github.com/supercowpowers/workbench/master/images/warning.jpg
+    :alt: warning
+    :width: 80 px
+    :align: left
+.. warning:: Caution!: The repository contains malcious data samples, be careful, exclude the workbench directory from AV, etc...
+.. code:: sh
+  
+  git clone https://github.com/supercowpowers/workbench.git
 .. raw:: html
-
-   <pre>
-   git clone https://github.com/supercowpowers/workbench.git
-   </pre>
-
-**Warning!: The repository contains malcious data samples, be careful,
-exclude the workbench directory from AV, etc...**
 
 Install Python Modules
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -150,51 +152,3 @@ regexec error 17, (illegal byte sequence)' it's an issue with libmagic
     $ git checkout bfb6589 Library/Formula/libmagic.rb
     $ brew uninstall libmagic
     $ brew install libmagic
-
-Deprecated Stuff
-~~~~~~~~~~~~~~~~
-
-**Scapy Install**
-
--  brew tap Homebrew/python
--  brew install scapy
--  brew install pypcap
--  If you get error about pyrex.distutils:
-
-   -  pip install pyrex (or if this doesn't work do easy\_install pyrex)
-   -  and then retry the 'brew install pypcap'
-
--  Still not working try pyrex from scatch
-   `pyrex <http://www.cosc.canterbury.ac.nz/greg.ewing/python/Pyrex/>`_
-
-(2-5-14): For scapy python binding you have to manually install the
-latest release from
-`secdev.org <http://www.secdev.org/projects/scapy/doc/installation.html#latest-release>`_
-and follow the instructions (like first 5 lines)
-
-.. raw:: html
-
-   <pre>
-   $ wget http://www.secdev.org/projects/scapy/files/scapy-latest.zip
-   $ unzip scapy-latest.zip
-   $ cd scapy-2.*
-   $ sudo python setup.py install
-   </pre>
-
-Deprecated Instructions for Ubuntu 12.04
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Ubuntu (tested on 12.04)
-^^^^^^^^^^^^^^^^^^^^^^^^
-
--  Mongo: Go through the steps given at `MongoDB Installation
-   Tutorial <http://docs.mongodb.org/manual/tutorial/install-mongodb-on-ubuntu/>`_
--  Bro IDS: Check out the Installation tutorial
-   `here <https://www.digitalocean.com/community/articles/how-to-install-bro-ids-2-2-on-ubuntu-12-04>`_
--  Yara: Read the installation instructions
-   `here <https://github.com/plusvic/yara/releases/latest>`_
--  sudo apt-get install libmagic-dev
--  sudo apt-get install libxml2-dev
--  sudo apt-get install libxslt-dev
--  sudo apt-get install libevent-dev
-
