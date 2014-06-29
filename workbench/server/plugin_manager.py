@@ -72,28 +72,10 @@ class PluginManager(FileSystemEventHandler):
 
                 # Okay must be successfully loaded so capture the plugin meta-data,
                 # modification time and register the plugin through the callback
-                plugin_info = {}
-                plugin_info['class'] = plugin
-                plugin_info['name'] = plugin_name
-                plugin_info['dependencies'] = plugin.dependencies
+                plugin['name'] = plugin_name
+                plugin['dependencies'] = plugin['class'].dependencies
                 mod_time = datetime.utcfromtimestamp(os.path.getmtime(f))
-                self.plugin_callback(plugin_info, mod_time)
-
-    # Currently disabled: Need to thing about this funcitonality
-    '''
-    def run_test(self, handler):
-        previousDir = os.getcwd()
-        os.chdir(self.plugin_path)
-        try:
-            handler.test()
-            return True
-        except AttributeError:
-            print 'Failure for plugin: %s' % (handler.__name__)
-            print 'The file must have a top level test() method that runs'
-            return False
-        finally:
-            os.chdir(previousDir)
-    '''
+                self.plugin_callback(plugin, mod_time)
 
     def validate(self, handler):
         ''' Validate the plugin, each plugin must have the following:
@@ -103,21 +85,32 @@ class PluginManager(FileSystemEventHandler):
         '''
 
         # Check for the test method first
-        methods = [name for name,_value in inspect.getmembers(handler, callable)]
-        if 'test' not in methods:
-            print 'Failure for plugin: %s' % (handler.__name__)
-            print 'Validation Error: The file must have a top level test() method'
+        test_method = self.plugin_test_validation(handler)
+        if not test_method:
             return None
 
         # Here we iterate through the classes found in the module and pick
         # the first one that satisfies the validation
         for name, plugin_class in inspect.getmembers(handler, inspect.isclass):
             if self.plugin_class_validation(plugin_class):
-                return plugin_class
+                return {'class':plugin_class, 'test':test_method}
 
         # If we're here the plugin didn't pass validation
         print 'Failure for plugin: %s' % (handler.__name__)
         print 'Validation Error: Worker class is required to have a dependencies list and an execute method'
+        return None
+
+    def plugin_test_validation(self, handler):
+        ''' Plugin validation
+            - Every workbench plugin must have top level test method
+        '''
+        methods = {name:func for name, func in inspect.getmembers(handler, callable)}
+        if 'test' not in methods.keys():
+            print 'Failure for plugin: %s' % (handler.__name__)
+            print 'Validation Error: The file must have a top level test() method'
+            return None
+        else:
+            return methods['test']
 
     def plugin_class_validation(self, plugin_class):
         ''' Plugin validation 
