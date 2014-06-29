@@ -456,10 +456,11 @@ class WorkBench():
 
     def help_worker(self, worker):
         ''' Returns a specific Workbench worker and docstring '''
-        for name, plugin in self.plugin_meta.iteritems():
-            if name == worker:
-                return '\n Worker: %s %s\n\t%s' % (name, str(plugin['class'].dependencies), plugin['class'].__doc__)
-        return '%s worker not found.. misspelled?' % worker
+        try:
+            plugin = self.plugin_meta[worker]
+            return '\n Worker: %s %s\n\t%s' % (name, str(plugin['class'].dependencies), plugin['class'].__doc__)
+        except KeyError:
+            return '%s worker not found.. misspelled?' % worker
 
     def help_advanced(self):
         ''' Returns advanced help commands '''
@@ -467,6 +468,27 @@ class WorkBench():
         help_str += '\n\nSee https://github.com/SuperCowPowers/workbench for more information'
         return help_str
 
+    def list_all_workers(self):
+        ''' List all the currently loaded workers '''
+        return self.plugin_meta.keys()
+
+    def test_worker(self, worker):
+        ''' Run the test for a specific worker '''
+
+        # First find the plugin
+        try:
+            plugin = self.plugin_meta[worker]
+        except KeyError:
+            return '%s worker not found.. misspelled?' % worker
+
+        # Now try to run the test
+        try:
+            plugin['test']()
+            return True
+        except AttributeError:
+            print 'Failure for plugin: %s' % (handler.__name__)
+            print 'Could not find a top level test() method'
+            return False
 
 def run():
     ''' Run the workbench server '''
