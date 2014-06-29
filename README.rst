@@ -1,5 +1,6 @@
 |Build Status| |Coverage Status| |Code Health| |Project Stats| |Project Ready| |Project InProgress| |Gitter chat|
-Note: the coverage is about 90%, the issue is with reporting. See Issue #137)
+
+Note: the coverage is about 90%, the issue is with reporting. (See Issue #137)
 
 Workbench
 =========
