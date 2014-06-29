@@ -28,8 +28,8 @@ def main():
     # Test out zip data
     file_list = [os.path.join('../data/zip', child) for child in os.listdir('../data/zip')]
     for filename in file_list:
-        with open(filename,'rb') as file:
-            md5 = workbench.store_sample(filename, file.read(), 'zip')
+        with open(filename,'rb') as f:
+            md5 = workbench.store_sample(filename, f.read(), 'zip')
             results = workbench.work_request('view', md5)
             print 'Filename: %s ' % (filename)
             pprint.pprint(results)

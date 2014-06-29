@@ -34,8 +34,8 @@ def main():
         # Skip OS generated files
         if '.DS_Store' in filename: continue
 
-        with open(filename,'rb') as file:
-            md5 = workbench.store_sample(filename, file.read(), 'pcap')
+        with open(filename,'rb') as f:
+            md5 = workbench.store_sample(filename, f.read(), 'pcap')
             results = workbench.work_request('pcap_bro', md5)
 
             # Results is just a dictionary of Bro log file names and their MD5s in workbench

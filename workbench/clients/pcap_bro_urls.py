@@ -33,8 +33,8 @@ def main():
         # Skip OS generated files
         if '.DS_Store' in filename: continue
 
-        with open(filename,'rb') as file:
-            pcap_md5 = workbench.store_sample(filename, file.read(), 'pcap')
+        with open(filename,'rb') as f:
+            pcap_md5 = workbench.store_sample(filename, f.read(), 'pcap')
             results = workbench.work_request('pcap_bro', pcap_md5)
 
             # Just grab the http log

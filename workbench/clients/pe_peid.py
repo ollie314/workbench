@@ -33,8 +33,8 @@ def main():
         # Skip OS generated files
         if '.DS_Store' in filename: continue
 
-        with open(filename,'rb') as file:
-            md5 = workbench.store_sample(filename, file.read(), 'pe')
+        with open(filename,'rb') as f:
+            md5 = workbench.store_sample(filename, f.read(), 'pe')
             results = workbench.work_request('pe_peid', md5)
             pprint.pprint(results)
 

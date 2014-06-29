@@ -5,7 +5,6 @@ from gevent import monkey; monkey.patch_all(thread=False) # Monkey!
 from gevent import signal as gevent_signal
 import signal
 import os
-import argparse
 import zerorpc
 import zmq
 import logging
@@ -32,7 +31,7 @@ except ImportError:
     from bro import bro_log_reader    
     
 
-class WorkBench():
+class WorkBench(object):
     ''' Workbench: Open Source Security Framework '''
     def __init__(self, store_args=None, els_hosts=None, neo_uri=None):
 
@@ -121,7 +120,7 @@ class WorkBench():
         if type_tag == 'bro':
             bro_log = bro_log_reader.BroLogReader(convert_datetimes=False)
             mem_file = StringIO.StringIO(raw_bytes)
-            generator = bro_log.read_log(mem_file, max_rows=max_rows)
+            generator = bro_log.read_log(mem_file)
             return generator
         elif type_tag == 'els_query':
             els_log = json.loads(raw_bytes)
@@ -271,7 +270,7 @@ class WorkBench():
                     tmp = work_results[worker_class]
                     for key in subkey.split('.'):
                         tmp = tmp[key]
-                    sub_results[key] = tmp
+                        sub_results[key] = tmp
                 work_results = sub_results
             except (KeyError, TypeError):
                 raise RuntimeError('Could not get one or more subkeys for: %s' % (work_results))
@@ -321,7 +320,8 @@ class WorkBench():
         '''
         for md5 in md5_list:
             if not self.has_sample(md5):
-                raise RuntimeError('Sample not found all items in sample_set must be in the datastore: %s (not found)' % (md5))
+                raise RuntimeError('Sample not found all items in sample_set\
+                                    must be in the datastore: %s (not found)' % (md5))
         set_md5 = hashlib.md5(str(md5_list)).hexdigest()
         self._store_work_results({'md5_list':md5_list}, 'sample_set', set_md5)
         return set_md5
@@ -506,18 +506,6 @@ def run():
     database = workbench_conf.get('workbench', 'database')
     worker_cap = workbench_conf.getint('workbench', 'worker_cap')
     samples_cap = workbench_conf.getint('workbench', 'samples_cap')
-
-    # Parse the arguments (args overwrite configuration file settings)
-    '''
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-ds_uri', '--datastore_uri', type=str, default=None, help='machine used by workbench datastore')
-    parser.add_argument('-db', '--database', type=str, default=None, help='database used by workbench server')
-    args = parser.parse_args()
-
-    # Overwrite if specified
-    datastore_uri = args.datastore_uri if (args.datastore_uri) else datastore_uri
-    database = args.database if (args.database) else database
-    '''
 
     # Spin up Workbench ZeroRPC
     try:

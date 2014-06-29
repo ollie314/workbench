@@ -33,8 +33,8 @@ def main():
         if '.DS_Store' in filename: 
             continue
 
-        with open(filename, 'rb') as file:
-            md5 = workbench.store_sample(filename, file.read(), 'pe')
+        with open(filename, 'rb') as f:
+            md5 = workbench.store_sample(filename, f.read(), 'pe')
 
             # Index the strings and features output (notice we can ask for any worker output)
             # Also (super important) it all happens on the server side.
@@ -68,7 +68,7 @@ def main():
         print 'Number of hits: %d' % results['hits']['total']
         print 'Max Score: %f' % results['hits']['max_score']
         pprint.pprint([(hit['fields']['md5'], hit['fields']['sparse_features.imported_symbols']) 
-            for hit in results['hits']['hits']])
+                       for hit in results['hits']['hits']])
     except TypeError:
         print 'Probably using a Stub Indexer, if you want an ELS Indexer see the readme'
 
