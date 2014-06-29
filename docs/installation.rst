@@ -1,16 +1,16 @@
-Installing Workbench:
+Installing Workbench
 ====================
 
 
-Workbench Client:
-~~~~~~~~~~~~~~~~~
+Workbench Client
+~~~~~~~~~~~~~~~~
 
 ::
 
     $ pip install zerorpc;
 
-Workbench Server:
-~~~~~~~~~~~~~~~~~
+Workbench Server
+~~~~~~~~~~~~~~~~
 
 The indexers 'Neo4j' and 'ElasticSearch' are optional. We strongly
 suggest you install both of them but we also appreciate that there are

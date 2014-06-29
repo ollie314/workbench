@@ -1,7 +1,7 @@
-|Build Status| |Coverage Status| |Code Health| |Project Stats| |Project Ready| |Project InProgress| |Gitter chat|
 
 Workbench
 =========
+|Build Status| |Coverage Status| |Code Health| |Project Stats| |Project Ready| |Project InProgress| |Gitter chat|
 
 **A medium-data framework for security research and development teams.**
 
@@ -40,11 +40,11 @@ As an open source python project it provides light-weight task management, execu
     :target: https://pypi.python.org/pypi/workbench
 
 
-Contents:
+Contents
 ^^^^^^^^
 
 .. toctree::
-    :maxdepth: 1
+    :maxdepth: 2
 
     project_details
     installation
@@ -53,19 +53,5 @@ Contents:
     contributing
     authors
     history
-
-Workbench Server (Auto Generated)
-=================================
-
-.. toctree::
-    :maxdepth: 2
-
     workbench.server
-
-Workers (Auto Generated)
-========================
-
-.. toctree::
-    :maxdepth: 2
-
     workbench.workers
