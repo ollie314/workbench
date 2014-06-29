@@ -11,7 +11,7 @@ Client/Server
     reasons for this approach:
     
     * We love the concept of git, with a local server (sandbox) for quickness and agility and a remote server for when your ready to share your changes with the world.
-    * Workbench embraces this approach: Developers can quickly develop new fuctionality on their local server and when they are ready to share the awesome they can 'push'their new worker to the 'group server'.
+    * Workbench embraces this approach: Developers can quickly develop new fuctionality on their local server and when they are ready to share the awesome they can 'push' their new worker to the 'group server'.
 
 * How do I push my worker to a 'group server'?
     * development box: $ git push
