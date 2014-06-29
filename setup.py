@@ -47,7 +47,7 @@ setup(
 	      'workbench.server.bro', 'workbench.workers','workbench.utils'],
     package_dir={'workbench': 'workbench'},
     include_package_data=True,
-    scripts = ['workbench/workbench', 'workbench/workbench_tests'],
+    scripts = ['workbench/workbench'],
     tests_require=['tox'],
     cmdclass = {'test': Tox},
     install_requires=[],
