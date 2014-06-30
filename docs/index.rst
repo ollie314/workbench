@@ -44,7 +44,7 @@ Contents
 ^^^^^^^^
 
 .. toctree::
-    :maxdepth: 1
+    :maxdepth: 2
 
     project_details
     installation
@@ -53,6 +53,8 @@ Contents
     contributing
     authors
     history
+    Workbench Server Reference
+    Workers Reference
 
 Workbench Server (Auto Generated)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
