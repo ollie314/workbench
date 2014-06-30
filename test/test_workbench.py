@@ -44,12 +44,13 @@ def patch_coverage_for_gevent():
 
     __import__('pyjack').replace_all_refs(_coverage, coverage)
 
-# Monkey path coverage so it works with gevent
-patch_coverage_for_gevent()
 
 class TestWorkbench(object):
 
     def test_workbench(self):
+
+        # Monkey path coverage so it works with gevent
+        patch_coverage_for_gevent()
 
         # Run the workbench server
         p = multiprocessing.Process(target=workbench_server.run)
