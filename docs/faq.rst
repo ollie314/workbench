@@ -1,6 +1,25 @@
-==============================
-FAQ: Frequency Asked Questions
-==============================
+Frequency Asked Questions
+=========================
+
+
+Medium Data
+-----------
+
+* What do you mean by 'medium' data?
+    The developers of Workbench feel like Medium-Data is a sweet spot, large enough to be meaningful for model
+    generation, statistics and predictive performance but small enough to allow for low latency, fast interaction
+    and streaming 'hyperslabs' from server to client.
+* What do you mean by hyperslabs?
+    Many of our examples (notebooks) illustrate the streaming generator chains that allow a client (python script, IPython 
+    notebook, Node.js, CLI) to stream a filtered subset of the data over to the client.
+* Why do you have exploding heads ever time you talk streaming data into a DataFrame?
+    Once you efficiently (zero-copy) populate a Pandas dataframe you have access to a very large set of statistics, analysis, 
+    machine learning Python modules (statsmodel, Pandas, Scikit-Learn).
+* What kind of hardware do you recommend for Workbench server?
+    Workbench server will run great on a laptop but when you're working with a group of researchers the most 
+    effective model is a shared group server. A beefy Dell server with 192Gig of Memory and a 100 TeraByte disk array
+    will allow the workbench server to effectively process in the neighborhood of a million samples. PE Files, PDFs,
+    PCAPs, SWF, etc.
 
 Client/Server
 -------------
@@ -39,3 +58,12 @@ Client/Server
     
         $ git checkout develop (on develop server)
         $ git checkout master (on prod server)
+
+
+Cow Points
+----------
+
+* Are Cow Points worth anything? : No
+* Will Cow Points ever be worth anything? : Maybe
+* Are Cow Points officially tracked? : Yes
+* Will I receive good Karma for Cow Points? : Yes
