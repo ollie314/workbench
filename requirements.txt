@@ -13,5 +13,6 @@ yara
 zerorpc
 nose
 funcsigs
-rekall==1.0rc10
 tox
+# pyswf
+# git+https://github.com/newbrough/coverage.git

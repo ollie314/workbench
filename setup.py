@@ -5,10 +5,10 @@ import os, sys
 from setuptools import setup
 from setuptools.command.test import test as TestCommand
 
+
 if sys.argv[-1] == 'publish':
     os.system('python setup.py sdist upload')
     sys.exit()
-
 
 readme = open('README.rst').read()
 long_description = readme
