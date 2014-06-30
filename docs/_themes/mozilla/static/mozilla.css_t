@@ -47,7 +47,7 @@ div.documentwrapper {
 }
 
 div.bodywrapper {
-    margin: 0 0 0 230px;
+    margin: 0 0 0 310px;
 }
 
 hr {
@@ -132,16 +132,12 @@ div.sphinxsidebar {
 .sphinxsidebar nav > ul > li {
   border-top: 1px dotted rgba(0, 0, 0, 0.1);
 }
-.sphinxsidebar nav > ul > li:first-child {
-  border-top: 0;
-}
+
 .sphinxsidebar nav > ul > li > a {
   padding-top: 15px;
   padding-bottom: 15px;
 }
-.sphinxsidebar nav > ul > li.current:first-child {
-  background-color: transparent;
-}
+
 .sphinxsidebar nav > ul > li.current:first-child a:only-child {
   background-image: none;
 }
