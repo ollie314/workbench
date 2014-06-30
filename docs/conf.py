@@ -78,7 +78,7 @@ exclude_patterns = ['_build']
 # documents.
 #default_role = None
 
-# If true, '()' will be appended to :func: etc. cross-reference text.
+# If true, '()' will be appended to :func: etworkbench. cross-reference text.
 #add_function_parentheses = True
 
 # If true, the current module name will be prepended to all description
@@ -104,6 +104,35 @@ pygments_style = 'sphinx'
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 html_theme = 'default'
+
+# on_rtd is whether we are on readthedocs.org
+import os
+on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
+
+if not on_rtd:  # only import and set the theme if we're building docs locally
+    # import sphinx_rtd_theme
+    # html_theme = 'sphinx_rtd_theme'
+    # html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
+    # import agoraplex.themes.sphinx
+    # html_theme = 'agoraplex'
+    # html_theme_path = agoraplex.themes.sphinx.get_html_theme_path()
+
+    import mozilla_sphinx_theme
+
+    html_theme = 'mozilla'
+    html_theme_path = [os.path.dirname(mozilla_sphinx_theme.__file__)]
+
+# extensions += ['sphinxjp.themes.basicstrap']
+# html_theme = 'basicstrap'
+
+# import sphinxtheme,os
+
+# readability_path = os.path.dirname(os.path.abspath(sphinxtheme.__file__))
+# relative_path = os.path.relpath(readability_path, os.path.abspath('.'))
+
+# html_theme = 'readability'
+# html_theme_path = [relative_path]
+
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
