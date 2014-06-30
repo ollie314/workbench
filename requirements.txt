@@ -14,5 +14,6 @@ zerorpc
 nose
 funcsigs
 tox
+mozilla-sphinx-theme
 # pyswf
 # git+https://github.com/newbrough/coverage.git
