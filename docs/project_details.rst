@@ -1,5 +1,5 @@
 Detailed Project Description
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+============================
 
 The workbench project takes the workbench metaphore seriously. It’s a
 platform that allows you to do work; it provides a flat work surface

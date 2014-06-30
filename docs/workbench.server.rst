@@ -1,5 +1,5 @@
-workbench.server package
-========================
+Workbench Server Reference
+==========================
 
 Subpackages
 -----------
