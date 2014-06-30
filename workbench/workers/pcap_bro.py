@@ -16,15 +16,15 @@ class PcapBro(object):
     def __init__(self):
         self.workbench = zerorpc.Client()
         self.workbench.connect("tcp://127.0.0.1:4242")
-        self.orig_dir = os.getcwd()
+        self.orig_dir = os.path.dirname(os.path.realpath(__file__))
 
     def get_bro_script_path(self):
         # Just run all the scripts in the bro directory
-        bro_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'bro')
+        bro_dir = os.path.join(self.orig_dir, 'bro')
         if os.path.exists(bro_dir):
             return bro_dir
         else:
-            raise RuntimeError('pcap_bro could not find bro directory under: %s' % os.getcwd())
+            raise RuntimeError('pcap_bro could not find bro directory under: %s' % self.orig_dir)
 
     def setup_pcap_inputs(self, input_data):
         ''' Write the PCAPs to disk for Bro to process and return the pcap filenames '''
