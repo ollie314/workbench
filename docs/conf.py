@@ -104,10 +104,8 @@ pygments_style = 'sphinx'
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 
-import mozilla_sphinx_theme
-
 html_theme = 'mozilla'
-html_theme_path = [os.path.dirname(mozilla_sphinx_theme.__file__)]
+html_theme_path = ["_themes"]
 
 
 # Theme options are theme-specific and customize the look and feel of a theme
