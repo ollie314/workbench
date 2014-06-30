@@ -5,6 +5,7 @@ Tests for `workbench` module.
 import zerorpc
 import multiprocessing
 import workbench.server.workbench as workbench_server
+import pytest
 
 # Credit for this patching code goes to
 # Vadim Fint (mocksoul)  thanks a bunch you rock
@@ -47,35 +48,51 @@ def patch_coverage_for_gevent():
 
 class TestWorkbench(object):
 
-    def test_workbench(self):
+    # Class variables
+    workbench_conn = None
+    process = None
 
+    @classmethod
+    def setup_class(cls):
         # Monkey path coverage so it works with gevent
-        patch_coverage_for_gevent()
+        # patch_coverage_for_gevent()
+        cls.start_workbench()
 
-        # Run the workbench server
-        p = multiprocessing.Process(target=workbench_server.run)
-        p.start()
-
-        # Start up workbench connection
-        workbench = zerorpc.Client(timeout=300)
-        workbench.connect('tcp://localhost:4242')
-
-        # Get all the dynamically loaded workers
-        workers = workbench.list_all_workers()
-        for worker in workers:
-
-            # Invoke worker tests
-            print 'Testing %s...' % worker
-            print workbench.test_worker(worker)
-
+    @classmethod
+    def teardown_class(cls):
         # Close the workbench connection
-        workbench.close()
+        TestWorkbench.workbench_conn.close()
 
         # Terminate the workbench server process
         print '\nShutting down the Workbench server...'
-        p.terminate()
+        TestWorkbench.process.terminate()
+
+    @classmethod
+    def start_workbench(cls):
+        if not TestWorkbench.workbench_conn:
+            # Run the workbench server
+            print '\nStarting up the Workbench server...'
+            TestWorkbench.process = multiprocessing.Process(target=workbench_server.run)
+            TestWorkbench.process.start()
+
+            # Start up workbench connection
+            TestWorkbench.workbench_conn = zerorpc.Client(timeout=300)
+            TestWorkbench.workbench_conn.connect('tcp://localhost:4242')
+
+    @classmethod
+    def get_worker_list(cls):
+        # Get a list of workers from the workbench server
+        cls.start_workbench()
+        return TestWorkbench.workbench_conn.list_all_workers()
+
+    def test_worker(self, worker):
+        # Invoke worker test
+        print 'Testing %s...' % worker
+        assert(TestWorkbench.workbench_conn.test_worker(worker))
 
 
 if __name__ == '__main__':
     test = TestWorkbench()
-    test.test_workbench()
+    test.setup_class()
+    test.test_worker('view')
+    test.teardown_class()
