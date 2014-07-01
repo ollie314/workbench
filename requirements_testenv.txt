@@ -1,0 +1,5 @@
+-r requirements.txt
+pytest
+coverage
+# git+https://github.com/newbrough/coverage.git
+pytest-cov

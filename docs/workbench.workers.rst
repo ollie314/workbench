@@ -1,5 +1,5 @@
-workbench.workers package
-=========================
+Workers Reference
+=================
 
 Subpackages
 -----------

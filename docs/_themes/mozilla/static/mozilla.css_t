@@ -47,7 +47,7 @@ div.documentwrapper {
 }
 
 div.bodywrapper {
-    margin: 0 0 0 230px;
+    margin: 0 0 0 310px;
 }
 
 hr {
@@ -132,16 +132,12 @@ div.sphinxsidebar {
 .sphinxsidebar nav > ul > li {
   border-top: 1px dotted rgba(0, 0, 0, 0.1);
 }
-.sphinxsidebar nav > ul > li:first-child {
-  border-top: 0;
-}
+
 .sphinxsidebar nav > ul > li > a {
   padding-top: 15px;
   padding-bottom: 15px;
 }
-.sphinxsidebar nav > ul > li.current:first-child {
-  background-color: transparent;
-}
+
 .sphinxsidebar nav > ul > li.current:first-child a:only-child {
   background-image: none;
 }
@@ -298,3 +294,26 @@ div.viewcode-block:target {
 #searchbox {
     margin: 0px 20px auto auto;
 }
+
+#workbench-server-reference dl {margin-bottom:24px}
+#workbench-server-reference dl dt {font-weight:bold}
+#workbench-server-reference dl p,#workbench-server-reference dl table,#workbench-server-reference dl ul,#workbench-server-reference dl ol {margin-bottom:12px !important}
+#workbench-server-reference dl dd {margin:0 0 12px 24px}
+#workbench-server-reference dl:not(.docutils) {margin-bottom:24px}
+#workbench-server-reference dl:not(.docutils) dt {display:inline-block;margin:6px 0;font-size:90%;line-height:normal;background:#e7f2fa;color:#2980b9;border-top:solid 3px #6ab0de;padding:6px;position:relative}
+#workbench-server-reference dl:not(.docutils) dt:before {color:#6ab0de}
+#workbench-server-reference dl:not(.docutils) dt .headerlink {color:#404040;font-size:100% !important}
+#workbench-server-reference dl:not(.docutils) dl dt {margin-bottom:6px;border:none;border-left:solid 3px #ccc;background:#f0f0f0;color:gray}
+#workbench-server-reference dl:not(.docutils) dl dt .headerlink {color:#404040;font-size:100% !important}
+#workbench-server-reference dl:not(.docutils) dt:first-child {margin-top:0}
+#workbench-server-reference dl:not(.docutils) tt {font-weight:bold}
+#workbench-server-reference dl:not(.docutils) tt.descname,#workbench-server-reference dl:not(.docutils) tt.descclassname {background-color:transparent;border:none;padding:0;font-size:100% !important}
+#workbench-server-reference dl:not(.docutils) tt.descname {font-weight:bold}
+#workbench-server-reference dl:not(.docutils) .optional {display:inline-block;padding:0 4px;color:#000;font-weight:bold}
+#workbench-server-reference dl:not(.docutils) .property {display:inline-block;padding-right:8px}
+#workbench-server-reference .viewcode-link,#workbench-server-reference .viewcode-back {display:inline-block;color:#27ae60;font-size:80%;padding-left:24px}
+#workbench-server-reference .viewcode-back {display:block;float:right}
+@media screen and (max-width: 480px) {
+  #workbench-server-reference .sidebar {width:100%}
+}
+span[id*='MathJax-Span'] {color:#404040}  
