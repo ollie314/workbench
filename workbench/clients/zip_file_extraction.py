@@ -10,23 +10,18 @@ def main():
     
     # Grab server info from configuration file
     workbench_conf = ConfigParser.ConfigParser()
-    workbench_conf.read('config.ini')
+    config_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'config.ini')
+    workbench_conf.read(config_path)
     server = workbench_conf.get('workbench', 'server_uri') 
-    port = workbench_conf.getint('workbench', 'server_port') 
-
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-p', '--port', type=int, default=port, help='port used by workbench server')
-    parser.add_argument('-s', '--server', type=str, default=server, help='location of workbench server')
-    args = parser.parse_args()
-    port = str(args.port)
-    server = str(args.server)
+    port = workbench_conf.get('workbench', 'server_port')
 
     # Start up workbench connection
     workbench = zerorpc.Client()
     workbench.connect('tcp://'+server+':'+port)
 
     # Test out zip data
-    file_list = [os.path.join('../data/zip', child) for child in os.listdir('../data/zip')]
+    data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),'../data/zip')
+    file_list = [os.path.join(data_path, child) for child in os.listdir(data_path)]
     for filename in file_list:
         with open(filename,'rb') as f:
             md5 = workbench.store_sample(filename, f.read(), 'zip')

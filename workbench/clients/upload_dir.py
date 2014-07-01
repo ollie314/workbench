@@ -11,26 +11,17 @@ def main():
     
     # Grab server info from configuration file
     workbench_conf = ConfigParser.ConfigParser()
-    workbench_conf.read('config.ini')
+    config_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'config.ini')
+    workbench_conf.read(config_path)
     server = workbench_conf.get('workbench', 'server_uri') 
-    port = workbench_conf.getint('workbench', 'server_port') 
-
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-d', '--data-dir', type=str, default='../data/pdf/bad', help='Directory\
-                         of files to import into the workbench server')
-    parser.add_argument('-t', '--tag', type=str, default='log', help='Type_tag of the files being imported')    
-    parser.add_argument('-p', '--port', type=int, default=port, help='port used by workbench server')
-    parser.add_argument('-s', '--server', type=str, default=server, help='location of workbench server')
-    args = parser.parse_args()
-    port = str(args.port)
-    server = str(args.server)
+    port = workbench_conf.get('workbench', 'server_port')
 
     # Start up workbench connection
     workbench = zerorpc.Client()
     workbench.connect('tcp://'+server+':'+port)
     
     # Grab all the filenames from the data directory
-    data_dir = args.data_dir
+    data_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)),'../data/pe/bad')
     file_list = [os.path.join(data_dir, child) for child in os.listdir(data_dir)]
 
     # Upload the files into workbench
