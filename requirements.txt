@@ -1,4 +1,4 @@
-wheel==0.23.0
+wheel
 elasticsearch
 urllib3
 filemagic
@@ -11,7 +11,6 @@ ssdeep==2.9-0.3
 watchdog
 yara
 zerorpc
-nose
 funcsigs
 tox
 # pyswf
