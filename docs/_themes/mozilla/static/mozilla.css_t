@@ -317,3 +317,25 @@ div.viewcode-block:target {
   #workbench-server-reference .sidebar {width:100%}
 }
 span[id*='MathJax-Span'] {color:#404040}  
+
+#workers-reference dl {margin-bottom:24px}
+#workers-reference dl dt {font-weight:bold}
+#workers-reference dl p,#workers-reference dl table,#workers-reference dl ul,#workers-reference dl ol {margin-bottom:12px !important}
+#workers-reference dl dd {margin:0 0 12px 24px}
+#workers-reference dl:not(.docutils) {margin-bottom:24px}
+#workers-reference dl:not(.docutils) dt {display:inline-block;margin:6px 0;font-size:90%;line-height:normal;background:#e7f2fa;color:#2980b9;border-top:solid 3px #6ab0de;padding:6px;position:relative}
+#workers-reference dl:not(.docutils) dt:before {color:#6ab0de}
+#workers-reference dl:not(.docutils) dt .headerlink {color:#404040;font-size:100% !important}
+#workers-reference dl:not(.docutils) dl dt {margin-bottom:6px;border:none;border-left:solid 3px #ccc;background:#f0f0f0;color:gray}
+#workers-reference dl:not(.docutils) dl dt .headerlink {color:#404040;font-size:100% !important}
+#workers-reference dl:not(.docutils) dt:first-child {margin-top:0}
+#workers-reference dl:not(.docutils) tt {font-weight:bold}
+#workers-reference dl:not(.docutils) tt.descname,#workers-reference dl:not(.docutils) tt.descclassname {background-color:transparent;border:none;padding:0;font-size:100% !important}
+#workers-reference dl:not(.docutils) tt.descname {font-weight:bold}
+#workers-reference dl:not(.docutils) .optional {display:inline-block;padding:0 4px;color:#000;font-weight:bold}
+#workers-reference dl:not(.docutils) .property {display:inline-block;padding-right:8px}
+#workers-reference .viewcode-link,#workers-reference .viewcode-back {display:inline-block;color:#27ae60;font-size:80%;padding-left:24px}
+#workers-reference .viewcode-back {display:block;float:right}
+@media screen and (max-width: 480px) {
+  #workers-reference .sidebar {width:100%}
+}
