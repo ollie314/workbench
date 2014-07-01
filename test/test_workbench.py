@@ -3,9 +3,11 @@ Tests for `workbench` module.
 """
 
 class TestWorkbench(object):
-    ''' Test Workbench Class '''
+    ''' Test Workbench Server '''
 
-    def test_worker(self, worker, workbench_conn):
-        ''' Test a specific worker '''
-        print 'Testing %s...' % worker
-        assert workbench_conn.test_worker(worker)
+    def test_server(self, workbench_conn):
+        patch_coverage_for_gevent()
+
+        ''' Test the workbench Server '''
+        print '\nStarting up the Workbench server...'
+        return True
