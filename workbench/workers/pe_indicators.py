@@ -50,7 +50,7 @@ class PEIndicators(object):
         # Have the PE File module process the file
         try:
             self.pefile_handle = pefile.PE(data=raw_bytes, fast_load=False)
-        except pefile.PEFormatError, error:
+        except (AttributeError, pefile.PEFormatError), error:
             return {'error': str(error), 'indicator_list': [{'Error': 'PE module failed!'}]}
 
         indicators = []
