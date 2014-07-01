@@ -60,9 +60,9 @@ def main():
 
     # Test out PEFile -> pe_deep_sim -> pe_jaccard_sim -> graph
     data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),'../data/pe/bad')
-    bad_files = [os.path.join(data_path, child) for child in os.listdir(data_path)][:25]
+    bad_files = [os.path.join(data_path, child) for child in os.listdir(data_path)][:10]
     data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),'../data/pe/good')
-    good_files = [os.path.join(data_path, child) for child in os.listdir(data_path)][:25]
+    good_files = [os.path.join(data_path, child) for child in os.listdir(data_path)][:10]
 
     # Clear any graph in the Neo4j database
     workbench.clear_graph_db()
