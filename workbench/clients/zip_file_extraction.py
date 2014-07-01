@@ -2,7 +2,6 @@
 import zerorpc
 import os
 import pprint
-import argparse
 import ConfigParser
 
 def main():

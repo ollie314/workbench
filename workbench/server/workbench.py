@@ -458,7 +458,7 @@ class WorkBench(object):
         ''' Returns a specific Workbench worker and docstring '''
         try:
             plugin = self.plugin_meta[worker]
-            return '\n Worker: %s %s\n\t%s' % (name, str(plugin['class'].dependencies), plugin['class'].__doc__)
+            return '\n Worker: %s %s\n\t%s' % (worker, str(plugin['class'].dependencies), plugin['class'].__doc__)
         except KeyError:
             return '%s worker not found.. misspelled?' % worker
 
