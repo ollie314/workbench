@@ -2,7 +2,6 @@
 import zerorpc
 import os
 import pprint
-import argparse
 import ConfigParser
 
 # We're not using this but it might be handy to someone

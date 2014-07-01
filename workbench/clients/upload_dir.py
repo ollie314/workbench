@@ -1,7 +1,6 @@
 ''' This client pushes a big directory of different files into Workbench '''
 import zerorpc
 import os
-import argparse
 import ConfigParser
 import hashlib
 
@@ -37,8 +36,8 @@ def main():
                 print 'Workbench already has this sample %s' % md5
             else:
                 # Store the sample into workbench
-                md5 = workbench.store_sample(filename, raw_bytes, args.tag)
-                print 'Filename %s uploaded: type_tag %s, md5 %s' % (filename, args.tag, md5)
+                md5 = workbench.store_sample(filename, raw_bytes, 'unknown')
+                print 'Filename %s uploaded: type_tag %s, md5 %s' % (filename, 'unknown', md5)
 
 def test():
     ''' file_upload test '''
