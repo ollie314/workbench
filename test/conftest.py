@@ -4,12 +4,11 @@ Tests for `workbench` module.
 
 import zerorpc
 import pytest
-import workbench_single
+import workbench_single # This spins up the server
 
 @pytest.fixture(scope='session')
 def workbench_conn(request):
     ''' Workbench Fixture '''
-    import workbench_single # This spins up the server
 
     # Connect to the server
     conn = zerorpc.Client(timeout=300)
@@ -20,14 +19,3 @@ def workbench_conn(request):
 
     # Return the connection
     return conn
-
-def pytest_generate_tests(metafunc):
-    if 'worker' in metafunc.fixturenames:
-        print 'Getting worker list...'
-        # Connect to the server
-        conn = zerorpc.Client()
-        conn.connect('tcp://localhost:4242')
-        workers = conn.list_all_workers()
-        metafunc.parametrize('worker', workers)
-    else:
-        print 'WTF %s' % metafunc.fixturenames
