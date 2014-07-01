@@ -485,9 +485,9 @@ class WorkBench(object):
         try:
             plugin['test']()
             return True
-        except (AttributeError, KeyError):
+        except (AttributeError, KeyError) as error:
             print 'Failure for plugin: %s' % (worker)
-            print 'Could not find a top level test() method'
+            print 'Error: %s' % error
             return False
 
 def run():

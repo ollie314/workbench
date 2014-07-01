@@ -1,7 +1,6 @@
 ''' This client gets the raw bro logs from PCAP files '''
 import zerorpc
 import os
-import argparse
 import ConfigParser
 
 def main():
@@ -9,16 +8,10 @@ def main():
     
     # Grab server info from configuration file
     workbench_conf = ConfigParser.ConfigParser()
-    workbench_conf.read('config.ini')
+    config_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'config.ini')
+    workbench_conf.read(config_path)
     server = workbench_conf.get('workbench', 'server_uri') 
-    port = workbench_conf.getint('workbench', 'server_port') 
-
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-p', '--port', type=int, default=port, help='port used by workbench server')
-    parser.add_argument('-s', '--server', type=str, default=server, help='location of workbench server')
-    args = parser.parse_args()
-    port = str(args.port)
-    server = str(args.server)
+    port = workbench_conf.get('workbench', 'server_port')
 
     # Start up workbench connection
     workbench = zerorpc.Client(timeout=300)
@@ -28,7 +21,8 @@ def main():
     # Test out getting the raw Bro logs from a PCAP file
     # Note: you can get a super nice 'generator' python list of dict by using
     #       'stream_sample' instead of 'get_sample'.
-    file_list = [os.path.join('../data/pcap', child) for child in os.listdir('../data/pcap')]
+    data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),'../data/pcap')
+    file_list = [os.path.join(data_path, child) for child in os.listdir(data_path)]
     for filename in file_list:
 
         # Skip OS generated files
