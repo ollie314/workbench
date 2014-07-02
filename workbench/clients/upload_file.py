@@ -1,4 +1,5 @@
-''' This client pushes a file into Workbench '''
+"""This client pushes a file into Workbench."""
+
 import zerorpc
 import os
 import pprint
@@ -15,7 +16,7 @@ def md5_for_file(path, block_size=256*128):
 '''
 
 def main():
-    ''' This client pushes a file into Workbench '''
+    """This client pushes a file into Workbench."""
     
     # Grab server info from configuration file
     workbench_conf = ConfigParser.ConfigParser()
@@ -50,7 +51,7 @@ def main():
     '''
 
 def test():
-    ''' file_upload test '''
+    """Executes file_upload test."""
     main()
 
 if __name__ == '__main__':

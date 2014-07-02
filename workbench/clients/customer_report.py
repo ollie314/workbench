@@ -1,11 +1,12 @@
-''' This client generates customer reports on all the samples in workbench '''
+"""This client generates customer reports on all the samples in workbench."""
+
 import zerorpc
 import pprint
 import os
 import ConfigParser
 
 def main():
-    ''' This client generates customer reports on all the samples in workbench '''
+    """This client generates customer reports on all the samples in workbench."""
     
     # Grab server info from configuration file
     workbench_conf = ConfigParser.ConfigParser()
@@ -22,7 +23,7 @@ def main():
     pprint.pprint(list(results))
 
 def test():
-    ''' customer_report test '''
+    """Executes test for customer_report."""
     main()
 
 if __name__ == '__main__':

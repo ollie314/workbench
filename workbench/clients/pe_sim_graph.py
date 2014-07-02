@@ -1,10 +1,21 @@
-''' This client generates a similarity graph from features in PE Files '''
+"""This client generates a similarity graph from features in PE Files."""
+
 import zerorpc
 import os
 import ConfigParser
 
 def add_it(workbench, file_list, labels):
-    ''' Add the given file_list to workbench as samples, also add them as nodes '''
+    """Add the given file_list to workbench as samples, also add them as nodes.
+
+    Args:
+        workbench: Instance of Workbench Client.
+        file_list: list of files.
+        labels: labels for the nodes.
+
+    Returns:
+        A list of md5s.
+
+    """
     md5s = []
     for filename in file_list:
         if filename != '.DS_Store':
@@ -16,7 +27,16 @@ def add_it(workbench, file_list, labels):
 
 
 def jaccard_sims(feature_list):
-    ''' Compute Jaccard similarities between all the observations in the feature list '''
+    """Compute Jaccard similarities between all the observations in the feature list.
+
+    Args:
+        feature_list: a list of dictionaries, each having structure as
+                      { 'md5' : String, 'features': list of Strings }
+
+    Returns:
+        list of dictionaries with structure as 
+        {'source': md5 String, 'target': md5 String, 'sim': Jaccard similarity Number}
+    """
 
     sim_info_list = []
     for feature_info in feature_list:
@@ -35,7 +55,15 @@ def jaccard_sims(feature_list):
 
 
 def jaccard_sim(features1, features2):
-    ''' Compute similarity between two sets using Jaccard similarity '''
+    """Compute similarity between two sets using Jaccard similarity.
+
+    Args:
+        features1: list of PE Symbols.
+        features2: list of PE Symbols. 
+
+    Returns:
+        Returns an int.
+    """
     set1 = set(features1)
     set2 = set(features2)
     try:
@@ -45,7 +73,7 @@ def jaccard_sim(features1, features2):
 
 
 def main():
-    ''' This client generates a similarity graph from features in PE Files '''
+    """This client generates a similarity graph from features in PE Files."""
 
     # Grab server info from configuration file
     workbench_conf = ConfigParser.ConfigParser()
@@ -124,7 +152,7 @@ def main():
 
 
 def test():
-    ''' pe_sim_graph test '''
+    """Executes pe_sim_graph test."""
     main()
 
 if __name__ == '__main__':

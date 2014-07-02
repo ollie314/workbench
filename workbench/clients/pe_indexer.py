@@ -1,11 +1,11 @@
-''' This client pushes PE Files -> ELS Indexer '''
+"""This client pushes PE Files -> ELS Indexer."""
 import zerorpc
 import os
 import pprint
 import ConfigParser
 
 def main():
-    ''' This client pushes PE Files -> ELS Indexer '''
+    """This client pushes PE Files -> ELS Indexer."""
     
     # Grab server info from configuration file
     workbench_conf = ConfigParser.ConfigParser()
@@ -68,7 +68,7 @@ def main():
 
 
 def test():
-    ''' pe_strings_indexer test '''
+    """Executes pe_strings_indexer test."""
     main()
 
 if __name__ == '__main__':

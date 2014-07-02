@@ -1,11 +1,12 @@
-''' This client pushes PCAPs -> Bro -> ELS Indexer '''
+"""This client pushes PCAPs -> Bro -> ELS Indexer."""
+
 import zerorpc
 import os
 import ConfigParser
 
 
 def main():
-    ''' This client pushes PCAPs -> Bro -> ELS Indexer '''
+    """This client pushes PCAPs -> Bro -> ELS Indexer."""
 
     # Grab server info from configuration file
     workbench_conf = ConfigParser.ConfigParser()
@@ -37,7 +38,7 @@ def main():
 
 
 def test():
-    ''' pcap_bro_indexer test '''
+    """Executes pcap_bro_indexer test."""
     main()
 
 if __name__ == '__main__':

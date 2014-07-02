@@ -1,11 +1,12 @@
-''' This client get meta data about log files '''
+"""This client gets metadata about log files."""
+
 import zerorpc
 import os
 import pprint
 import ConfigParser
 
 def main():
-    ''' This client get meta data about log files '''
+    """This client gets metadata about log files."""
     
     # Grab server info from configuration file
     workbench_conf = ConfigParser.ConfigParser()
@@ -36,7 +37,7 @@ def main():
                 print row
 
 def test():
-    ''' log_meta_stream test '''
+    """Executes log_meta_stream test."""
     main()
 
 if __name__ == '__main__':

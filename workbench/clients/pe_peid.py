@@ -1,11 +1,12 @@
-''' This client looks for PEid signatures in PE Files '''
+"""This client looks for PEid signatures in PE Files."""
+
 import zerorpc
 import os
 import pprint
 import ConfigParser
 
 def main():
-    ''' This client looks for PEid signatures in PE Files '''
+    """This client looks for PEid signatures in PE Files."""
     
     # Grab server info from configuration file
     workbench_conf = ConfigParser.ConfigParser()
@@ -35,7 +36,7 @@ def main():
 
 
 def test():
-    ''' pe_peid test '''
+    """Executes pe_peid test."""
     main()
 
 if __name__ == '__main__':

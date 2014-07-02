@@ -1,11 +1,12 @@
-''' This client shows workbench extacting files from a zip file '''
+"""This client shows workbench extacting files from a zip file."""
+
 import zerorpc
 import os
 import pprint
 import ConfigParser
 
 def main():
-    ''' This client shows workbench extacting files from a zip file '''
+    """This client shows workbench extacting files from a zip file."""
     
     # Grab server info from configuration file
     workbench_conf = ConfigParser.ConfigParser()
@@ -37,7 +38,7 @@ def main():
 
 
 def test():
-    ''' simple_workbench_client test '''
+    """Executes simple_workbench_client test."""
     main()
 
 if __name__ == '__main__':

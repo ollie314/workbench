@@ -1,10 +1,11 @@
-''' This client gets the raw bro logs from PCAP files '''
+"""This client gets the raw bro logs from PCAP files."""
+
 import zerorpc
 import os
 import ConfigParser
 
 def main():
-    ''' This client gets the raw bro logs from PCAP files '''
+    """This client gets the raw bro logs from PCAP files."""
     
     # Grab server info from configuration file
     workbench_conf = ConfigParser.ConfigParser()
@@ -39,8 +40,9 @@ def main():
                 if log_name.endswith('_log'):
                     bro_log = workbench.get_sample(md5)['sample']['raw_bytes']
                     print '\n\n<<< Bro log: %s >>>\n %s' % (log_name, bro_log)
+
 def test():
-    ''' pcap_bro_raw test '''
+    """Executes pcap_bro_raw test."""
     main()
 
 if __name__ == '__main__':

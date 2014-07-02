@@ -1,4 +1,5 @@
-''' This client pushes a big directory of different files into Workbench '''
+"""This client pushes a big directory of different files into Workbench."""
+
 import zerorpc
 import os
 import ConfigParser
@@ -6,7 +7,7 @@ import hashlib
 
 
 def main():
-    ''' This client pushes a big directory of different files into Workbench '''
+    """This client pushes a big directory of different files into Workbench."""
     
     # Grab server info from configuration file
     workbench_conf = ConfigParser.ConfigParser()
@@ -40,7 +41,7 @@ def main():
                 print 'Filename %s uploaded: type_tag %s, md5 %s' % (filename, 'unknown', md5)
 
 def test():
-    ''' file_upload test '''
+    """Executes file_upload test."""
     main()
 
 if __name__ == '__main__':

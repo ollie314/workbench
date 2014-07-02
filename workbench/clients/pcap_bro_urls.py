@@ -1,11 +1,12 @@
-''' This client gets extracts URLs from PCAP files (via Bro logs) '''
+"""This client gets extracts URLs from PCAP files (via Bro logs)."""
+
 import zerorpc
 import os
 import pprint
 import ConfigParser
 
 def main():
-    ''' This client gets extracts URLs from PCAP files (via Bro logs) '''
+    """This client gets extracts URLs from PCAP files (via Bro logs)."""
     
     # Grab server info from configuration file
     workbench_conf = ConfigParser.ConfigParser()
@@ -42,7 +43,7 @@ def main():
 
 
 def test():
-    ''' pcap_bro_urls test '''
+    """Exexutes pcap_bro_urls test."""
     main()
 
 if __name__ == '__main__':

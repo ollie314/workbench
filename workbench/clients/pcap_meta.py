@@ -1,11 +1,12 @@
-''' This client pulls PCAP meta data '''
+"""This client pulls PCAP meta data."""
+
 import zerorpc
 import os
 import pprint
 import ConfigParser
 
 def main():
-    ''' This client pulls PCAP meta data '''
+    """This client pulls PCAP meta data."""
     
     # Grab server info from configuration file
     workbench_conf = ConfigParser.ConfigParser()
@@ -33,7 +34,7 @@ def main():
             pprint.pprint(results)
 
 def test():
-    ''' pcap_meta test '''
+    """Executes pcap_meta test."""
     main()
 
 if __name__ == '__main__':

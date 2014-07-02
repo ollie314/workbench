@@ -1,10 +1,11 @@
-''' This client pushes PCAPs -> MetaDaa -> ELS Indexer '''
+"""This client pushes PCAPs -> MetaDaa -> ELS Indexer."""
+
 import zerorpc
 import os
 import ConfigParser
 
 def main():
-    ''' This client pushes PCAPs -> MetaDaa -> ELS Indexer '''
+    """This client pushes PCAPs -> MetaDaa -> ELS Indexer."""
     
     # Grab server info from configuration file
     workbench_conf = ConfigParser.ConfigParser()
@@ -34,7 +35,7 @@ def main():
             print '\n\n<<< PCAP Data: %s Indexed>>>' % (filename)
 
 def test():
-    ''' pcap_meta_indexer test '''
+    """Executes pcap_meta_indexer test."""
     main()
 
 if __name__ == '__main__':
