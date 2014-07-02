@@ -122,7 +122,8 @@ def main():
     print 'All done: go to http://localhost:7474/browser and execute this query: "%s"' % \
         ('match (n)-[r]-() return n,r')
 
-
+import pytest
+@pytest.mark.xfail
 def test():
     ''' pe_sim_graph test '''
     main()
