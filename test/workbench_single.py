@@ -10,4 +10,8 @@ process.start()
 def shutdown():
     # Terminate the workbench server process
     print '\nShutting down the Workbench server...'
-    process.terminate()
+    try:
+        process.terminate()
+    except OSError, error:
+        print 'Not able to shut down server, probably means another one is running...'
+        print 'Error %s' % error
