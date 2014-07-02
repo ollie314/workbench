@@ -7,7 +7,7 @@ Workbench Client
 
 ::
 
-    $ pip install zerorpc;
+    $ pip install zerorpc
 
 Workbench Server
 ~~~~~~~~~~~~~~~~

@@ -42,12 +42,12 @@ div.document{
 }
 
 div.documentwrapper {
-    width: 90%;
+    width: 100%;
     margin: auto;
 }
 
 div.bodywrapper {
-    margin: 0 0 0 310px;
+    margin: 0 0 0 280px;
 }
 
 hr {
@@ -58,8 +58,8 @@ hr {
 div.body {
     background-color: #fff;
     color: #3E4349;
-    padding: 0 30px 30px 30px;
-    font-size: 0.9em;
+    padding: 0 20px 20px 20px;
+    font-size: 1.0em;
     border-left: 1px solid rgba(0,0,0,0.2);
 }
 
@@ -68,9 +68,8 @@ div.sphinxsidebar {
   margin-left: 0px;
   opacity: 1;
   float: left;
-  margin: 0 10px;
-  margin-left: 20px;
-  margin-bottom: 20px;
+  margin: 0px 0px 0px 0px;
+  width: 280px !important;
 }
 .sphinxsidebar h2 {
   text-align: center;
@@ -87,9 +86,7 @@ div.sphinxsidebar {
   font-family: 'OpenSansLight', sans-serif;
   font-weight: normal;
   font-size: 14px;
-  margin: auto;
-  margin-top: 120px;
-  margin-right: 20px;
+  margin: 30px 0px 0px 0px;
 }
 .sphinxsidebar nav ul {
   margin: 0;
@@ -154,7 +151,7 @@ div.sphinxsidebar h4 {
 }
 
 div.sphinxsidebar ul {
-    margin: 10px 20px;
+    margin: 0px 0px;
     padding: 0;
     color: #000;
 }
@@ -169,7 +166,7 @@ div.footer {
     width: 100%;
     padding: 13px 0;
     text-align: center;
-    font-size: 75%;
+    font-size: 100%;
 }
 
 div.footer a {
@@ -292,7 +289,7 @@ div.viewcode-block:target {
 }
 
 #searchbox {
-    margin: 0px 20px auto auto;
+    margin: 50px 30px 0px 20px;
 }
 
 #workbench-server-reference dl {margin-bottom:24px}
