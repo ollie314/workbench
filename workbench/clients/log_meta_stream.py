@@ -3,6 +3,7 @@ import zerorpc
 import os
 import pprint
 import ConfigParser
+import argparse
 
 def main():
     ''' This client get meta data about log files '''
@@ -11,8 +12,15 @@ def main():
     workbench_conf = ConfigParser.ConfigParser()
     config_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'config.ini')
     workbench_conf.read(config_path)
-    server = workbench_conf.get('workbench', 'server_uri') 
+    server = workbench_conf.get('workbench', 'server_uri')
     port = workbench_conf.get('workbench', 'server_port')
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-p', '--port', type=int, default=port, help='port used by workbench server')
+    parser.add_argument('-s', '--server', type=str, default=server, help='location of workbench server')
+    args = parser.parse_args()
+    port = str(args.port)
+    server = str(args.server)
 
     # Start up workbench connection
     workbench = zerorpc.Client()
