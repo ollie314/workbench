@@ -53,6 +53,8 @@ Contents
     contributing
     authors
     history
+    Workbench Server Reference
+    Workers Reference
 
 Workbench Server (Auto Generated)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

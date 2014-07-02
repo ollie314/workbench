@@ -130,6 +130,6 @@ if __name__ == '__main__':
 
     # Create a BRO log file reader and pull from the logfile
     BRO_LOG = BroLogReader()
-    RECORDS = BRO_LOG.read_log(open(OPTIONS.logfile, 'rb'), max_rows=10)
+    RECORDS = BRO_LOG.read_log(open(OPTIONS.logfile, 'rb'))
     for row in RECORDS:
         print row

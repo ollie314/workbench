@@ -1,6 +1,5 @@
 ''' This client generates a similarity graph from features in PE Files '''
 import zerorpc
-import argparse
 import os
 import ConfigParser
 
@@ -50,24 +49,20 @@ def main():
 
     # Grab server info from configuration file
     workbench_conf = ConfigParser.ConfigParser()
-    workbench_conf.read('config.ini')
+    config_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'config.ini')
+    workbench_conf.read(config_path)
     server = workbench_conf.get('workbench', 'server_uri') 
-    port = workbench_conf.getint('workbench', 'server_port') 
-
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-p', '--port', type=int, default=port, help='port used by workbench server')
-    parser.add_argument('-s', '--server', type=str, default=server, help='location of workbench server')
-    args = parser.parse_args()
-    port = str(args.port)
-    server = str(args.server)
+    port = workbench_conf.get('workbench', 'server_port')
 
     # Start up workbench connection
     workbench = zerorpc.Client()
     workbench.connect('tcp://'+server+':'+port)
 
     # Test out PEFile -> pe_deep_sim -> pe_jaccard_sim -> graph
-    bad_files = [os.path.join('../data/pe/bad', child) for child in os.listdir('../data/pe/bad')][:25]
-    good_files = [os.path.join('../data/pe/good', child) for child in os.listdir('../data/pe/good')][:25]
+    data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),'../data/pe/bad')
+    bad_files = [os.path.join(data_path, child) for child in os.listdir(data_path)][:10]
+    data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),'../data/pe/good')
+    good_files = [os.path.join(data_path, child) for child in os.listdir(data_path)][:10]
 
     # Clear any graph in the Neo4j database
     workbench.clear_graph_db()

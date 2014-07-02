@@ -94,7 +94,7 @@ class PEFileWorker(object):
         ''' Open the PE File using the Python pefile module. '''
         try:
             pef = pefile.PE(data=input_bytes, fast_load=False)
-        except pefile.PEFormatError, error:
+        except (AttributeError, pefile.PEFormatError), error:
             print 'warning: pe_fail (with exception from pefile module) on file: %s' % input_name
             error_str = '(Exception):, %s' % (str(error))
             return None, error_str

@@ -13,5 +13,4 @@ echo
 echo '  We recommend setting softlimit on maxfiles to like 100k.  '
 echo '  See this URL for infomation on how to increase maxfiles.  '
 echo '  http://docs.basho.com/riak/latest/ops/tuning/open-files-limit '
-export NOSE_ALL_MODULES=1
-nosetests 
+py.test -v
