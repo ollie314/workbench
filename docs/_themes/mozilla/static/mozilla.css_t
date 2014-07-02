@@ -47,7 +47,7 @@ div.documentwrapper {
 }
 
 div.bodywrapper {
-    margin: 0 0 0 310px;
+    margin: 0 0 0 280px;
 }
 
 hr {
@@ -69,6 +69,7 @@ div.sphinxsidebar {
   opacity: 1;
   float: left;
   margin: 0px 0px 0px 0px;
+  width: 280px !important;
 }
 .sphinxsidebar h2 {
   text-align: center;
@@ -85,7 +86,7 @@ div.sphinxsidebar {
   font-family: 'OpenSansLight', sans-serif;
   font-weight: normal;
   font-size: 14px;
-  margin: 30px 0px 0px 10px;
+  margin: 30px 0px 0px 0px;
 }
 .sphinxsidebar nav ul {
   margin: 0;
@@ -150,7 +151,7 @@ div.sphinxsidebar h4 {
 }
 
 div.sphinxsidebar ul {
-    margin: 10px 20px;
+    margin: 0px 0px;
     padding: 0;
     color: #000;
 }
