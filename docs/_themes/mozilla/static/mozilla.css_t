@@ -289,7 +289,7 @@ div.viewcode-block:target {
 }
 
 #searchbox {
-    margin: 40px 50px 0px 30px;
+    margin: 50px 30px 0px 20px;
 }
 
 #workbench-server-reference dl {margin-bottom:24px}
