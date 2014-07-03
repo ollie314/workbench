@@ -1,7 +1,6 @@
+"""DataStore class for WorkBench."""
 
-''' DataStore class for WorkBench '''
-
-from gevent import monkey; monkey.patch_socket()
+from gevent import monkey
 import pymongo
 import gridfs
 import hashlib
@@ -9,13 +8,25 @@ import datetime
 import bson
 import time
 
+monkey.patch_socket()
 
 class DataStore(object):
-    ''' DataStore for Workbench. Currently tied to MongoDB but making this class 'abstract' 
-        should be straightforward and we could think about using another backend '''
+    """DataStore for Workbench. 
+
+    Currently tied to MongoDB but making this class 'abstract'  should be 
+    straightforward and we could think about using another backend.
+
+    """
 
     def __init__(self, uri='mongodb://localhost/workbench', database='workbench', worker_cap=0, samples_cap=0):
-        ''' Initialization for the Workbench data store class '''
+        """ Initialization for the Workbench data store class.
+
+        Args:
+            uri: Connection String for DataStore backend.
+            database: Name of database.
+            worker_cap: MBs in the capped collection.
+            samples_cap: MBs of sample to be stored.
+        """
         
         self.sample_collection = 'samples'
         self.worker_cap = worker_cap
@@ -37,11 +48,20 @@ class DataStore(object):
         print 'WorkBench DataStore connected: %s:%s' % (self.uri, self.database_name)
 
     def get_uri(self):
-        ''' Return the uri of the data store '''
+        """ Return the uri of the data store."""
         return self.uri
 
     def store_sample(self, filename, sample_bytes, type_tag):
-        ''' Store a sample into the datastore '''
+        """Store a sample into the datastore.
+
+        Args:
+            filename: Name of the file.
+            sample_bytes: Actual bytes of sample. 
+            type_tag: Type of sample ('pe','pcap','pdf','json','swf', or ...).
+
+        Returns:
+            Digest md5 digest of the sample.
+        """
 
         sample_info = {}
 
@@ -81,7 +101,8 @@ class DataStore(object):
         return sample_info['md5']
 
     def sample_storage_size(self):
-        ''' Get the storage size of the samples storage collection '''
+        """Get the storage size of the samples storage collection."""
+
         try:
             coll_stats = self.database.command('collStats', 'fs.chunks')
             sample_storage_size = coll_stats['size']/1024.0/1024.0
@@ -90,7 +111,7 @@ class DataStore(object):
             return 0
 
     def expire_data(self):
-        ''' Expire data within the samples collection '''
+        """Expire data within the samples collection."""
 
         # Do we need to start deleting stuff?
         while self.sample_storage_size() > self.samples_cap:
@@ -107,9 +128,20 @@ class DataStore(object):
             print 'Sample Storage: %.2f out of %.2f MB' % (self.sample_storage_size(), self.samples_cap)
 
     def clean_for_serialization(self, data):
-        ''' Clean data in preparation for serialization '''
+        """Clean data in preparation for serialization.
+
+        Deletes items having key either a BSON, datetime, dict or a list instance, or
+        starting with __.
+
+        Args:
+            data: Sample data to be serialized.
+
+        Returns:
+            Cleaned data dictionary.
+        """
+
         if isinstance(data, dict):
-            for k in data.keys():
+            for k in data:
                 if (k.startswith('__')): 
                     del data[k]
                 elif isinstance(data[k], bson.objectid.ObjectId): 
@@ -123,10 +155,20 @@ class DataStore(object):
         return data
 
     def clean_for_storage(self, data):
-        ''' Clean data in preparation for storage '''
+        """Clean data in preparation for storage.
+
+        Deletes items with key having a '.' or is '_id'. Also deletes those items
+        whose value is a dictionary or a list.
+
+        Args:
+            data: Sample data dictionary to be cleaned.
+
+        Returns:
+            Cleaned data dictionary.
+        """
         data = self.data_to_unicode(data)
         if isinstance(data, dict):
-            for k in dict(data).keys():
+            for k in dict(data):
                 if k == '_id':
                     del data[k]
                     continue
@@ -142,7 +184,21 @@ class DataStore(object):
         return data
 
     def get_sample(self, md5):
-        ''' Get the sample from the data store '''
+        """Get the sample from the data store.
+
+        This method first fetches the data from datastore, then cleans it for serialization
+        and then updates it with 'raw_bytes' item.
+        
+        Args:
+            md5: The md5 digest of the sample to be fetched from datastore.
+
+        Returns:
+            The sample dictionary.
+
+        Raises:
+            RuntimeError: Either Sample is not found or the gridfs file is missing.
+
+        """
         sample_info = self.database[self.sample_collection].find_one({'md5': md5})
         if not sample_info:
             raise RuntimeError('Sample not found: %s ' % (md5))
@@ -159,7 +215,15 @@ class DataStore(object):
             raise RuntimeError('Sample not found: %s ' % (md5))
 
     def get_sample_window(self, type_tag, size=10):
-        ''' Get a window of samples not to exceed size (in MB) '''
+        """Get a window of samples not to exceed size (in MB).
+
+        Args:
+            type_tag: Type of sample ('pe','pcap','pdf','json','swf', or ...).
+            size: Size of samples in MBs.
+
+        Returns:
+            a list of md5s.
+        """
 
         # Convert size to MB
         size = size * 1024 * 1024
@@ -180,7 +244,17 @@ class DataStore(object):
         return md5_list
 
     def has_sample(self, md5):
-        ''' See if the data store has this sample '''
+        """Checks if data store has this sample.
+
+        Args:
+            md5: The md5 digest of the required sample.
+
+        Returns:
+            True if sample with this md5 is present, else False.
+
+        Raises:
+            RuntimeError: If no sample is present with this md5.
+        """
 
         # The easiest thing is to simply get the sample and if that
         # succeeds than return True, else return False
@@ -191,7 +265,14 @@ class DataStore(object):
             return False
 
     def store_work_results(self, results, collection, md5):
-        ''' Store the output results of the worker '''
+        """Store the output results of the worker.
+
+        Args:
+            results: a dictionary.
+            collection: the database collection to store the results in.
+            md5: the md5 of sample data to be updated.
+
+        """
         results['md5'] = md5
         results['__time_stamp'] = datetime.datetime.utcnow()
 
@@ -204,11 +285,28 @@ class DataStore(object):
             print 'Not updating exising object in capped collection...(upgrade to mongodb 2.6)'
 
     def get_work_results(self, collection, md5):
-        ''' Get the results of the worker '''
+        """Get the results of the worker.
+
+        Args:
+            collection: the database collection storing the results.
+            md5: the md5 digest of the data.
+
+        Returns:
+            Dictionary of the worker result.
+        """
+
         return self.database[collection].find_one({'md5':md5})
 
     def all_sample_md5s(self, type_tag=None):
-        ''' Return a list of all md5 matching the type_tag ('pe','pdf', etc). '''
+        """Return a list of all md5 matching the type_tag ('pe','pdf', etc).
+
+        Args:
+            type_tag: the type of sample.
+
+        Returns:
+            a list of matching samples.
+        """
+
         if type_tag:
             cursor = self.database[self.sample_collection].find({'type_tag': type_tag}, {'md5': 1, '_id': 0})
         else:
@@ -216,14 +314,16 @@ class DataStore(object):
         return [match.values()[0] for match in cursor]
 
     def clear_db(self):
-        ''' Drop the entire workbench database... Whee! '''
+        """Drops the entire workbench database."""
+        
         print 'Dropping the entire workbench database... Whee!'
         self.mongo.drop_database(self.database_name)
 
     def periodic_ops(self):
-        ''' Run periodic operations on the the data store
-            Things like making sure collections are capped
-            and indexes are set up '''
+        """Run periodic operations on the the data store.
+        
+        Operations like making sure collections are capped and indexes are set up.
+        """
 
         # Only run every 5 minutes
         if (time.time() - self.last_ops_run) < 300:
@@ -260,7 +360,14 @@ class DataStore(object):
 
     # Helper functions
     def to_unicode(self, s):
-        ''' Convert an elementary datatype to unicode '''
+        """Convert an elementary datatype to unicode.
+
+        Args:
+            s: the datatype to be unicoded.
+
+        Returns:
+            Unicoded data.
+        """
 
         # Fixme: This is total horseshit
         if isinstance(s, unicode):
@@ -272,7 +379,14 @@ class DataStore(object):
         return s
 
     def data_to_unicode(self, data):
-        ''' Recursively convert a list or dictionary to unicode '''
+        """Recursively convert a list or dictionary to unicode.
+
+        Args:
+            data: The data to be unicoded.
+
+        Returns:
+            Unicoded data.
+        """
         if isinstance(data, dict):
             return {self.to_unicode(k): self.to_unicode(v) for k, v in data.iteritems()}
         if isinstance(data, list):

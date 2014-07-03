@@ -1,12 +1,15 @@
-
-''' ELSIndexer class for WorkBench '''
+"""ELSIndexer class for WorkBench."""
 
 
 class ELSIndexer(object):
-    ''' ELSIndexer class for WorkBench '''
+    """ELSIndexer class for WorkBench."""
 
     def __init__(self, hosts=None):
-        ''' Initialization for the Elastic Search Indexer '''
+        """Initialization for the Elastic Search Indexer.
+
+        Args:
+            hosts: List of connection settings.
+        """
 
         # Set default value for hosts
         if not hosts:
@@ -24,7 +27,16 @@ class ELSIndexer(object):
             exit(1)
 
     def index_data(self, data, index_name='meta', doc_type='unknown'):
-        ''' Take an arbitrary dictionary of data and index it with ELS '''
+        """Take an arbitrary dictionary of data and index it with ELS.
+
+        Args:
+            data: data to be Indexed. Should be a dictionary.
+            index_name: Name of the index.
+            doc_type: The type of the document.
+
+        Raises:
+            RuntimeError: When the Indexing fails.
+        """
 
         # Index the data (which needs to be a dict/object) if it's not
         # we're going to toss an exception
@@ -38,7 +50,19 @@ class ELSIndexer(object):
             raise RuntimeError('Index failed: %s' % str(error))
 
     def search(self, index_name, query):
-        ''' Search the given index_name with the given ELS query '''
+        """Search the given index_name with the given ELS query.
+
+        Args:
+            index_name: Name of the Index
+            query: The string to be searched.
+
+        Returns:
+            List of results.
+
+        Raises:
+            RuntimeError: When the search query fails.
+        """
+
         try:
             results = self.els_search.search(index=index_name, body=query)
             return results
@@ -50,21 +74,24 @@ class ELSIndexer(object):
 
 
 class ELSStubIndexer(object):
-    ''' ELS Stub '''
+    """ELS Stub."""
 
     def __init__(self, hosts='[{"host": "localhost", "port": 9200}]'):
-        ''' Stub Indexer '''
+        """Stub Indexer Initialization."""
+
         print 'ELS Stub Indexer connected: %s' % (str(hosts))
         print 'Install ElasticSearch and python bindings for ELS indexer. See README.md'
         print '%s %s' % (self, hosts)
 
     def index_data(self, data, index_name='meta', doc_type='unknown'):
-        ''' Stub Indexer '''
+        """Index data in Stub Indexer."""
+
         print 'ELS Stub Indexer getting called...'
         print '%s %s %s %s' % (self, data, index_name, doc_type)
 
     def search(self, index_name, query):
-        ''' Stub Indexer '''
+        """Search in Stub Indexer."""
+
         print 'ELS Stub Indexer getting called...'
         print '%s %s %s' % (self, index_name, query)
 
