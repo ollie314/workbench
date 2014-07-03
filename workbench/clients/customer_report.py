@@ -20,7 +20,7 @@ def run():
 
 def test():
     """Executes test for customer_report."""
-    main()
+    run()
 
 if __name__ == '__main__':
     run()
