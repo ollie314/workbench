@@ -5,7 +5,7 @@ import os
 import datetime
 import multiprocessing
 
-def main():
+def run():
     ''' Benchmark that throws files at workbench with 4 subprocesses '''
     jobs = []
     args = ['../data/pe/bad', '../data/pe/good', '../data/pdf/bad', '../data/pdf/good']
@@ -55,7 +55,7 @@ def process_files(path):
 # Fixme: see https://github.com/SuperCowPowers/workbench/issues/40
 def test():
     ''' stress_test test '''
-    main()
+    run()
 
 if __name__ == '__main__':
     test()

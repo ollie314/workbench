@@ -1,21 +1,17 @@
 ''' This client gets the raw bro logs from PCAP files '''
 import zerorpc
 import os
-import ConfigParser
+import workbench_client
 
-def main():
+def run():
     ''' This client gets the raw bro logs from PCAP files '''
     
-    # Grab server info from configuration file
-    workbench_conf = ConfigParser.ConfigParser()
-    config_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'config.ini')
-    workbench_conf.read(config_path)
-    server = workbench_conf.get('workbench', 'server_uri') 
-    port = workbench_conf.get('workbench', 'server_port')
+    # Grab server args
+    args = workbench_client.grab_server_args()
 
     # Start up workbench connection
     workbench = zerorpc.Client(timeout=300)
-    workbench.connect('tcp://'+server+':'+port)
+    workbench.connect('tcp://'+args['server']+':'+args['port'])
 
 
     # Test out getting the raw Bro logs from a PCAP file
@@ -41,8 +37,8 @@ def main():
                     print '\n\n<<< Bro log: %s >>>\n %s' % (log_name, bro_log)
 def test():
     ''' pcap_bro_raw test '''
-    main()
+    run()
 
 if __name__ == '__main__':
-    main()
+    run()
 
