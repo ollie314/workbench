@@ -1,7 +1,7 @@
 ''' This client generates a similarity graph from features in PE Files '''
 import zerorpc
 import os
-import ConfigParser
+import workbench_client
 
 def add_it(workbench, file_list, labels):
     ''' Add the given file_list to workbench as samples, also add them as nodes '''
@@ -44,19 +44,15 @@ def jaccard_sim(features1, features2):
         return 0
 
 
-def main():
+def run():
     ''' This client generates a similarity graph from features in PE Files '''
 
-    # Grab server info from configuration file
-    workbench_conf = ConfigParser.ConfigParser()
-    config_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'config.ini')
-    workbench_conf.read(config_path)
-    server = workbench_conf.get('workbench', 'server_uri') 
-    port = workbench_conf.get('workbench', 'server_port')
+    # Grab server args
+    args = workbench_client.grab_server_args()
 
     # Start up workbench connection
     workbench = zerorpc.Client()
-    workbench.connect('tcp://'+server+':'+port)
+    workbench.connect('tcp://'+args['server']+':'+args['port'])
 
     # Test out PEFile -> pe_deep_sim -> pe_jaccard_sim -> graph
     data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),'../data/pe/bad')
@@ -122,10 +118,11 @@ def main():
     print 'All done: go to http://localhost:7474/browser and execute this query: "%s"' % \
         ('match (n)-[r]-() return n,r')
 
-
+import pytest
+@pytest.mark.xfail
 def test():
     ''' pe_sim_graph test '''
-    main()
+    run()
 
 if __name__ == '__main__':
-    main()
+    run()

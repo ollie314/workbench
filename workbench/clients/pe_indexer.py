@@ -2,21 +2,17 @@
 import zerorpc
 import os
 import pprint
-import ConfigParser
+import workbench_client
 
-def main():
+def run():
     ''' This client pushes PE Files -> ELS Indexer '''
     
-    # Grab server info from configuration file
-    workbench_conf = ConfigParser.ConfigParser()
-    config_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'config.ini')
-    workbench_conf.read(config_path)
-    server = workbench_conf.get('workbench', 'server_uri') 
-    port = workbench_conf.get('workbench', 'server_port')
+    # Grab server args
+    args = workbench_client.grab_server_args()
 
     # Start up workbench connection
     workbench = zerorpc.Client()
-    workbench.connect('tcp://'+server+':'+port)
+    workbench.connect('tcp://'+args['server']+':'+args['port'])
 
     # Test out PEFile -> strings -> indexer -> search
     data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),'../data/pe/bad')
@@ -69,7 +65,7 @@ def main():
 
 def test():
     ''' pe_strings_indexer test '''
-    main()
+    run()
 
 if __name__ == '__main__':
-    main()
+    run()

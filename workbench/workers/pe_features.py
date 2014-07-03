@@ -177,19 +177,22 @@ class PEFileWorker(object):
             extracted_dense['number_of_bound_import_symbols'] = num_imported_symbols
 
         if hasattr(pef, 'DIRECTORY_ENTRY_EXPORT'):
-            extracted_dense['number_of_export_symbols'] = len(pef.DIRECTORY_ENTRY_EXPORT.symbols)
-            symbol_set = set()
-            for symbol in pef.DIRECTORY_ENTRY_EXPORT.symbols:
-                symbol_info = 'unknown'
-                if not symbol.name:
-                    symbol_info = 'ordinal=' + str(symbol.ordinal)
-                else:
-                    symbol_info = 'name=' + symbol.name
+            try:
+                extracted_dense['number_of_export_symbols'] = len(pef.DIRECTORY_ENTRY_EXPORT.symbols)
+                symbol_set = set()
+                for symbol in pef.DIRECTORY_ENTRY_EXPORT.symbols:
+                    symbol_info = 'unknown'
+                    if not symbol.name:
+                        symbol_info = 'ordinal=' + str(symbol.ordinal)
+                    else:
+                        symbol_info = 'name=' + symbol.name
+                    symbol_set.add(convert_to_utf8('%s' % (symbol_info)).lower())
 
-                symbol_set.add(convert_to_utf8('%s' % (symbol_info)).lower())
+                # Now convert set to list and add to features
+                extracted_sparse['ExportedSymbols'] = list(symbol_set)
 
-            # Now convert set to list and add to features
-            extracted_sparse['ExportedSymbols'] = list(symbol_set)
+            except AttributeError:
+                extracted_sparse['ExportedSymbols'] = ['AttributeError']
 
         # Specific Import info (Note this will be a sparse field woo hoo!)
         if hasattr(pef, 'DIRECTORY_ENTRY_IMPORT'):
