@@ -141,7 +141,7 @@ class DataStore(object):
         """
 
         if isinstance(data, dict):
-            for k in data:
+            for k in data.keys():
                 if (k.startswith('__')): 
                     del data[k]
                 elif isinstance(data[k], bson.objectid.ObjectId): 
@@ -168,7 +168,7 @@ class DataStore(object):
         """
         data = self.data_to_unicode(data)
         if isinstance(data, dict):
-            for k in dict(data):
+            for k in dict(data).keys():
                 if k == '_id':
                     del data[k]
                     continue
