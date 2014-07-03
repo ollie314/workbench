@@ -4,7 +4,7 @@ Tests for `workbench` module.
 
 import zerorpc
 import pytest
-import workbench_single # This spins up the server
+import workbench_singleton # This spins up the server
 
 @pytest.fixture(scope='session')
 def workbench_conn(request):
@@ -15,7 +15,7 @@ def workbench_conn(request):
     conn.connect('tcp://localhost:4242')
 
     # Add a finalize method
-    request.addfinalizer(workbench_single.shutdown)
+    request.addfinalizer(workbench_singleton.shutdown)
 
     # Return the connection
     return conn
