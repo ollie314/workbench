@@ -12,6 +12,7 @@ watchdog
 yara
 zerorpc
 funcsigs
+rekall
 tox
 # pyswf
 # git+https://github.com/newbrough/coverage.git
