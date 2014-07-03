@@ -56,6 +56,7 @@ Contents
     Workbench Server Reference
     Workers Reference
 
+
 Workbench Server (Auto Generated)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -63,6 +64,7 @@ Workbench Server (Auto Generated)
     :maxdepth: 2
 
     workbench.server
+
 
 Workers (Auto Generated)
 ^^^^^^^^^^^^^^^^^^^^^^^^

@@ -3,7 +3,7 @@
 import zerorpc
 import os
 import pprint
-import ConfigParser
+import workbench_client
 
 # We're not using this but it might be handy to someone
 '''
@@ -15,19 +15,15 @@ def md5_for_file(path, block_size=256*128):
     return md5.hexdigest()
 '''
 
-def main():
+def run():
     """This client pushes a file into Workbench."""
     
-    # Grab server info from configuration file
-    workbench_conf = ConfigParser.ConfigParser()
-    config_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'config.ini')
-    workbench_conf.read(config_path)
-    server = workbench_conf.get('workbench', 'server_uri') 
-    port = workbench_conf.get('workbench', 'server_port')
+    # Grab server args
+    args = workbench_client.grab_server_args()
 
     # Start up workbench connection
     workbench = zerorpc.Client()
-    workbench.connect('tcp://'+server+':'+port)
+    workbench.connect('tcp://'+args['server']+':'+args['port'])
 
     # Upload the files into workbench
     my_file = os.path.join(os.path.dirname(os.path.realpath(__file__)),
@@ -52,8 +48,8 @@ def main():
 
 def test():
     """Executes file_upload test."""
-    main()
+    run()
 
 if __name__ == '__main__':
-    main()
+    run()
 

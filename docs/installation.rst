@@ -3,14 +3,36 @@ Installing Workbench
 
 
 Workbench Client
-~~~~~~~~~~~~~~~~
+----------------
 
 ::
 
     $ pip install zerorpc
 
+That's it! 
+
+If you have a workbench server setup (somewhere) you can now start writing clients
+against that server (see :ref:`MakingClient`)
+
+
+
+
+
 Workbench Server
-~~~~~~~~~~~~~~~~
+----------------
+
+   .. image:: http://raw.github.com/supercowpowers/workbench/master/images/warning.jpg
+      :alt: warning
+      :align: left
+
+Pull the repository
+~~~~~~~~~~~~~~~~~~~
+
+.. warning:: Caution!: The repository contains malcious data samples, be careful, exclude the workbench directory from AV, etc...
+.. code:: sh
+  
+  git clone https://github.com/supercowpowers/workbench.git
+
 
 The indexers 'Neo4j' and 'ElasticSearch' are optional. We strongly
 suggest you install both of them but we also appreciate that there are
@@ -85,19 +107,6 @@ Ubuntu (14.04 and 12.04)
    -  Any issues see
       `elasticsearch\_webpage <http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/setup-service.html>`_
 
-
-Pull the repository
-~~~~~~~~~~~~~~~~~~~
-
-.. image:: http://raw.github.com/supercowpowers/workbench/master/images/warning.jpg
-    :alt: warning
-    :width: 80 px
-    :align: left
-.. warning:: Caution!: The repository contains malcious data samples, be careful, exclude the workbench directory from AV, etc...
-.. code:: sh
-  
-  git clone https://github.com/supercowpowers/workbench.git
-.. raw:: html
 
 Install Python Modules
 ~~~~~~~~~~~~~~~~~~~~~~

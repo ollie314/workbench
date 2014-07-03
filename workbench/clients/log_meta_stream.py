@@ -3,21 +3,17 @@
 import zerorpc
 import os
 import pprint
-import ConfigParser
+import workbench_client
 
-def main():
+def run():
     """This client gets metadata about log files."""
     
-    # Grab server info from configuration file
-    workbench_conf = ConfigParser.ConfigParser()
-    config_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'config.ini')
-    workbench_conf.read(config_path)
-    server = workbench_conf.get('workbench', 'server_uri') 
-    port = workbench_conf.get('workbench', 'server_port')
-
+    # Grab server args
+    args = workbench_client.grab_server_args()
+    
     # Start up workbench connection
     workbench = zerorpc.Client()
-    workbench.connect('tcp://'+server+':'+port)
+    workbench.connect('tcp://'+args['server']+':'+args['port'])
 
     # Test out some log files
     data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),'../data/log')
@@ -37,9 +33,9 @@ def main():
                 print row
 
 def test():
-    """Executes log_meta_stream test."""
-    main()
+    ''' log_meta_stream test '''
+    run()
 
 if __name__ == '__main__':
-    main()
+    run()
 

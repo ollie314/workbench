@@ -1,22 +1,17 @@
-"""This client pushes PCAPs -> MetaDaa -> ELS Indexer."""
-
+''' This client pushes PCAPs -> MetaDaa -> ELS Indexer '''
 import zerorpc
 import os
-import ConfigParser
+import workbench_client
 
-def main():
+def run():
     """This client pushes PCAPs -> MetaDaa -> ELS Indexer."""
     
-    # Grab server info from configuration file
-    workbench_conf = ConfigParser.ConfigParser()
-    config_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'config.ini')
-    workbench_conf.read(config_path)
-    server = workbench_conf.get('workbench', 'server_uri') 
-    port = workbench_conf.get('workbench', 'server_port')
+    # Grab server args
+    args = workbench_client.grab_server_args()
 
     # Start up workbench connection
     workbench = zerorpc.Client()
-    workbench.connect('tcp://'+server+':'+port)
+    workbench.connect('tcp://'+args['server']+':'+args['port'])
 
     # Test out PCAP data
     data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),'../data/pcap')
@@ -35,9 +30,9 @@ def main():
             print '\n\n<<< PCAP Data: %s Indexed>>>' % (filename)
 
 def test():
-    """Executes pcap_meta_indexer test."""
-    main()
+    ''' pcap_meta_indexer test '''
+    run()
 
 if __name__ == '__main__':
-    main()
+    run()
 
