@@ -15,6 +15,8 @@ class MemoryImageDllList(mem_base.MemoryImageBase):
         self.set_plugin_name('dlllist')
 
 # Unit test: Create the class, the proper input and run the execute() method for a test
+import pytest
+@pytest.mark.mem
 def test():
     ''' mem_dlllist.py: Test '''
 

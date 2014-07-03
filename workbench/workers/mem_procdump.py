@@ -85,6 +85,8 @@ class MemoryImageProcDump(object):
 
 
 # Unit test: Create the class, the proper input and run the execute() method for a test
+import pytest
+@pytest.mark.mem
 def test():
     ''' mem_procdump.py: Test '''
 

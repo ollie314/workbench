@@ -15,6 +15,8 @@ class MemoryImageMeta(mem_base.MemoryImageBase):
         self.set_plugin_name('imageinfo')
 
 # Unit test: Create the class, the proper input and run the execute() method for a test
+import pytest
+@pytest.mark.mem
 def test():
     ''' mem_meta.py: Test '''
 
