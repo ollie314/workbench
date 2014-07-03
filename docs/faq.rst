@@ -1,4 +1,4 @@
-Frequency Asked Questions
+Frequently Asked Questions
 =========================
 
 
@@ -12,14 +12,14 @@ Medium Data
 * What do you mean by hyperslabs?
     Many of our examples (notebooks) illustrate the streaming generator chains that allow a client (python script, IPython 
     notebook, Node.js, CLI) to stream a filtered subset of the data over to the client.
-* Why do you have exploding heads ever time you talk streaming data into a DataFrame?
-    Once you efficiently (zero-copy) populate a Pandas dataframe you have access to a very large set of statistics, analysis, 
-    machine learning Python modules (statsmodel, Pandas, Scikit-Learn).
-* What kind of hardware do you recommend for Workbench server?
+* Why do you have exploding heads every time you talk about streaming data into a DataFrame?
+    Once you efficiently (streaming with zero-copy) populate a Pandas dataframe you have access to a very large set of statistics, analysis, 
+    and machine learning Python modules (statsmodel, Pandas, Scikit-Learn).
+* What kind of hardware do you recommend for the Workbench server?
     Workbench server will run great on a laptop but when you're working with a group of researchers the most 
     effective model is a shared group server. A beefy Dell server with 192Gig of Memory and a 100 TeraByte disk array
-    will allow the workbench server to effectively process in the neighborhood of a million samples. PE Files, PDFs,
-    PCAPs, SWF, etc.
+    will allow the workbench server to effectively process in the neighborhood of a million samples (PE Files, PDFs,
+    PCAPs, SWF, etc.)
 
 Client/Server
 -------------
