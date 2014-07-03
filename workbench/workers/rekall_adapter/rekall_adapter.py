@@ -204,10 +204,10 @@ def test():
 
     # Grab the sample bytes
     try:
-        mem_file = open('../../../data/mem_images/exemplar4.vmem', 'rb')
+        mem_file = open('../../data/mem_images/exemplar4.vmem', 'rb')
     except IOError:
         try:
-            mem_file = open('../../data/mem_images/exemplar4.vmem', 'rb')
+            mem_file = open('../data/mem_images/exemplar4.vmem', 'rb')
         except IOError:
             print 'Could not open exemplar4.vmem'
             exit(1)

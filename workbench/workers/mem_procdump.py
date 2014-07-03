@@ -96,7 +96,7 @@ def test():
     c.connect("tcp://127.0.0.1:4242")
 
     # Store the sample
-    md5 = c.store_sample('exemplar4.vmem', open('../../data/mem_images/exemplar4.vmem', 'rb').read(), 'mem')
+    md5 = c.store_sample('exemplar4.vmem', open('../data/mem_images/exemplar4.vmem', 'rb').read(), 'mem')
 
     # Unit test stuff
     input_data = c.get_sample(md5)

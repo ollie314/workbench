@@ -55,14 +55,14 @@ def test():
 
     # Store the sample
     try:
-        md5 = c.store_sample('exemplar4.vmem', open('../../data/mem_images/exemplar4.vmem', 'rb').read(), 'mem')
+        md5 = c.store_sample('exemplar4.vmem', open('../data/mem_images/exemplar4.vmem', 'rb').read(), 'mem')
     except IOError, e:
         print 'Not finding exemplar4.mem... Downloading now...'
         import urllib
         urllib.urlretrieve('https://s3-us-west-2.amazonaws.com/workbench-data/mem_images/exemplar4.vmem',
-                           '../../data/mem_images/exemplar4.vmem')
+                           '../data/mem_images/exemplar4.vmem')
         try:
-            md5 = c.store_sample('exemplar4.vmem', open('../../data/mem_images/exemplar4.vmem', 'rb').read(), 'mem')
+            md5 = c.store_sample('exemplar4.vmem', open('../data/mem_images/exemplar4.vmem', 'rb').read(), 'mem')
         except IOError, e:
             print 'Downloading failed, try it manually...'
             print 'wget https://s3-us-west-2.amazonaws.com/workbench-data/mem_images/exemplar4.vmem'
