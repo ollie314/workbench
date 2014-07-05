@@ -1,17 +1,6 @@
-wheel
-elasticsearch
-urllib3
-filemagic
-pefile
-py2neo
-pymongo
-requests
-cython
-ssdeep==2.9-0.3
-watchdog
-yara
-zerorpc
-funcsigs
-tox
-# pyswf
-# git+https://github.com/newbrough/coverage.git
+# This requirements.txt file simply hits the setup.py file and
+# installs the 'install_requires' python modules, the magic command
+# to do that is simply '-e .': so here it is
+
+# Amazing command
+-e .

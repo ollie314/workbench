@@ -3,7 +3,6 @@
 
 import os, sys
 from setuptools import setup
-from setuptools.command.test import test as TestCommand
 
 
 if sys.argv[-1] == 'publish':
@@ -19,22 +18,6 @@ Documentation
 The full documentation is at http://workbench.rtfd.org. '''
 history = open('HISTORY.rst').read().replace('.. :changelog:', '')
 
-class Tox(TestCommand):
-    user_options = [('tox-args=', 'a', "Arguments to pass to tox")]
-    def initialize_options(self):
-        TestCommand.initialize_options(self)
-        self.tox_args = None
-    def finalize_options(self):
-        TestCommand.finalize_options(self)
-        self.test_args = []
-        self.test_suite = True
-    def run_tests(self):
-        #import here, cause outside the eggs aren't loaded
-        import tox
-        import shlex
-        errno = tox.cmdline(args=shlex.split(self.tox_args))
-        sys.exit(errno)
-
 setup(
     name='workbench',
     version='0.1.0',
@@ -49,8 +32,9 @@ setup(
     include_package_data=True,
     scripts = ['workbench/workbench'],
     tests_require=['tox'],
-    cmdclass = {'test': Tox},
-    install_requires=[],
+    install_requires=['elasticsearch', 'urllib3', 'filemagic', 'pefile',
+                      'py2neo', 'pymongo', 'requests', 'cython', 'ssdeep==2.9-0.3',
+                      'watchdog', 'yara', 'funcsigs', 'zerorpc', 'rekall'],
     license='MIT',
     zip_safe=False,
     keywords='workbench, security, python',
