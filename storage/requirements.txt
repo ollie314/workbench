@@ -1,4 +1,3 @@
-wheel
 elasticsearch
 urllib3
 filemagic
