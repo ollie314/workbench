@@ -108,6 +108,19 @@ Ubuntu (14.04 and 12.04)
       `elasticsearch\_webpage <http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/setup-service.html>`_
 
 
+Pull the repository
+~~~~~~~~~~~~~~~~~~~
+
+.. raw:: html
+
+  <img src="http://raw.github.com/supercowpowers/workbench/master/images/warning.jpg"
+   alt="Caution!: The repository contains malcious data samples, be careful, exclude the workbench directory from AV, etc..."  width="80px" align="left"
+  />
+
+.. code:: sh
+  
+  git clone https://github.com/supercowpowers/workbench.git
+
 Install Python Modules
 ~~~~~~~~~~~~~~~~~~~~~~
 
@@ -143,10 +156,8 @@ Note: If you get a bunch of clang errors about unknown arguments or
 
 ::
 
-    ```
     $ export CFLAGS=-Qunused-arguments
     $ export CPPFLAGS=-Qunused-arguments
-    ```
 
 **Errors when running Tests**
 
