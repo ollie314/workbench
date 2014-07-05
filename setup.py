@@ -34,7 +34,7 @@ setup(
     tests_require=['tox'],
     install_requires=['elasticsearch', 'urllib3', 'filemagic', 'pefile',
                       'py2neo', 'pymongo', 'requests', 'cython', 'ssdeep==2.9-0.3',
-                      'watchdog', 'yara', 'funcsigs', 'zerorpc'],
+                      'watchdog', 'yara', 'funcsigs', 'zerorpc', 'rekall'],
     license='MIT',
     zip_safe=False,
     keywords='workbench, security, python',
