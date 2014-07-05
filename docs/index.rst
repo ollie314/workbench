@@ -81,23 +81,5 @@ Contents
     contributing
     authors
     history
-    Workbench Server Reference
-    Workers Reference
 
-
-Workbench Server (Auto Generated)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. toctree::
-    :maxdepth: 2
-
-    workbench.server
-
-
-Workers (Auto Generated)
-^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. toctree::
-    :maxdepth: 2
-
-    workbench.workers
+.. automodule:: workbench.server
