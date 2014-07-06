@@ -61,7 +61,8 @@ Ubuntu (14.04 and 12.04)
 -  sudo apt-get install g++
 -  sudo apt-get install libssl0.9.8
 -  Bro IDS:
-  -  Put the bro executable in your PATH (/opt/bro/bin or wherever bro is)
+
+  - Put the bro executable in your PATH (/opt/bro/bin or wherever bro is)
   - In general the Bro debian package files are WAY too locked down with
     dependencies on exact versions of libc6 and python2.6. We have a more
     'flexible' version
@@ -74,6 +75,7 @@ Ubuntu (14.04 and 12.04)
     `here <http://www.justbeck.com/getting-started-with-bro-ids/>`_ - or go
     to offical Bro Downloads
     `www.bro.org/download/ <http://www.bro.org/download>`_
+
 
 Install Indexers
 ~~~~~~~~~~~~~~~~

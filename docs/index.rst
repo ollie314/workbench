@@ -81,5 +81,6 @@ Contents
     contributing
     authors
     history
-
-.. automodule:: workbench.server
+    workbench.clients
+    workbench.server
+    workbench.workers
