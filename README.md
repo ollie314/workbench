@@ -2,11 +2,11 @@
 [![Build Status](https://travis-ci.org/SuperCowPowers/workbench.svg?branch=master)](https://travis-ci.org/SuperCowPowers/workbench)
 [![Coverage Status](https://coveralls.io/repos/SuperCowPowers/workbench/badge.png)](https://coveralls.io/r/SuperCowPowers/workbench)
 [![Code Health](https://landscape.io/github/SuperCowPowers/workbench/master/landscape.png)](https://landscape.io/github/SuperCowPowers/workbench/master)
-[![Project Stats](https://www.ohloh.net/p/workbench/widgets/project_thin_badge.gif)](https://www.ohloh.net/p/workbench)
-[![On_Deck](https://badge.waffle.io/supercowpowers/workbench.png?label=on_deck&title=On_Deck)](https://waffle.io/supercowpowers/workbench)
-[![In_Progress](https://badge.waffle.io/supercowpowers/workbench.png?label=in_progress&title=In_Progress)](https://waffle.io/supercowpowers/workbench)
+[![Fury](https://badge.fury.io/py/workbench.png)](http://badge.fury.io/py/workbench)
+[![PyPI](https://pypip.in/d/workbench/badge.png)](https://pypi.python.org/pypi/workbench)
 
-[![Gitter chat](https://badges.gitter.im/SuperCowPowers/workbench.png)](https://gitter.im/SuperCowPowers/workbench)
+[![On_Deck](https://badge.waffle.io/supercowpowers/workbench.png?label=on_deck&title=On_Deck)](https://waffle.io/supercowpowers/workbench)
+[![In_Progress](https://badge.waffle.io/supercowpowers/workbench.png?label=in_progress&title=In_Progress)](https://waffle.io/supercowpowers/workbench) [![Gitter chat](https://badges.gitter.im/SuperCowPowers/workbench.png)](https://gitter.im/SuperCowPowers/workbench)
 
 Note: the coverage is about 90%, the issue is with reporting. (See Issue #137)
 Workbench
