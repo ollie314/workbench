@@ -20,7 +20,7 @@ history = open('HISTORY.rst').read().replace('.. :changelog:', '')
 
 setup(
     name='workbench',
-    version='0.1.0',
+    version='0.2.1',
     description='A medium-data framework for security research and development teams.',
     long_description=readme + '\n\n' + doclink + '\n\n' + history,
     author='Brian Wylie',
@@ -37,7 +37,7 @@ setup(
                       'watchdog', 'yara', 'funcsigs', 'zerorpc', 'rekall'],
     license='MIT',
     zip_safe=False,
-    keywords='workbench, security, python',
+    keywords='workbench security python',
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
         'Intended Audience :: Developers',
