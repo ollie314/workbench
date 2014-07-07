@@ -33,7 +33,7 @@ def run():
                 print row
 
 def test():
-    ''' log_meta_stream test '''
+    """Executes log_meta_stream test."""
     run()
 
 if __name__ == '__main__':

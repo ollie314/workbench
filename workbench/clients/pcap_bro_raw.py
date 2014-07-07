@@ -5,7 +5,7 @@ import os
 import workbench_client
 
 def run():
-    ''' This client gets the raw bro logs from PCAP files '''
+    """This client gets the raw bro logs from PCAP files."""
     
     # Grab server args
     args = workbench_client.grab_server_args()

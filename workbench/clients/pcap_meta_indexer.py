@@ -1,4 +1,4 @@
-''' This client pushes PCAPs -> MetaDaa -> ELS Indexer '''
+"""This client pushes PCAPs -> MetaDaa -> ELS Indexer."""
 import zerorpc
 import os
 import workbench_client
@@ -30,7 +30,7 @@ def run():
             print '\n\n<<< PCAP Data: %s Indexed>>>' % (filename)
 
 def test():
-    ''' pcap_meta_indexer test '''
+    """Executes pcap_meta_indexer test."""
     run()
 
 if __name__ == '__main__':
