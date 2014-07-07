@@ -3,6 +3,7 @@
     See Google Github: https://github.com/google/rekall
     All credit for good stuff goes to them, all credit for bad stuff goes to us. :)
 '''
+import os
 import logging
 from rekall import plugins
 from rekall import session
@@ -55,6 +56,7 @@ class MemSession(object):
         self.session = s
 
         # Serialize the session (testing for now)
+        '''
         if self.session.state.dirty or self.session.state.cache.dirty:
             print 'Saving %s' % (str(self.session.state.session_filename))
             print 'Method %s' % (str(self.session.SaveToFile))
@@ -62,7 +64,7 @@ class MemSession(object):
         packed = msgpack.packb(self.session, use_bin_type=True)
         print 'Size of packed session %d' % packed.sized
         self.session = msgpack.unpackb(packed, encoding='utf-8')
-        
+        '''
 
     def get_session(self):
         ''' Get the current session handle '''
@@ -197,23 +199,24 @@ class WorkbenchRenderer(BaseRenderer):
 
 
 # Unit test: Create the class, the proper input and run the execute() method for a test
-import pytest
-@pytest.mark.xfail
 def test():
     ''' rekall_adapter.py: Test '''
 
-    # Grab the sample bytes
-    try:
-        mem_file = open('../../data/mem_images/exemplar4.vmem', 'rb')
-    except IOError:
-        try:
-            mem_file = open('../data/mem_images/exemplar4.vmem', 'rb')
-        except IOError:
-            print 'Could not open exemplar4.vmem'
-            exit(1)
+    # Do we have the memory forensics file?
+    data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../data/memory_images/exemplar4.vmem')
+    if not os.path.isfile(data_path):
+        print 'Not finding exemplar4.mem... Downloading now...'
+        import urllib
+        urllib.urlretrieve('https://s3-us-west-2.amazonaws.com/workbench-data/memory_images/exemplar4.vmem', data_path)
+
+    # Did we properly download the memory file?
+    if not os.path.isfile(data_path):
+        print 'Could not open exemplar4.vmem'
+        exit(1)
+
 
     # Got the file, now process it
-    raw_bytes = mem_file.read()
+    raw_bytes = open(data_path, 'rb').read()
 
     adapter = RekallAdapter(raw_bytes)
     session = adapter.get_session()
