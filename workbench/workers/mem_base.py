@@ -4,6 +4,7 @@
     All credit for good stuff goes to them, all credit for bad stuff goes to us. :)
 '''
 
+import os
 from rekall_adapter.rekall_adapter import RekallAdapter
 
 class MemoryImageBase(object):
@@ -43,8 +44,6 @@ class MemoryImageBase(object):
 
 
 # Unit test: Create the class, the proper input and run the execute() method for a test
-import pytest
-@pytest.mark.xfail
 def test():
     ''' mem_base.py: Test '''
 
@@ -53,20 +52,21 @@ def test():
     c = zerorpc.Client()
     c.connect("tcp://127.0.0.1:4242")
 
-    # Store the sample
-    try:
-        md5 = c.store_sample('exemplar4.vmem', open('../data/mem_images/exemplar4.vmem', 'rb').read(), 'mem')
-    except IOError, e:
+    # Do we have the memory forensics file?
+    data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../data/memory_images/exemplar4.vmem')
+    if not os.path.isfile(data_path):
         print 'Not finding exemplar4.mem... Downloading now...'
         import urllib
-        urllib.urlretrieve('https://s3-us-west-2.amazonaws.com/workbench-data/mem_images/exemplar4.vmem',
-                           '../data/mem_images/exemplar4.vmem')
-        try:
-            md5 = c.store_sample('exemplar4.vmem', open('../data/mem_images/exemplar4.vmem', 'rb').read(), 'mem')
-        except IOError, e:
-            print 'Downloading failed, try it manually...'
-            print 'wget https://s3-us-west-2.amazonaws.com/workbench-data/mem_images/exemplar4.vmem'
-            exit(1)
+        urllib.urlretrieve('https://s3-us-west-2.amazonaws.com/workbench-data/memory_images/exemplar4.vmem', data_path)
+
+    # Did we properly download the memory file?
+    if not os.path.isfile(data_path):
+        print 'Downloading failed, try it manually...'
+        print 'wget https://s3-us-west-2.amazonaws.com/workbench-data/memory_images/exemplar4.vmem'
+        exit(1)
+
+    # Store the sample
+    md5 = c.store_sample('exemplar4.vmem', open(data_path, 'rb').read(), 'mem')
 
     # Unit test stuff
     input_data = c.get_sample(md5)

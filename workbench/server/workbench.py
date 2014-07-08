@@ -17,19 +17,12 @@ import funcsigs
 import ConfigParser
 
 # Workbench server imports
-try:
-    from server import data_store
-    from server import els_indexer
-    from server import neo_db
-    from server import plugin_manager
-    from server.bro import bro_log_reader
-except ImportError:
-    import data_store
-    import els_indexer
-    import neo_db
-    import plugin_manager
-    from bro import bro_log_reader    
-    
+from . import data_store
+from . import els_indexer
+from . import neo_db
+from . import plugin_manager
+from bro import bro_log_reader
+
 
 class WorkBench(object):
     """ Workbench: Open Source Security Framework """
