@@ -25,9 +25,15 @@ from bro import bro_log_reader
 
 
 class WorkBench(object):
-    """ Workbench: Open Source Security Framework """
+    """Workbench: Open Source Security Framework."""
     def __init__(self, store_args=None, els_hosts=None, neo_uri=None):
+        """Initialize the Framework.
 
+        Args:
+            store_args: Dictionary with keys uri,database,samples_cap, worker_cap.
+            els_hosts: The address where Elastic Search Indexer is running.
+            neo_uri: The address where Neo4j is running.
+        """
         # Open DataStore
         self.data_store = data_store.DataStore(**store_args)
 
@@ -60,7 +66,7 @@ class WorkBench(object):
                 input_bytes: the actual bytes of the sample e.g. f.read()
                 type_tag: ('pe','pcap','pdf','json','swf', or ...)
             Returns:
-                the md5 of the sample
+                the md5 of the sample.
         """
         return self.data_store.store_sample(filename, input_bytes, type_tag)
 
@@ -274,16 +280,18 @@ class WorkBench(object):
 
     @zerorpc.stream
     def batch_work_request(self, worker_class, kwargs):
-        """ Make a batch work request for an existing set of stored samples.
-            A subset of sample can be specified with kwargs.
-            Args:
-                worker_class: 'strings', 'pe_features', whatever
-                kwargs: a way of specifying subsets of samples ({} for all)
-                    type_tag: subset based on sample type (e.g. type_tag='pe')
-                    md5_list: subset just the samples in this list
-                    subkeys: return just this subkey (e.g. 'foo' or 'foo.bar')
-            Returns:
-                A generator that yields rows of worker output or subfields of the worker output
+        """Make a batch work request for an existing set of stored samples.
+
+        A subset of sample can be specified with kwargs.
+
+        Args:
+            worker_class: 'strings', 'pe_features', whatever
+            kwargs: a way of specifying subsets of samples ({} for all)
+                type_tag: subset based on sample type (e.g. type_tag='pe')
+                md5_list: subset just the samples in this list
+                subkeys: return just this subkey (e.g. 'foo' or 'foo.bar')
+        Returns:
+            A generator that yields rows of worker output or subfields of the worker output
         """
         type_tag = kwargs.get('type_tag',None)
         md5_list = kwargs.get('md5_list',None)
@@ -305,9 +313,12 @@ class WorkBench(object):
 
     def store_sample_set(self, md5_list):
         """ Store a sample set (which is just a list of md5s).
+
             Note: All md5s must already be in the data store.
+
             Args:
                 md5_list: a list of the md5s in this set (all must exist in data store)
+
             Returns:
                 The md5 of the set (the actual md5 of the set
         """
@@ -321,8 +332,10 @@ class WorkBench(object):
 
     def get_sample_set(self, md5):
         """ Store a sample set (which is just a list of md5s).
+
             Args:
                 md5_list: a list of the md5s in this set (all must exist in data store)
+
             Returns:
                 The md5 of the set (the actual md5 of the set
         """
@@ -331,8 +344,10 @@ class WorkBench(object):
     @zerorpc.stream
     def stream_sample_set(self, md5):
         """ Stream a sample set (which is just a list of md5s).
+
             Args:
                 md5: the md5 of the sample_set
+
             Returns:
                 A generator that yields the md5s in the sample set
         """
@@ -341,8 +356,10 @@ class WorkBench(object):
 
     def get_datastore_uri(self):
         """ Gives you the current datastore URL.
+
             Args:
                 None
+
             Returns:
                 The URI of the data store currently being used by Workbench
         """
@@ -355,8 +372,10 @@ class WorkBench(object):
         self.plugin_meta[plugin['name']] = plugin
 
     def _store_work_results(self, results, collection, md5):
+        """Internal method for storing work results."""
         self.data_store.store_work_results(results, collection, md5)
     def _get_work_results(self, collection, md5):
+        """Internal method for fetching work results."""
         results = self.data_store.get_work_results(collection, md5)
         return {collection: results} if results else None
 
