@@ -1,12 +1,5 @@
-Workers Reference
-=================
-
-Subpackages
------------
-
-.. toctree::
-
-    workbench.workers.bro
+Workbench Workers Reference
+===========================
 
 Submodules
 ----------

@@ -1,11 +1,12 @@
-''' This client pushes PCAPs -> Bro -> ELS Indexer '''
+"""This client pushes PCAPs -> Bro -> ELS Indexer."""
+
 import zerorpc
 import os
 import workbench_client
 
 
 def run():
-    ''' This client pushes PCAPs -> Bro -> ELS Indexer '''
+    """This client pushes PCAPs -> Bro -> ELS Indexer."""
 
     # Grab server args
     args = workbench_client.grab_server_args()
@@ -33,7 +34,7 @@ def run():
 
 
 def test():
-    ''' pcap_bro_indexer test '''
+    """Executes pcap_bro_indexer test."""
     run()
 
 if __name__ == '__main__':

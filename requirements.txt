@@ -3,4 +3,6 @@
 # to do that is simply '-e .': so here it is
 
 # Amazing command
+sphinx
+sphinxcontrib-napoleon
 -e .

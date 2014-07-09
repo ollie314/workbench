@@ -1,11 +1,11 @@
-''' This client pushes PE Files -> ELS Indexer '''
+"""This client pushes PE Files -> ELS Indexer."""
 import zerorpc
 import os
 import pprint
 import workbench_client
 
 def run():
-    ''' This client pushes PE Files -> ELS Indexer '''
+    """This client pushes PE Files -> ELS Indexer."""
     
     # Grab server args
     args = workbench_client.grab_server_args()
@@ -64,7 +64,7 @@ def run():
 
 
 def test():
-    ''' pe_strings_indexer test '''
+    """Executes pe_strings_indexer test."""
     run()
 
 if __name__ == '__main__':

@@ -1,11 +1,12 @@
-''' This client shows workbench extacting files from a zip file '''
+"""This client shows workbench extacting files from a zip file."""
+
 import zerorpc
 import os
 import pprint
 import workbench_client
 
 def run():
-    ''' This client shows workbench extacting files from a zip file '''
+    """This client shows workbench extacting files from a zip file."""
     
     # Grab server args
     args = workbench_client.grab_server_args()
@@ -34,7 +35,7 @@ def run():
 import pytest
 @pytest.mark.xfail
 def test():
-    ''' simple_workbench_client test '''
+    """Executes simple_workbench_client test."""
     run()
 
 if __name__ == '__main__':

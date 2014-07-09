@@ -18,7 +18,9 @@ import os
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-#sys.path.insert(0, os.path.abspath('.'))
+sys.path.insert(0, os.path.abspath('../../workbench/'))
+# sys.path.insert(0, os.path.abspath('../../workbench/clients/'))
+# sys.path.insert(0, os.path.abspath('../../workbench/server/'))
 
 # -- General configuration ------------------------------------------------
 
@@ -33,6 +35,7 @@ extensions = [
     'sphinx.ext.doctest',
     'sphinx.ext.coverage',
     'sphinx.ext.viewcode',
+    'sphinxcontrib.napoleon'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -76,7 +79,7 @@ exclude_patterns = ['_build']
 
 # The reST default role (used for this markup: `text`) to use for all
 # documents.
-#default_role = None
+default_role = 'py:obj'
 
 # If true, '()' will be appended to :func: etworkbench. cross-reference text.
 #add_function_parentheses = True
@@ -264,3 +267,10 @@ texinfo_documents = [
 
 # If true, do not generate a @detailmenu in the "Top" node's menu.
 #texinfo_no_detailmenu = False
+
+
+autodoc_member_order = "bysource"
+autoclass_content = "both"
+
+autodoc_docstring_signature = False
+

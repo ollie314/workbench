@@ -1,5 +1,5 @@
-workbench.clients package
-=========================
+Workbench Client Reference
+==========================
 
 Submodules
 ----------

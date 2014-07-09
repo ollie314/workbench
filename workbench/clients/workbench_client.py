@@ -1,10 +1,12 @@
-''' This encapsulates some boilerplate workbench client code '''
+"""This encapsulates some boilerplate workbench client code."""
+
 import ConfigParser
 import argparse
 import os
 
 def grab_server_args():
-    ''' Grab server info from configuration file '''
+    """Grab server info from configuration file"""
+    
     workbench_conf = ConfigParser.ConfigParser()
     config_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'config.ini')
     workbench_conf.read(config_path)

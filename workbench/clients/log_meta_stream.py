@@ -1,11 +1,12 @@
-''' This client get meta data about log files '''
+"""This client gets metadata about log files."""
+
 import zerorpc
 import os
 import pprint
 import workbench_client
 
 def run():
-    ''' This client gets meta data about log files '''
+    """This client gets metadata about log files."""
     
     # Grab server args
     args = workbench_client.grab_server_args()
@@ -32,12 +33,9 @@ def run():
                 print row
 
 def test():
-    ''' log_meta_stream test '''
+    """Executes log_meta_stream test."""
     run()
 
 if __name__ == '__main__':
-
-
-
     run()
 

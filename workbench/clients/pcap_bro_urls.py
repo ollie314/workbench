@@ -1,11 +1,12 @@
-''' This client gets extracts URLs from PCAP files (via Bro logs) '''
+"""This client gets extracts URLs from PCAP files (via Bro logs)."""
+
 import zerorpc
 import os
 import pprint
 import workbench_client
 
 def run():
-    ''' This client gets extracts URLs from PCAP files (via Bro logs) '''
+    """This client gets extracts URLs from PCAP files (via Bro logs)."""
     
     # Grab server args
     args = workbench_client.grab_server_args()
@@ -38,7 +39,7 @@ def run():
 
 
 def test():
-    ''' pcap_bro_urls test '''
+    """Exexutes pcap_bro_urls test."""
     run()
 
 if __name__ == '__main__':

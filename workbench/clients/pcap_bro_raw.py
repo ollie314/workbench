@@ -1,10 +1,11 @@
-''' This client gets the raw bro logs from PCAP files '''
+"""This client gets the raw bro logs from PCAP files."""
+
 import zerorpc
 import os
 import workbench_client
 
 def run():
-    ''' This client gets the raw bro logs from PCAP files '''
+    """This client gets the raw bro logs from PCAP files."""
     
     # Grab server args
     args = workbench_client.grab_server_args()
@@ -35,8 +36,9 @@ def run():
                 if log_name.endswith('_log'):
                     bro_log = workbench.get_sample(md5)['sample']['raw_bytes']
                     print '\n\n<<< Bro log: %s >>>\n %s' % (log_name, bro_log)
+
 def test():
-    ''' pcap_bro_raw test '''
+    """Executes pcap_bro_raw test."""
     run()
 
 if __name__ == '__main__':

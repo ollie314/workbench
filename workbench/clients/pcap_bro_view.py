@@ -1,11 +1,12 @@
-''' This client pulls PCAP 'views' (view summarize what's in a sample) '''
+"""This client pulls PCAP 'views' (view summarize what's in a sample)."""
+
 import zerorpc
 import os
 import pprint
 import workbench_client
 
 def run():
-    ''' This client pulls PCAP 'views' (view summarize what's in a sample) '''
+    """This client pulls PCAP 'views' (view summarize what's in a sample)."""
     
     # Grab server args
     args = workbench_client.grab_server_args()
