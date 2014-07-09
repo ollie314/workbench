@@ -3,6 +3,8 @@
 # to do that is simply '-e .': so here it is
 
 # Amazing command
+-e .
+
+# Do we really want these here? (Fixme)
 sphinx
 sphinxcontrib-napoleon
--e .
