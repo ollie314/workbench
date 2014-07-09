@@ -1,11 +1,17 @@
-
-''' NeoDB class for WorkBench '''
+"""NeoDB class for WorkBench."""
 
 class NeoDB(object):
-    ''' NeoDB indexer for Workbench '''
+    """NeoDB indexer for Workbench."""
 
     def __init__(self, uri='http://localhost:7474/db/data'):
-        ''' Initialization for NeoDB indexer '''
+        """Initialization for NeoDB indexer.
+
+        Args:
+            uri: The uri to connect NeoDB.
+        
+        Raises:
+            RuntimeError: When connection to NeoDB failed.
+        """
 
         # Get connection to Neo4j
         try:
@@ -18,7 +24,16 @@ class NeoDB(object):
             raise RuntimeError('Could not connect to Neo4j')
 
     def add_node(self, node_id, name, labels):
-        ''' Add the node with name and labels '''
+        """Add the node with name and labels.
+
+        Args:
+            node_id: Id for the node.
+            name: Name for the node.
+            labels: Label for the node.
+
+        Raises:
+            NotImplementedError: When adding labels is not supported.
+        """
         node = self.graph_db.get_or_create_indexed_node('Node', 'node_id', node_id, {'node_id': node_id, 'name': name})
         try:
             node.add_labels(*labels)
@@ -26,12 +41,24 @@ class NeoDB(object):
             print 'Got a NotImplementedError when adding labels. Upgrade your Neo4j DB!'
 
     def has_node(self, node_id):
-        ''' Add the node with name and labels '''
+        """Checks if the node is present.
+
+        Args:
+            node_id: Id for the node.
+
+        Returns:
+            True if node with node_id is present, else False.
+        """
         return True if self.graph_db.get_indexed_node('Node', 'node_id', node_id) else False
 
     def add_rel(self, source_node_id, target_node_id, rel):
-        ''' Add a relationship: source, target must already exist (see add_node)
-            'rel' is the name of the relationship 'contains' or whatever. '''
+        """Add a relationship between nodes.
+
+        Args:
+            source_node_id: Node Id for the source node.
+            target_node_id: Node Id for the target node.
+            rel: Name of the relationship 'contains'
+        """
 
         # Add the relationship
         n1_ref = self.graph_db.get_indexed_node('Node', 'node_id', source_node_id)
@@ -45,35 +72,35 @@ class NeoDB(object):
         path.get_or_create(self.graph_db)
 
     def clear_db(self):
-        ''' Clear the Graph Database of all nodes and edges '''
+        """Clear the Graph Database of all nodes and edges."""
         self.graph_db.clear()
 
 
 class NeoDBStub(object):
-    ''' NeoDB Stub '''
+    """NeoDB Stub."""
 
     def __init__(self, uri='http://localhost:7474/db/data'):
-        ''' NeoDB Stub '''
+        """NeoDB Stub."""
         print 'NeoDB Stub connected: %s' % (str(uri))
         print 'Install Neo4j and python bindings for Neo4j. See README.md'
 
     def add_node(self, node_id, name, labels):
-        ''' NeoDB Stub '''
+        """NeoDB Stub."""
         print 'NeoDB Stub getting called...'
         print '%s %s %s %s' % (self, node_id, name, labels)
 
     def has_node(self, node_id):
-        ''' NeoDB Stub '''
+        """NeoDB Stub."""
         print 'NeoDB Stub getting called...'
         print '%s %s' % (self, node_id)
 
     def add_rel(self, source_node_id, target_node_id, rel):
-        ''' NeoDB Stub '''
+        """NeoDB Stub."""
         print 'NeoDB Stub getting called...'
         print '%s %s %s %s' % (self, source_node_id, target_node_id, rel)
 
     def clear_db(self):
-        ''' NeoDB Stub '''
+        """NeoDB Stub."""
         print 'NeoDB Stub getting called...'
         print '%s' % (self)
 

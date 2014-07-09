@@ -1,9 +1,8 @@
-
-''' A simple plugin manager. Rolling my own for three reasons:
-    1) Environmental scan did not give me quite what I wanted.
-    2) The super simple examples didn't support automatic/dynamic loading.
-    3) I kinda wanted to understand the process :)
-'''
+"""A simple plugin manager. Rolling my own for three reasons:
+   1) Environmental scan did not give me quite what I wanted.
+   2) The super simple examples didn't support automatic/dynamic loading.
+   3) I kinda wanted to understand the process :)
+"""
 
 import os, sys
 from datetime import datetime
@@ -12,10 +11,15 @@ from watchdog.events import FileSystemEventHandler
 import inspect
 
 class PluginManager(FileSystemEventHandler):
-    ''' Plugin Manager for Workbench '''
+    """Plugin Manager for Workbench."""
 
     def __init__(self, plugin_callback, plugin_dir = 'workers'):
-        ''' Initialize the Plugin Manager for Workbench '''
+        """Initialize the Plugin Manager for Workbench.
+
+        Args:
+            plugin_callback: The callback for plugin. This is called when plugin is added.
+            plugin_dir: The dir where plugin resides.
+        """
 
         # Set the callback
         self.plugin_callback = plugin_callback
@@ -38,14 +42,27 @@ class PluginManager(FileSystemEventHandler):
         observer.start()
 
     def on_created(self, event):
-        ''' Watcher callback '''
+        """Watcher callback
+
+        Args:
+            event: The creation event.
+        """
         self.add_plugin(event.src_path)
+
     def on_modified(self, event):
-        ''' Watcher callback '''
+        """Watcher callback.
+
+        Args:
+            event: The modification event.
+        """
         self.add_plugin(event.src_path)
 
     def add_plugin(self, f):
-        ''' Adding and verifying plugin '''
+        """Adding and verifying plugin.
+
+        Args:
+            f: the filepath for the plugin.
+        """
         if f.endswith('.py'):
 
             # Just the basename without extension
@@ -78,11 +95,14 @@ class PluginManager(FileSystemEventHandler):
                 self.plugin_callback(plugin, mod_time)
 
     def validate(self, handler):
-        ''' Validate the plugin, each plugin must have the following:
-            1) The worker class must have an execute method: execute(self, input_data)
-            2) The worker class must have a dependencies list (even if it's empty)
-            3) The file must have a top level test() method
-        '''
+        """Validate the plugin, each plugin must have the following:
+            1) The worker class must have an execute method: execute(self, input_data).
+            2) The worker class must have a dependencies list (even if it's empty).
+            3) The file must have a top level test() method.
+
+        Args:
+            handler: the loaded plugin.
+        """
 
         # Check for the test method first
         test_method = self.plugin_test_validation(handler)
@@ -101,9 +121,16 @@ class PluginManager(FileSystemEventHandler):
         return None
 
     def plugin_test_validation(self, handler):
-        ''' Plugin validation
-            - Every workbench plugin must have top level test method
-        '''
+        """Plugin validation.
+        
+        Every workbench plugin must have top level test method.
+
+        Args:
+            handler: The loaded plugin.
+
+        Returns:
+            None if the test fails or the test function.
+        """
         methods = {name:func for name, func in inspect.getmembers(handler, callable)}
         if 'test' not in methods.keys():
             print 'Failure for plugin: %s' % (handler.__name__)
@@ -113,10 +140,17 @@ class PluginManager(FileSystemEventHandler):
             return methods['test']
 
     def plugin_class_validation(self, plugin_class):
-        ''' Plugin validation 
-            - Every workbench plugin must have a dependencies list (even if it's empty)
-            - Every workbench plugin must have an execute method.
-        '''
+        """Plugin validation 
+        
+        Every workbench plugin must have a dependencies list (even if it's empty). 
+        Every workbench plugin must have an execute method.
+
+        Args:
+            plugin_class: The loaded plugun class.
+
+        Returns:
+            True if dependencies and execute are present, else False.
+        """
 
         try:
             getattr(plugin_class, 'dependencies')
@@ -129,12 +163,12 @@ class PluginManager(FileSystemEventHandler):
 
 # Just create the class and run it for a test
 def test():
-    ''' -- plugin_manager.py test -- '''
+    """Executes plugin_manager.py test."""
 
     # This test actually does more than it appears. The workers
     # directory will get scanned and stuff will get loaded, etworkbench.
     def new_plugin(plugin, mod_time):
-        ''' new plugin callback '''
+        """new plugin callback """
         print '%s %s' % (plugin, mod_time)
 
     # Create Plugin Manager

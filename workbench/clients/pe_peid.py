@@ -1,11 +1,12 @@
-''' This client looks for PEid signatures in PE Files '''
+"""This client looks for PEid signatures in PE Files."""
+
 import zerorpc
 import os
 import pprint
 import workbench_client
 
 def run():
-    ''' This client looks for PEid signatures in PE Files '''
+    """This client looks for PEid signatures in PE Files."""
     
     # Grab server args
     args = workbench_client.grab_server_args()
@@ -32,7 +33,7 @@ def run():
 import pytest
 @pytest.mark.xfail
 def test():
-    ''' pe_peid test '''
+    """Executes pe_peid test."""
     run()
 
 if __name__ == '__main__':

@@ -1,4 +1,5 @@
-''' This client pushes a big directory of different files into Workbench '''
+"""This client pushes a big directory of different files into Workbench."""
+
 import zerorpc
 import os
 import workbench_client
@@ -6,7 +7,7 @@ import hashlib
 
 
 def run():
-    ''' This client pushes a big directory of different files into Workbench '''
+    """This client pushes a big directory of different files into Workbench."""
     
     # Grab server args
     args = workbench_client.grab_server_args()
@@ -38,7 +39,7 @@ def run():
 import pytest
 @pytest.mark.xfail
 def test():
-    ''' file_upload test '''
+    """Executes file_upload test."""
     run()
 
 if __name__ == '__main__':

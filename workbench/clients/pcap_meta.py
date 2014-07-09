@@ -1,11 +1,12 @@
-''' This client pulls PCAP meta data '''
+"""This client pulls PCAP meta data."""
+
 import zerorpc
 import os
 import pprint
 import workbench_client
 
 def run():
-    ''' This client pulls PCAP meta data '''
+    """This client pulls PCAP meta data."""
     
     # Grab server args
     args = workbench_client.grab_server_args()
@@ -29,7 +30,7 @@ def run():
             pprint.pprint(results)
 
 def test():
-    ''' pcap_meta test '''
+    """Executes pcap_meta test."""
     run()
 
 if __name__ == '__main__':

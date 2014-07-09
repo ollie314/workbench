@@ -1,11 +1,12 @@
-''' This client generates customer reports on all the samples in workbench '''
+"""This client generates customer reports on all the samples in workbench."""
+
 import zerorpc
 import pprint
 import os
 import workbench_client
 
 def run():
-    ''' This client generates customer reports on all the samples in workbench '''
+    """This client generates customer reports on all the samples in workbench."""
     
     # Grab server args
     args = workbench_client.grab_server_args()
@@ -18,7 +19,7 @@ def run():
     pprint.pprint(list(results))
 
 def test():
-    ''' customer_report test '''
+    """Executes test for customer_report."""
     run()
 
 if __name__ == '__main__':

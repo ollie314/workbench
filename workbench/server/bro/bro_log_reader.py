@@ -1,7 +1,8 @@
-''' This module handles the mechanics around easily pulling in Bro Log data
-    The read_log method is a generator (in the python sense) for rows in a Bro log,
-    because of this, it's memory efficient and does not read the entire file into memory.
-'''
+"""This module handles the mechanics around easily pulling in Bro Log data.
+
+   The read_log method is a generator (in the python sense) for rows in a Bro log,
+   because of this, it's memory efficient and does not read the entire file into memory.
+"""
 
 import datetime
 import optparse
@@ -9,21 +10,27 @@ import time
 
 
 class BroLogReader(object):
-    ''' This class implements a python based Bro Log Reader. '''
+    """This class implements a python based Bro Log Reader."""
 
     def __init__(self, convert_datetimes=True):
-        ''' Init for BroLogReader. '''
+        """Init for BroLogReader."""
         self.delimiter = '\t'
         self.convert_datetimes = convert_datetimes
 
     def read_log(self, logfile):
-        ''' The read_log method is a generator for rows in a Bro log.
-            Usage: rows = my_bro_reader.read_log(logfile)
-                   for row in rows:
-                       do something with row
-            Because this method returns a generator, it's memory
-            efficient and does not read the entire file in at once.
-        '''
+        """The read_log method is a generator for rows in a Bro log.
+
+        Usage: 
+            rows = my_bro_reader.read_log(logfile)
+            for row in rows:
+                do something with row
+        Because this method returns a generator, it's memory efficient and 
+        does not read the entire file in at once.
+
+        Args:
+            logfile: The Bro Log file.
+
+        """
 
         # Make sure we're at the beginning
         logfile.seek(0)
@@ -45,23 +52,30 @@ class BroLogReader(object):
 
 
     def _parse_bro_header(self, logfile):
-        ''' This method tries to parse the Bro log header section.
-            Note: My googling is failing me on the documentation on the format,
-                  so just making a lot of assumptions and skipping some shit.
-            Assumption 1: The delimeter is a tab.
-            Assumption 2: Types are either time, string, int or float
-            Assumption 3: The header always ends with #fields and #types as
-                          the last two lines.
+        """This method tries to parse the Bro log header section.
+        
+        Note: My googling is failing me on the documentation on the format,
+        so just making a lot of assumptions and skipping some shit.
+        Assumption 1: The delimeter is a tab.
+        Assumption 2: Types are either time, string, int or float
+        Assumption 3: The header always ends with #fields and #types as
+                      the last two lines.
 
-            Format example:
-                #separator \x09
-                #set_separator	,
-                #empty_field	(empty)
-                #unset_field	-
-                #path	httpheader_recon
-                #fields	ts	origin	useragent	header_events_json
-                #types	time	string	string	string
-        '''
+        Format example:
+            #separator \x09
+            #set_separator	,
+            #empty_field	(empty)
+            #unset_field	-
+            #path	httpheader_recon
+            #fields	ts	origin	useragent	header_events_json
+            #types	time	string	string	string
+
+        Args:
+            logfile: The Bro log file.
+
+        Returns:
+            A tuple of 2 lists. One for field names and other for field types.
+        """
 
         # Skip until you find the #fields line
         _line = next(logfile)
@@ -79,10 +93,16 @@ class BroLogReader(object):
         return _field_names, _field_types
 
     def _cast_dict(self, data_dict):
-        ''' Internal method that makes sure any dictionary elements
-            are properly cast into the correct types, instead of
-            just treating everything like a string from the csv file
-        '''
+        """Internal method that makes sure any dictionary elements
+        are properly cast into the correct types, instead of
+        just treating everything like a string from the csv file.
+
+        Args:
+            data_dict: dictionary containing bro log data.
+
+        Returns:
+            Cleaned Data dict.
+        """
         for key, value in data_dict.iteritems():
             data_dict[key] = self._cast_value(value)
 
@@ -93,10 +113,16 @@ class BroLogReader(object):
         return data_dict
 
     def _cast_value(self, value):
-        ''' Internal method that makes sure any dictionary elements
-            are properly cast into the correct types, instead of
-            just treating everything like a string from the csv file
-        '''
+        """Internal method that makes sure every value in dictionary
+        is properly cast into the correct types, instead of
+        just treating everything like a string from the csv file.
+
+        Args:
+            value : The value to be casted
+
+        Returns:
+            A casted Value.
+        """
         # Try to convert to a datetime (if requested)
         if (self.convert_datetimes):
             try:

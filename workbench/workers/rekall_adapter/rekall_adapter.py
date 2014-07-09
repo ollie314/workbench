@@ -1,8 +1,9 @@
 
-''' rekall_adapter: Helps Workbench utilize the Rekall Memory Forensic Framework.
+"""rekall_adapter: Helps Workbench utilize the Rekall Memory Forensic Framework.
     See Google Github: https://github.com/google/rekall
-    All credit for good stuff goes to them, all credit for bad stuff goes to us. :)
-'''
+    All credit for good stuff goes to them, all credit for bad stuff goes to us. :).
+"""
+
 import os
 import logging
 from rekall import plugins
@@ -18,10 +19,10 @@ import msgpack
 import pytz
 
 class RekallAdapter(object):
-    ''' RekallAdapter: Helps utilize the Rekall Memory Forensic Framework. '''
+    """RekallAdapter: Helps utilize the Rekall Memory Forensic Framework."""
 
     def __init__(self, raw_bytes):
-        ''' Initialization '''
+        """Initialization."""
 
         self.MemS = MemSession(raw_bytes)
         self.renderer = WorkbenchRenderer()
@@ -35,10 +36,11 @@ class RekallAdapter(object):
 
 
 class MemSession(object):
-    ''' MemSession: Helps utilize the Rekall Memory Forensic Framework. '''
+    """MemSession: Helps utilize the Rekall Memory Forensic Framework.
+    """
 
     def __init__(self, raw_bytes):
-        ''' Create a Rekall session from raw_bytes '''
+        """Create a Rekall session from raw_bytes."""
 
         # Spin up the logging
         logging.getLogger().setLevel(logging.ERROR)
@@ -56,18 +58,19 @@ class MemSession(object):
         self.session = s
 
         # Serialize the session (testing for now)
-        '''
-        if self.session.state.dirty or self.session.state.cache.dirty:
-            print 'Saving %s' % (str(self.session.state.session_filename))
-            print 'Method %s' % (str(self.session.SaveToFile))
-            # self.session.SaveToFile(self.session.state.session_filename)        
-        packed = msgpack.packb(self.session, use_bin_type=True)
-        print 'Size of packed session %d' % packed.sized
-        self.session = msgpack.unpackb(packed, encoding='utf-8')
-        '''
+        
+        # if self.session.state.dirty or self.session.state.cache.dirty:
+        #     print 'Saving %s' % (str(self.session.state.session_filename))
+        #     print 'Method %s' % (str(self.session.SaveToFile))
+        #     # self.session.SaveToFile(self.session.state.session_filename)        
+        # packed = msgpack.packb(self.session, use_bin_type=True)
+        # print 'Size of packed session %d' % packed.sized
+        # self.session = msgpack.unpackb(packed, encoding='utf-8')
+
+        
 
     def get_session(self):
-        ''' Get the current session handle '''
+        """Get the current session handle."""
         return self.session
 
     def SaveToFile(self, filename):
@@ -93,8 +96,8 @@ class MemSession(object):
         return encoder.GetLexicon(), data
 
 class WorkbenchRenderer(BaseRenderer):
-    ''' Workbench Renderer: Extends BaseRenderer and simply populates local python
-        data structures, not meant to be serialized or sent over the network. '''
+    """Workbench Renderer: Extends BaseRenderer and simply populates local python
+        data structures, not meant to be serialized or sent over the network."""
 
     def __init__(self):
         self.output_data = None
@@ -106,14 +109,14 @@ class WorkbenchRenderer(BaseRenderer):
         self.start()
 
     def start(self, plugin_name=None, kwargs=None):
-        ''' Start method: initial data structures and store some meta data '''
+        """Start method: initial data structures and store some meta data."""
         self.output_data = {'sections':{}}
         self.section('Info')        
         self.output_data['plugin_name'] = plugin_name
         return self
 
     def end(self):
-        ''' Just a stub method '''
+        """Just a stub method."""
 
     def format(self, formatstring, *args):
 
@@ -149,11 +152,11 @@ class WorkbenchRenderer(BaseRenderer):
             append(self._cast_row(self.active_headers, args, self.header_types))
 
     def write_data_stream(self):
-        ''' Just a stub method '''
+        """Just a stub method."""
         print 'Calling write_data_stream on WorkbenchRenderer does nothing'
 
     def flush(self):
-        ''' Just a stub method '''
+        """Just a stub method."""
         print 'Calling flush on WorkbenchRenderer does nothing'
 
     def render(self, plugin):
@@ -162,10 +165,10 @@ class WorkbenchRenderer(BaseRenderer):
         return self.output_data
 
     def _cast_row(self, keys, values, data_types):
-        ''' Internal method that makes sure that the row elements
+        """Internal method that makes sure that the row elements
             are properly cast into the correct types, instead of
             just treating everything like a string from the csv file
-        '''
+       ."""
         output_dict = {}
         for key, value, dtype in zip(keys, values, data_types):
             output_dict[key] = self._cast_value(value, dtype)
@@ -173,10 +176,10 @@ class WorkbenchRenderer(BaseRenderer):
         return output_dict
 
     def _cast_value(self, value, dtype):
-        ''' Internal method that makes sure any dictionary elements
+        """Internal method that makes sure any dictionary elements
             are properly cast into the correct types, instead of
             just treating everything like a string from the csv file
-        '''
+       ."""
 
         # Try to convert to a datetime
         if 'time' in dtype:
@@ -202,7 +205,7 @@ class WorkbenchRenderer(BaseRenderer):
 import pytest
 @pytest.mark.xfail
 def test():
-    ''' rekall_adapter.py: Test '''
+    """rekall_adapter.py: Test."""
 
     # Do we have the memory forensics file?
     data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../data/memory_images/exemplar4.vmem')
