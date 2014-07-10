@@ -1,5 +1,5 @@
-Workbench Client Reference
-==========================
+workbench.clients package
+=========================
 
 Submodules
 ----------
@@ -8,6 +8,14 @@ workbench.clients.customer_report module
 ----------------------------------------
 
 .. automodule:: workbench.clients.customer_report
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+workbench.clients.help_client module
+------------------------------------
+
+.. automodule:: workbench.clients.help_client
     :members:
     :undoc-members:
     :show-inheritance:

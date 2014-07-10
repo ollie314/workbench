@@ -1,7 +1,7 @@
 
 Workbench
 =========
-|Build Status| |Coverage Status| |Code Health| |Project Stats| |Project Ready| |Project InProgress| |Gitter chat|
+|Build Status| |Coverage Status| |Code Health| |Fury| |PyPI|  |Project Ready| |Project InProgress| |Gitter chat|
 
 **A medium-data framework for security research and development teams.**
 
@@ -67,6 +67,15 @@ As an open source python project it provides light-weight task management, execu
     <a href="https://pypi.python.org/pypi/workbench" >
         <img src="https://pypip.in/d/workbench/badge.png"/>
     </a>
+
+Email Lists (Forums)
+--------------------
+- Users Email List: Users_Email_List_
+- Developers Email List: Developers_Email_List_
+
+.. _Workbench_Docs: http://workbench.readthedocs.org/en/latest/
+.. _Users_Email_List: https://groups.google.com/forum/#!forum/workbench-users
+.. _Developers_Email_List: https://groups.google.com/forum/#!forum/workbench-devs
 
 Contents
 ^^^^^^^^

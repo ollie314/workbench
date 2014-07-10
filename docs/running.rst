@@ -6,7 +6,7 @@ Server (localhost or server machine)
 
 ::
 
-   $ python setup.py install
+   $ pip install workbench
    $ workbench
 
 Example Clients (use -s for remote server)
@@ -24,23 +24,23 @@ client (looking for node devs to pop some pull requests :).
 Workbench Examples
 ------------------
 
--  `PCAP to Graph <http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/notebooks/PCAP_to_Graph.ipynb/>`_ (A short teaser)
--  `Workbench Demo <http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/notebooks/Workbench_Demo.ipynb/>`_
--  `Adding a new Worker <http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/notebooks/Adding_Worker.ipynb/>`_ (super hawt)
--  `PCAP to Dataframe <http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/notebooks/PCAP_to_Dataframe.ipynb/>`_
--  `PCAP DriveBy Analysis <http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/notebooks/PCAP_DriveBy.ipynb>`_
--  `Using Neo4j for PE File Sim Graph <http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/notebooks/PE_SimGraph.ipynb>`_
--  `Generator Pipelines Notebook <http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/notebooks/Generator_Pipelines.ipynb>`_
+-  `PCAP to Graph <http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/workbench/notebooks/PCAP_to_Graph.ipynb/>`_ (A short teaser)
+-  `Workbench Demo <http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/workbench/notebooks/Workbench_Demo.ipynb/>`_
+-  `Adding a new Worker <http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/workbench/notebooks/Adding_Worker.ipynb/>`_ (super hawt)
+-  `PCAP to Dataframe <http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/workbench/notebooks/PCAP_to_Dataframe.ipynb/>`_
+-  `PCAP DriveBy Analysis <http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/workbench/notebooks/PCAP_DriveBy.ipynb>`_
+-  `Using Neo4j for PE File Sim Graph <http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/workbench/notebooks/PE_SimGraph.ipynb>`_
+-  `Generator Pipelines Notebook <http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/workbench/notebooks/Generator_Pipelines.ipynb>`_
 -  WIP Notebooks
 
-   -  `Network Stream Analysis Notebook <http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/notebooks/Network_Stream.ipynb>`_
-   -  `PE File Static Analysis Notebook <http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/notebooks/PE_Static_Analysis.ipynb>`_
+   -  `Network Stream Analysis Notebook <http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/workbench/notebooks/Network_Stream.ipynb>`_
+   -  `PE File Static Analysis Notebook <http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/workbench/notebooks/PE_Static_Analysis.ipynb>`_
 
 
 Making your own Worker
 ----------------------
 
-Fill in info
+-  See the notebook `Adding a new Worker <http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/workbench/notebooks/Adding_Worker.ipynb/>`_
 
 Workbench Conventions
 ~~~~~~~~~~~~~~~~~~~~~

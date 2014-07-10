@@ -1,4 +1,4 @@
-|Build Status| |Coverage Status| |Code Health| |Project Stats| |Project Ready| |Project InProgress| |Gitter chat|
+|Build Status| |Coverage Status| |Code Health| |Fury| |PyPI| |Project Ready| |Project InProgress| |Gitter chat|
 
 Note: the coverage is about 90%, the issue is with reporting. (See Issue #137)
 
@@ -15,7 +15,7 @@ As an open source python project it provides light-weight task management, execu
     </a>
 
 .. |Coverage Status| raw:: html 
-    
+
     <a href="https://coveralls.io/r/SuperCowPowers/workbench" >
         <img src="https://coveralls.io/repos/SuperCowPowers/workbench/badge.png"/>
     </a>
@@ -26,14 +26,8 @@ As an open source python project it provides light-weight task management, execu
         <img src="https://landscape.io/github/SuperCowPowers/workbench/master/landscape.png"/>
     </a>
 
-.. |Project Stats| raw:: html
-
-    <a href="https://www.ohloh.net/p/workbench" >
-        <img src="https://www.ohloh.net/p/workbench/widgets/project_thin_badge.gif"/>
-    </a>
-
 .. |Project Ready| raw:: html
-    
+
     <a href="https://waffle.io/supercowpowers/workbench" >
         <img src="https://badge.waffle.io/supercowpowers/workbench.png?label=on_deck&title=On_Deck"/>
     </a>
@@ -71,11 +65,17 @@ As an open source python project it provides light-weight task management, execu
 
 Pull the repository
 -------------------
-Warning! The repository contains malcious samples, be careful, exclude the workbench directory from AV, etc...
+
+.. raw:: html
+
+    <img src="http://raw.github.com/supercowpowers/workbench/master/images/warning.jpg" 
+        alt="robot"  width="80px" align="left" style="margin-right:10px;"/>
+
+.. warning:: Caution!: The repository contains malcious data samples, be careful, exclude the workbench directory from AV, etc...
 
 .. code:: sh
-	
-	git clone https://github.com/supercowpowers/workbench.git
+
+    git clone https://github.com/supercowpowers/workbench.git
 
 Read the Documentation
 ----------------------
