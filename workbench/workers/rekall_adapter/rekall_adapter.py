@@ -36,8 +36,7 @@ class RekallAdapter(object):
 
 
 class MemSession(object):
-    """MemSession: Helps utilize the Rekall Memory Forensic Framework.
-    """
+    """MemSession: Helps utilize the Rekall Memory Forensic Framework."""
 
     def __init__(self, raw_bytes):
         """Create a Rekall session from raw_bytes."""
@@ -73,6 +72,8 @@ class MemSession(object):
         """Get the current session handle."""
         return self.session
 
+    ''' All of this code is currently not used '''
+    '''
     def SaveToFile(self, filename):
         with open(filename, "wb") as fd:
             logging.info("Saving session to %s", filename)
@@ -94,6 +95,7 @@ class MemSession(object):
         encoder = json_renderer.JsonEncoder()
         data = encoder.Encode(self.state)
         return encoder.GetLexicon(), data
+    '''
 
 class WorkbenchRenderer(BaseRenderer):
     """Workbench Renderer: Extends BaseRenderer and simply populates local python
@@ -230,12 +232,15 @@ def test():
     # Create any kind of plugin supported by this session
     output = renderer.render(session.plugins.imageinfo())
     pprint.pprint(output)
+    assert 'Error' not in output
 
     output = renderer.render(session.plugins.pslist())
     pprint.pprint(output)
+    assert 'Error' not in output
 
     output = renderer.render(session.plugins.dlllist())
     pprint.pprint(output)
+    assert 'Error' not in output
 
 
     # Code coverage: These calls are simply for code coverage

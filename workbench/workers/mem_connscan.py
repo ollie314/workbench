@@ -16,6 +16,8 @@ class MemoryImageConnScan(mem_base.MemoryImageBase):
         self.set_plugin_name('connscan')
 
 # Unit test: Create the class, the proper input and run the execute() method for a test
+import pytest
+@pytest.mark.xfail
 def test():
     ''' mem_connscan.py: Test '''
 
@@ -37,12 +39,14 @@ def test():
     print '\n<<< Unit Test >>>'
     import pprint
     pprint.pprint(output)
+    assert 'Error' not in output
 
     # Execute the worker (server test)
     output = c.work_request('mem_connscan', md5)
     print '\n<<< Server Test >>>'
     import pprint
     pprint.pprint(output)
+    assert 'Error' not in output
 
 
 if __name__ == "__main__":
