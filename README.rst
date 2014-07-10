@@ -35,8 +35,8 @@ Pull the repository
 ~~~~~~~~~~~~~~~~~~~
 
 .. image:: http://raw.github.com/supercowpowers/workbench/master/images/warning.jpg
-    :width: 80 
-    :align: left
+    :width: 80pt 
+    :float: left
 
 .. code:: sh
     
