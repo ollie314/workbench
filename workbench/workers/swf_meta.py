@@ -20,7 +20,7 @@ def test():
 
     # This worker test requires a local server running
     import zerorpc
-    workbench = zerorpc.Client()
+    workbench = zerorpc.Client(timeout=120)
     workbench.connect("tcp://127.0.0.1:4242")
 
     # Generate input for the worker
