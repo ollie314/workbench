@@ -44,6 +44,8 @@ class MemoryImageBase(object):
 
 
 # Unit test: Create the class, the proper input and run the execute() method for a test
+import pytest
+@pytest.mark.xfail
 def test():
     ''' mem_base.py: Test '''
 
@@ -78,12 +80,14 @@ def test():
     print '\n<<< Unit Test >>>'
     import pprint
     pprint.pprint(output)
+    assert 'Error' not in output
 
     # Execute the worker (server test)
     output = c.work_request('mem_base', md5)
     print '\n<<< Server Test >>>'
     import pprint
     pprint.pprint(output)
+    assert 'Error' not in output
 
 
 if __name__ == "__main__":
