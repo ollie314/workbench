@@ -32,12 +32,11 @@ Workbench Examples
 Pull the repository
 ~~~~~~~~~~~~~~~~~~~
 
-.. image:: http://raw.github.com/supercowpowers/workbench/master/images/warning.jpg
-    :width: 80pt
-    :align: left
+.. .. image:: http://raw.github.com/supercowpowers/workbench/master/images/warning.jpg
+..    :width: 80pt
+..    :align: left
 
-**Warning!: The repository contains malcious data samples, be careful,
-exclude the workbench directory from AV, etc...**
+**Warning!: The repository contains malcious data samples, be careful, exclude the workbench directory from AV, etc...**
 
 .. code:: sh
     
