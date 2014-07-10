@@ -3,6 +3,7 @@ include CONTRIBUTING.rst
 include HISTORY.rst
 include LICENSE
 include README.rst
+include README_PYPY.rst
 include workbench/server/config.ini
 include workbench/clients/config.ini
 include workbench/workers/peid_userdb.txt

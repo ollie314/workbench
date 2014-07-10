@@ -9,7 +9,7 @@ if sys.argv[-1] == 'publish':
     os.system('python setup.py sdist upload')
     sys.exit()
 
-readme = open('README_PYPY.md').read()
+readme = open('README_PYPY.rst').read()
 long_description = readme
 doclink = '''
 Documentation
