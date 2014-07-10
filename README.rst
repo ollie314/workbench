@@ -6,8 +6,8 @@
 Workbench
 =========
 
-A medium-data framework for security research and development teams.
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+**A medium-data framework for security research and development teams.**
+
 
 Workbench focuses on simplicity, transparency, and easy on-site
 customization. As an open source python project it provides light-weight
