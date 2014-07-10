@@ -1,44 +1,47 @@
-`|Build Status| <https://travis-ci.org/SuperCowPowers/workbench>`_
-`|Coverage Status| <https://coveralls.io/r/SuperCowPowers/workbench>`_
-`|Code
-Health| <https://landscape.io/github/SuperCowPowers/workbench/master>`_
-`|Fury| <http://badge.fury.io/py/workbench>`_
-`|PyPI| <https://pypi.python.org/pypi/workbench>`_
+|Build Status| |Coverage Status| |Code Health| |Project Stats|
 
-`|On\_Deck| <https://waffle.io/supercowpowers/workbench>`_
-`|In\_Progress| <https://waffle.io/supercowpowers/workbench>`_ `|Gitter
-chat| <https://gitter.im/SuperCowPowers/workbench>`_
+|Project Ready| |Project InProgress| |Gitter chat|
 
-Note: the coverage is about 90%, the issue is with reporting. (See Issue
-#137) Workbench ========= #### A medium-data framework for security
-research and development teams. Workbench focuses on simplicity,
-transparency, and easy on-site customization. As an open source python
-project it provides light-weight task management, execution and
-pipelining for a loosely-coupled set of python classes.
+
+| Note: the coverage is about 90%, the issue is with reporting. (See Issue #137)
+
+| Workbench
+| =========
+
+A medium-data framework for security research and development teams.
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Workbench focuses on simplicity, transparency, and easy on-site
+customization. As an open source python project it provides light-weight
+task management, execution and pipelining for a loosely-coupled set of
+python classes.
 
 Workbench Examples
 ~~~~~~~~~~~~~~~~~~
 
--  **PCAP to Graph** (A short teaser)
--  **Workbench Demo**
--  **Adding a new Worker** (super hawt)
--  **PCAP to Dataframe**
--  **PCAP DriveBy Analysis**
--  **Using Neo4j for PE File Sim Graph**
--  **Generator Pipelines Notebook**
+-  `PCAP to Graph <http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/notebooks/PCAP_to_Graph.ipynb/>`_ (A short teaser)
+-  `Workbench Demo <http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/notebooks/Workbench_Demo.ipynb/>`_
+-  `Adding a new Worker <http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/notebooks/Adding_Worker.ipynb/>`_ (super hawt)
+-  `PCAP to Dataframe <http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/notebooks/PCAP_to_Dataframe.ipynb/>`_
+-  `PCAP DriveBy Analysis <http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/notebooks/PCAP_DriveBy.ipynb>`_
+-  `Using Neo4j for PE File Sim Graph <http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/notebooks/PE_SimGraph.ipynb>`_
+-  `Generator Pipelines Notebook <http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/notebooks/Generator_Pipelines.ipynb>`_
 -  WIP Notebooks
 
-   -  **Network Stream Analysis Notebook**
-   -  **PE File Static Analysis Notebook**
+   -  `Network Stream Analysis Notebook <http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/notebooks/Network_Stream.ipynb>`_
+   -  `PE File Static Analysis Notebook <http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/notebooks/PE_Static_Analysis.ipynb>`_
 
 Pull the repository
 ~~~~~~~~~~~~~~~~~~~
 
-.. raw:: html
+.. image:: http://raw.github.com/supercowpowers/workbench/master/images/warning.jpg
+    :width: 80 
+    :align: left
 
-   <pre>
-   git clone https://github.com/supercowpowers/workbench.git
-   </pre>
+.. code:: sh
+    
+    git clone https://github.com/supercowpowers/workbench.git
+
 
 **Warning!: The repository contains malcious data samples, be careful,
 exclude the workbench directory from AV, etc...**
@@ -46,8 +49,7 @@ exclude the workbench directory from AV, etc...**
 Read the Documentation
 ~~~~~~~~~~~~~~~~~~~~~~
 
-Workbench documentation: `Workbench
-Docs <http://workbench.readthedocs.org/en/latest/>`_
+Workbench documentation: `Workbench Docs <http://workbench.readthedocs.org/en/latest/>`_
 
 Email Lists (Forums)
 ~~~~~~~~~~~~~~~~~~~~
@@ -57,11 +59,37 @@ Email Lists (Forums)
 -  Developers Email List:
    `workbench-devs <https://groups.google.com/forum/#!forum/workbench-devs>`_
 
-.. |Build Status| image:: https://travis-ci.org/SuperCowPowers/workbench.svg?branch=master
+.. _Workbench_Docs: http://workbench.readthedocs.org/en/latest/
+.. _Users_Email_List: https://groups.google.com/forum/#!forum/workbench-users
+.. _Developers_Email_List: https://groups.google.com/forum/#!forum/workbench-devs
+
+.. |Build Status| image:: https://travis-ci.org/SuperCowPowers/workbench.png?branch=master
+    :target: https://travis-ci.org/SuperCowPowers/workbench
+
 .. |Coverage Status| image:: https://coveralls.io/repos/SuperCowPowers/workbench/badge.png
+    :target: https://coveralls.io/r/SuperCowPowers/workbench
+
 .. |Code Health| image:: https://landscape.io/github/SuperCowPowers/workbench/master/landscape.png
-.. |Fury| image:: https://badge.fury.io/py/workbench.png
-.. |PyPI| image:: https://pypip.in/d/workbench/badge.png
-.. |On\_Deck| image:: https://badge.waffle.io/supercowpowers/workbench.png?label=on_deck&title=On_Deck
-.. |In\_Progress| image:: https://badge.waffle.io/supercowpowers/workbench.png?label=in_progress&title=In_Progress
+    :target: https://landscape.io/github/SuperCowPowers/workbench/master
+
+.. |Project Stats| image:: https://www.ohloh.net/p/workbench/widgets/project_thin_badge.gif
+    :target: https://www.ohloh.net/p/workbench
+
+.. |Project Ready| image:: https://badge.waffle.io/supercowpowers/workbench.png?label=on_deck&title=On_Deck
+    :target: https://waffle.io/supercowpowers/workbench
+
+.. |Project InProgress| image:: https://badge.waffle.io/supercowpowers/workbench.png?label=In_Progress&title=In_Progress
+    :target: https://waffle.io/supercowpowers/workbench
+
 .. |Gitter chat| image:: https://badges.gitter.im/SuperCowPowers/workbench.png
+   :target: https://gitter.im/SuperCowPowers/workbench
+
+.. |Requirements| image:: https://requires.io/github/SuperCowPowers/workbench/requirements.png?branch=master
+   :target: https://requires.io/github/SuperCowPowers/workbench/requirements/?branch=master
+   :alt: Requirements Status
+
+.. |Fury| image:: https://badge.fury.io/py/workbench.png
+    :target: http://badge.fury.io/py/workbench
+
+.. |PyPI| image:: https://pypip.in/d/workbench/badge.png
+    :target: https://pypi.python.org/pypi/workbench
