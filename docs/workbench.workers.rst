@@ -1,5 +1,12 @@
-Workbench Workers Reference
-===========================
+workbench.workers package
+=========================
+
+Subpackages
+-----------
+
+.. toctree::
+
+    workbench.workers.rekall_adapter
 
 Submodules
 ----------
@@ -16,6 +23,54 @@ workbench.workers.log_meta module
 ---------------------------------
 
 .. automodule:: workbench.workers.log_meta
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+workbench.workers.mem_base module
+---------------------------------
+
+.. automodule:: workbench.workers.mem_base
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+workbench.workers.mem_connscan module
+-------------------------------------
+
+.. automodule:: workbench.workers.mem_connscan
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+workbench.workers.mem_dlllist module
+------------------------------------
+
+.. automodule:: workbench.workers.mem_dlllist
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+workbench.workers.mem_meta module
+---------------------------------
+
+.. automodule:: workbench.workers.mem_meta
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+workbench.workers.mem_procdump module
+-------------------------------------
+
+.. automodule:: workbench.workers.mem_procdump
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+workbench.workers.mem_pslist module
+-----------------------------------
+
+.. automodule:: workbench.workers.mem_pslist
     :members:
     :undoc-members:
     :show-inheritance:
