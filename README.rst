@@ -1,12 +1,12 @@
-|Build Status| |Coverage Status| |Code Health| |Project Stats|
+|Build Status| |Coverage Status| |Code Health| |Fury| |PyPI|
 
 |Project Ready| |Project InProgress| |Gitter chat|
 
 
-| Note: the coverage is about 90%, the issue is with reporting. (See Issue #137)
+Note: the coverage is about 90%, the issue is with reporting. (See Issue #137)
 
-| Workbench
-| =========
+Workbench
+=========
 
 A medium-data framework for security research and development teams.
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
