@@ -1,6 +1,6 @@
-|Build Status| |Coverage Status| |Code Health| |Project Stats| |Project Ready| |Project InProgress| |Gitter chat|
+|Build Status| |Coverage Status| |Code Health| |Project Stats|
 
-Note: the coverage is about 90%, the issue is with reporting. (See Issue #137)
+|Project Ready| |Project InProgress| |Gitter chat|
 
 Workbench
 =========
@@ -8,65 +8,36 @@ Workbench
 Workbench focuses on simplicity, transparency, and easy on-site customization. 
 As an open source python project it provides light-weight task management, execution and pipelining for a loosely-coupled set of python classes.
 
-.. |Build Status| raw:: html
+.. |Build Status| image:: https://travis-ci.org/SuperCowPowers/workbench.png?branch=master
+    :target: https://travis-ci.org/SuperCowPowers/workbench
 
-    <a href="https://travis-ci.org/SuperCowPowers/workbench" >
-        <img src="https://travis-ci.org/SuperCowPowers/workbench.png?branch=master"/>
-    </a>
+.. |Coverage Status| image:: https://coveralls.io/repos/SuperCowPowers/workbench/badge.png
+    :target: https://coveralls.io/r/SuperCowPowers/workbench
 
-.. |Coverage Status| raw:: html 
-    
-    <a href="https://coveralls.io/r/SuperCowPowers/workbench" >
-        <img src="https://coveralls.io/repos/SuperCowPowers/workbench/badge.png"/>
-    </a>
+.. |Code Health| image:: https://landscape.io/github/SuperCowPowers/workbench/master/landscape.png
+    :target: https://landscape.io/github/SuperCowPowers/workbench/master
 
-.. |Code Health| raw:: html 
+.. |Project Stats| image:: https://www.ohloh.net/p/workbench/widgets/project_thin_badge.gif
+    :target: https://www.ohloh.net/p/workbench
 
-    <a href="https://landscape.io/github/SuperCowPowers/workbench/master" >
-        <img src="https://landscape.io/github/SuperCowPowers/workbench/master/landscape.png"/>
-    </a>
+.. |Project Ready| image:: https://badge.waffle.io/supercowpowers/workbench.png?label=on_deck&title=On_Deck
+    :target: https://waffle.io/supercowpowers/workbench
 
-.. |Project Stats| raw:: html
+.. |Project InProgress| image:: https://badge.waffle.io/supercowpowers/workbench.png?label=In_Progress&title=In_Progress
+    :target: https://waffle.io/supercowpowers/workbench
 
-    <a href="https://www.ohloh.net/p/workbench" >
-        <img src="https://www.ohloh.net/p/workbench/widgets/project_thin_badge.gif"/>
-    </a>
+.. |Gitter chat| image:: https://badges.gitter.im/SuperCowPowers/workbench.png
+	:target: https://gitter.im/SuperCowPowers/workbench
 
-.. |Project Ready| raw:: html
-    
-    <a href="https://waffle.io/supercowpowers/workbench" >
-        <img src="https://badge.waffle.io/supercowpowers/workbench.png?label=on_deck&title=On_Deck"/>
-    </a>
+.. |Requirements| image:: https://requires.io/github/SuperCowPowers/workbench/requirements.png?branch=master
+	:target: https://requires.io/github/SuperCowPowers/workbench/requirements/?branch=master
+	:alt: Requirements Status
 
-.. |Project InProgress| raw:: html
+.. |Fury| image:: https://badge.fury.io/py/workbench.png
+    :target: http://badge.fury.io/py/workbench
 
-    <a href="https://waffle.io/supercowpowers/workbench" >
-        <img src="https://badge.waffle.io/supercowpowers/workbench.png?label=in_progress&title=In_Progress"/>
-    </a>
-
-.. |Gitter chat| raw:: html
-
-    <a href="https://gitter.im/SuperCowPowers/workbench" >
-        <img src="https://badges.gitter.im/SuperCowPowers/workbench.png"/>
-    </a>
-
-.. |Requirements| raw:: html
-
-    <a href="https://requires.io/github/SuperCowPowers/workbench/requirements/?branch=master" >
-        <img src="https://requires.io/github/SuperCowPowers/workbench/requirements.png?branch=master" alt="Requirements Status" />
-    </a>
-
-.. |Fury| raw:: html
-
-    <a href="http://badge.fury.io/py/workbench" >
-        <img src="https://badge.fury.io/py/workbench.png"/>
-    </a>
-
-.. |PyPI| raw:: html image
-
-    <a href="https://pypi.python.org/pypi/workbench" >
-        <img src="https://pypip.in/d/workbench/badge.png"/>
-    </a>
+.. |PyPI| image:: https://pypip.in/d/workbench/badge.png
+    :target: https://pypi.python.org/pypi/workbench
 
 
 Pull the repository
@@ -74,8 +45,8 @@ Pull the repository
 Warning! The repository contains malcious samples, be careful, exclude the workbench directory from AV, etc...
 
 .. code:: sh
-	
-	git clone https://github.com/supercowpowers/workbench.git
+    
+    git clone https://github.com/supercowpowers/workbench.git
 
 Read the Documentation
 ----------------------
