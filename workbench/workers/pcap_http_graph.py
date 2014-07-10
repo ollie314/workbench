@@ -9,7 +9,7 @@ class PcapHTTPGraph(object):
 
     def __init__(self):
         ''' Initialization '''
-        self.workbench = zerorpc.Client()
+        self.workbench = zerorpc.Client(timeout=120)
         self.workbench.connect('tcp://127.0.0.1:4242')
         self.mime_types = ['application/x-dosexec', 'application/pdf', 'application/zip',
                            'application/jar', 'application/vnd.ms-cab-compressed',

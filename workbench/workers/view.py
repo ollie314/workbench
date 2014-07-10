@@ -7,7 +7,7 @@ class View(object):
     dependencies = ['meta']
 
     def __init__(self):
-        self.workbench = zerorpc.Client()
+        self.workbench = zerorpc.Client(timeout=120)
         self.workbench.connect("tcp://127.0.0.1:4242")
 
     def execute(self, input_data):
@@ -42,7 +42,7 @@ def test():
     import pprint
 
     # This worker test requires a local server running
-    workbench = zerorpc.Client()
+    workbench = zerorpc.Client(timeout=120)
     workbench.connect("tcp://127.0.0.1:4242")
 
     # Generate the input data for this worker
