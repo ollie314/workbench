@@ -95,24 +95,22 @@ def run():
     all_md5s = add_it(workbench, bad_files, ['pe', 'bad']) + add_it(workbench, good_files, ['pe', 'good'])
 
     # Compute pe_features on all files of type pe, just pull back the sparse features
-    imports = workbench.batch_work_request('pe_features',
+    import_gen = workbench.batch_work_request('pe_features',
         {'md5_list': all_md5s, 'subkeys':['md5', 'sparse_features.imported_symbols']})
+    imports = [{'md5': r['md5'], 'features': r['imported_symbols']} for r in import_gen]
 
     # Compute pe_features on all files of type pe, just pull back the sparse features
-    warnings = workbench.batch_work_request('pe_features',
+    warning_gen = workbench.batch_work_request('pe_features',
         {'md5_list': all_md5s, 'subkeys':['md5', 'sparse_features.pe_warning_strings']})
+    warnings = [{'md5': r['md5'], 'features': r['pe_warning_strings']} for r in warning_gen]
 
     # Compute strings on all files of type pe, just pull back the string_list
-    strings = workbench.batch_work_request('strings', {'md5_list': all_md5s, 'subkeys':['md5', 'string_list']})
+    string_gen = workbench.batch_work_request('strings', {'md5_list': all_md5s, 'subkeys':['md5', 'string_list']})
+    strings = [{'md5': r['md5'], 'features': r['string_list']} for r in string_gen]
 
     # Compute pe_peid on all files of type pe, just pull back the match_list
-    peids = workbench.batch_work_request('pe_peid', {'md5_list': all_md5s, 'subkeys':['md5', 'match_list']})
-
-    # Organize the data a bit
-    imports = [{'md5': r['md5'], 'features': r['imported_symbols']} for r in imports]
-    warnings = [{'md5': r['md5'], 'features': r['pe_warning_strings']} for r in warnings]
-    strings = [{'md5': r['md5'], 'features': r['string_list']} for r in strings]
-    peids = [{'md5': r['md5'], 'features': r['match_list']} for r in peids]
+    peid_gen = workbench.batch_work_request('pe_peid', {'md5_list': all_md5s, 'subkeys':['md5', 'match_list']})
+    peids = [{'md5': r['md5'], 'features': r['match_list']} for r in peid_gen]
 
     # Compute the Jaccard Index between imported systems and store as relationships
     sims = jaccard_sims(imports)
