@@ -1,6 +1,6 @@
 |Build Status| |Coverage Status| |Code Health| |Fury| |PyPI|
 
-|Project Ready| |Project InProgress| |Gitter chat|
+|Project Ready| |Project InProgress| |Gitter chat| |License|
 
 
 Workbench
@@ -32,17 +32,9 @@ Workbench Examples
 Pull the repository
 ~~~~~~~~~~~~~~~~~~~
 
-.. .. image:: http://raw.github.com/supercowpowers/workbench/master/images/warning.jpg
-..    :width: 80pt
-..    :align: left
-
 **Warning!: The repository contains malcious data samples, be careful, exclude the workbench directory from AV, etc...**
 
-.. code:: sh
-    
-    git clone https://github.com/supercowpowers/workbench.git
-
-
+git clone https://github.com/supercowpowers/workbench.git
 
 
 Read the Documentation
@@ -62,10 +54,11 @@ Email Lists (Forums)
 .. _Users_Email_List: https://groups.google.com/forum/#!forum/workbench-users
 .. _Developers_Email_List: https://groups.google.com/forum/#!forum/workbench-devs
 
-.. |Build Status| image:: https://travis-ci.org/SuperCowPowers/workbench.png?branch=master
+.. |Build Status| image:: http://img.shields.io/travis/SuperCowPowers/workbench.svg?style=flat
     :target: https://travis-ci.org/SuperCowPowers/workbench
+    :alt: Build Status
 
-.. |Coverage Status| image:: https://coveralls.io/repos/SuperCowPowers/workbench/badge.png
+.. |Coverage Status| image:: https://img.shields.io/coveralls/SuperCowPowers/workbench.svg?style=flat
     :target: https://coveralls.io/r/SuperCowPowers/workbench
 
 .. |Code Health| image:: https://landscape.io/github/SuperCowPowers/workbench/master/landscape.png
@@ -87,8 +80,12 @@ Email Lists (Forums)
    :target: https://requires.io/github/SuperCowPowers/workbench/requirements/?branch=master
    :alt: Requirements Status
 
-.. |Fury| image:: https://badge.fury.io/py/workbench.png
+.. |Fury| image:: http://img.shields.io/pypi/v/workbench.svg?style=flat
     :target: http://badge.fury.io/py/workbench
 
-.. |PyPI| image:: https://pypip.in/d/workbench/badge.png
+.. |PyPI| image:: http://img.shields.io/pypi/dm/workbench.svg?style=flat
     :target: https://pypi.python.org/pypi/workbench
+
+.. |License| image:: http://img.shields.io/badge/license-mit-brightgreen.svg?style=flat
+    :target: https://github.com/SuperCowPowers/workbench/blob/master/LICENSE
+    :alt: License
