@@ -1,25 +1,25 @@
 
-''' Memory Image DllList worker. This worker utilizes the Rekall Memory Forensic Framework.
+''' Memory Image ConnScan worker. This worker utilizes the Rekall Memory Forensic Framework.
     See Google Github: https://github.com/google/rekall
     All credit for good stuff goes to them, all credit for bad stuff goes to us. :)
 '''
 import os
 import mem_base
 
-class MemoryImageDllList(mem_base.MemoryImageBase):
-    ''' This worker computes dlllist for memory image files. '''
+class MemoryImageConnScan(mem_base.MemoryImageBase):
+    ''' This worker computes connscan-data for memory image files. '''
     dependencies = ['sample']
 
     def __init__(self):
         ''' Initialization '''
-        super(MemoryImageDllList, self).__init__()
-        self.set_plugin_name('dlllist')
+        super(MemoryImageConnScan, self).__init__()
+        self.set_plugin_name('connscan')
 
 # Unit test: Create the class, the proper input and run the execute() method for a test
 import pytest
-@pytest.mark.xfail
+@pytest.mark.rekall
 def test():
-    ''' mem_dlllist.py: Test '''
+    ''' mem_connscan.py: Test '''
 
     # This worker test requires a local server running
     import zerorpc
@@ -34,7 +34,7 @@ def test():
     input_data = c.get_sample(md5)
 
     # Execute the worker (unit test)
-    worker = MemoryImageDllList()
+    worker = MemoryImageConnScan()
     output = worker.execute(input_data)
     print '\n<<< Unit Test >>>'
     import pprint
@@ -42,7 +42,7 @@ def test():
     assert 'Error' not in output
 
     # Execute the worker (server test)
-    output = c.work_request('mem_dlllist', md5)
+    output = c.work_request('mem_connscan', md5)
     print '\n<<< Server Test >>>'
     import pprint
     pprint.pprint(output)
