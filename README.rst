@@ -1,6 +1,6 @@
-|Build Status| |Coverage Status| |Code Health| |Fury| |PyPI|
+|Build Status| |Coverage Status| |License|  |Fury| |PyPI|
 
-|Project Ready| |Project InProgress| |Gitter chat| |License|
+|Code Health| |Project Ready| |Project InProgress| |Gitter chat| 
 
 
 Workbench
