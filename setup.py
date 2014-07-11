@@ -35,7 +35,7 @@ setup(
     install_requires=['elasticsearch', 'urllib3', 'filemagic', 'pefile', 'pytest',
                       'py2neo', 'pymongo', 'requests', 'cython', 'ssdeep==2.9-0.3',
                       'watchdog', 'yara', 'funcsigs', 'zerorpc', 'rekall==1.0rc11',
-                      'pytest', 'pytest-cov','tox'],
+                      'coverage', 'pytest-cov','tox'],
     license='MIT',
     zip_safe=False,
     keywords='workbench security python',
