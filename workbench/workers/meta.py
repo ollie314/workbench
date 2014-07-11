@@ -22,7 +22,10 @@ class MetaData(object):
         with magic.Magic(flags=magic.MAGIC_MIME_TYPE) as mag:
             self.meta['mime_type'] = mag.id_buffer(raw_bytes[:1024])
         with magic.Magic(flags=magic.MAGIC_MIME_ENCODING) as mag:
-            self.meta['encoding'] = mag.id_buffer(raw_bytes[:1024])
+            try:
+                self.meta['encoding'] = mag.id_buffer(raw_bytes[:1024])
+            except magic.MagicError:
+                self.meta['encoding'] = 'unknown'
         self.meta['file_size'] = len(raw_bytes)
         self.meta['filename'] = input_data['sample']['filename']
         self.meta['import_time'] = input_data['sample']['import_time']
