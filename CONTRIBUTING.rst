@@ -60,13 +60,15 @@ PyPI Checklist (Senior Dev Stuff)
 - Spin up a fresh Python Virtual Environment
 - Make a git branch called 'v0.2.2-alpha' or whatever
 
+.. warning:: Make sure workbench/data/memory_images/exemplar4.vmem isn’t there, remove if necessary!
+
 ::
 
 	$ pip install -e .
 	$ python setup.py sdist
 	$ cd dist
-	$ tar xzvf my_project-0.1.1.tar.gz
-	$ cd my_project-0.1.1/
+	$ tar xzvf workbench-0.x.y.tar.gz
+	$ cd workbench-0.x.y/
 	$ python setup.py install
 	$ workbench
 
@@ -81,7 +83,6 @@ PyPI Checklist (Senior Dev Stuff)
 - change version in workbench/__init__.py
 - change version in setup.py
 - Update HISTORY.rst
-- Make sure workbench/data/memory_images/exemplar4.vmem isn’t there!!! remove if necessary.
 
 ::
 
