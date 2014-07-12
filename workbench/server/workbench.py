@@ -4,7 +4,7 @@
 from gevent import monkey; monkey.patch_all(thread=False) # Monkey!
 from gevent import signal as gevent_signal
 import signal
-import os
+import sys, os
 import zerorpc
 import zmq
 import logging
@@ -34,6 +34,9 @@ class WorkBench(object):
             els_hosts: The address where Elastic Search Indexer is running.
             neo_uri: The address where Neo4j is running.
         """
+        # Announce Version
+        print '<<< Workbench Version %s >>>' % sys.modules['workbench'].__version__
+
         # Open DataStore
         self.data_store = data_store.DataStore(**store_args)
 
