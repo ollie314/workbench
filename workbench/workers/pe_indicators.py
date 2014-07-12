@@ -32,9 +32,9 @@ import pefile
 class PEIndicators(object):
     ''' Create instance of Indicators class. This class uses the
         static features from the pefile module to look for weird stuff.
-        Note: All methods that start with 'check_' will be automatically
-              included as part of the checks that happen when 'execute'
-              is called.
+
+        Note: All methods that start with 'check' will be automatically
+        included as part of the checks that happen when 'execute' is called.
     '''
     dependencies = ['sample']
 
@@ -57,7 +57,7 @@ class PEIndicators(object):
         indicators += [{'description': warn, 'severity': 2, 'category': 'PE_WARN'} 
                        for warn in self.pefile_handle.get_warnings()]
 
-        # Automatically invoke any method of this class that starts with 'check_'
+        # Automatically invoke any method of this class that starts with 'check'
         check_methods = self._get_check_methods()
         for check_method in check_methods:
             hit_data = check_method()
@@ -400,7 +400,7 @@ class PEIndicators(object):
                 value = getattr(self, key)
             except AttributeError:
                 continue
-            if inspect.ismethod(value) and key.startswith('check_'):
+            if inspect.ismethod(value) and key.startswith('check'):
                 results.append(value)
         return results
 

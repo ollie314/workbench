@@ -52,7 +52,7 @@ def process_files(path):
     # Close the workbench connection
     workbench.close()
 
-# Fixme: see https://github.com/SuperCowPowers/workbench/issues/40
+# Fixme: see http://github.com/SuperCowPowers/workbench/issues/40
 def test():
     ''' stress_test test '''
     run()

@@ -1,7 +1,6 @@
 Installing Workbench
 ====================
 
-
 Workbench Client
 ----------------
 
@@ -20,10 +19,28 @@ Workbench Server (Minimum Install)
 The workbench server is extremely robust to worker failure. In fact it can run without many of the dependencies
 so you can setup a server quickly with 'Minimum Install' and than later do a 'Full Install'.
 
+Mac/OSX
+~~~~~~~
+
 ::
 
-    $ brew/apt-get install mongodb
-    $ pip install workbench
+    $ brew install mongodb
+
+Ubuntu (14.04 and 12.04)
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+::
+
+    $ sudo apt-get install mongodb
+    $ sudo apt-get install python-dev
+    $ sudo apt-get install g++
+
+Workbench
+~~~~~~~~~
+
+::
+
+    $ pip install workbench --pre
     $ workbench
 
 That's it, the workbench server will come up and is ready to start servicing requests.
@@ -31,10 +48,6 @@ Note: Some workers will fail to load but that is fine, to have all workers run s
 
 Workbench Server (Full Install)
 -------------------------------
-
-The indexers 'Neo4j' and 'ElasticSearch' are optional. We strongly
-suggest you install both of them but we also appreciate that there are
-cases where that's not possible or feasible.
 
 Mac/OSX
 ~~~~~~~
@@ -61,14 +74,17 @@ Ubuntu (14.04 and 12.04)
     - Bro IDS: In general the Bro debian package files are WAY too locked down with dependencies on exact versions of libc6 and python2.6. We have a more 'flexible' version `Bro-2.2-Linux-x86\_64\_flex.deb <https://s3-us-west-2.amazonaws.com/workbench-data/packages/Bro-2.2-Linux-x86_64_flex.deb>`_.
         - sudo dpkg -i Bro-2.2-Linux-x86\_64\_flex.deb
         - If using the Debian package above doesn't work out: 
-            - Check out the Installation tutorial `here <https://www.digitalocean.com/community/tutorials/how-to-install-bro-ids-2-2-on-ubuntu-12-04>`_
-            - or this one `here <http://www.justbeck.com/getting-started-with-bro-ids/>`_ 
+            - Check out the Installation tutorial `bro_install <https://www.digitalocean.com/community/tutorials/how-to-install-bro-ids-2-2-on-ubuntu-12-04>`_
+            - or this one `bro_starting <http://www.justbeck.com/getting-started-with-bro-ids/>`_ 
             - or go to offical Bro Downloads `www.bro.org/download/ <http://www.bro.org/download>`_
     
     .. important:: Put the bro executable in your PATH (/opt/bro/bin or wherever bro is)
 
 Install Indexers
 ~~~~~~~~~~~~~~~~
+The indexers 'Neo4j' and 'ElasticSearch' are optional. We strongly
+suggest you install both of them but we also appreciate that there are
+cases where that's not possible or feasible.
 
 Mac/OSX
 ^^^^^^^
@@ -79,8 +95,7 @@ Mac/OSX
         $ pip install -U elasticsearch
         $ brew install neo4j
     
-        -  Note: You may need to install Java JDK 1.7 `Oracle JDK 1.7 DMG <http://download.oracle.com/otn-pub/java/jdk/7u51-b13/jdk-7u51-macosx-x64.dmg>`_
-        for macs.
+    -  Note: You may need to install Java JDK 1.7 `Oracle JDK 1.7 DMG <http://download.oracle.com/otn-pub/java/jdk/7u51-b13/jdk-7u51-macosx-x64.dmg>`_ for macs.
 
 Ubuntu (14.04 and 12.04)
 ^^^^^^^^^^^^^^^^^^^^^^^^
@@ -113,7 +128,7 @@ Install Python Modules
     
     ::
     
-        $ pip install workbench
+        $ pip install workbench --pre
         $ workbench
     
     **OR**
@@ -134,8 +149,7 @@ Optional Tools
     
     -  http://robomongo.org/
     -  download and follow install instructions
-    -  create a new connection to localhost (default settings fine). Name it
-    as you wish.
+    -  create a new connection to localhost (default settings fine). Name it as you wish.
 
 Dependency Installation Errors
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

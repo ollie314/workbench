@@ -30,7 +30,7 @@ class VTQuery(object):
     def execute(self, input_data):
         ''' Execute the VTQuery worker '''
         md5 = input_data['meta']['md5']
-        response = requests.get('https://www.virustotal.com/vtapi/v2/file/report', 
+        response = requests.get('http://www.virustotal.com/vtapi/v2/file/report', 
                                 params={'apikey':self.apikey,'resource':md5, 'allinfo':1})
 
         # Make sure we got a json blob back

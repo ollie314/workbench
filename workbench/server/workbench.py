@@ -430,7 +430,7 @@ class WorkBench(object):
         help_str += '\n\t - Run workbench.help_commands() for command help'
         help_str += '\n\t - Run workbench.help_workers() for a list of workers'
         help_str += '\n\t - Run workbench.help_advanced() for advanced help'
-        help_str += '\n\nSee https://github.com/SuperCowPowers/workbench for more information'
+        help_str += '\n\nSee http://github.com/SuperCowPowers/workbench for more information'
         return help_str
 
     def help_basic(self):
@@ -477,7 +477,7 @@ class WorkBench(object):
     def help_advanced(self):
         """ Returns advanced help commands """
         help_str =  '\nWoo! Advanced... <fixme: add documentation for advanced> :)'
-        help_str += '\n\nSee https://github.com/SuperCowPowers/workbench for more information'
+        help_str += '\n\nSee http://github.com/SuperCowPowers/workbench for more information'
         return help_str
 
     def list_all_workers(self):
