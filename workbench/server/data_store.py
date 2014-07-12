@@ -1,6 +1,6 @@
 """DataStore class for WorkBench."""
 
-from gevent import monkey
+from gevent import monkey; monkey.patch_socket()
 import pymongo
 import gridfs
 import hashlib
@@ -8,7 +8,7 @@ import datetime
 import bson
 import time
 
-monkey.patch_socket()
+
 
 class DataStore(object):
     """DataStore for Workbench. 
