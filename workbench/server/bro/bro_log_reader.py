@@ -18,18 +18,15 @@ class BroLogReader(object):
         self.convert_datetimes = convert_datetimes
 
     def read_log(self, logfile):
-        """The read_log method is a generator for rows in a Bro log.
+        """The read_log method returns a memory efficient generator for rows in a Bro log.
 
         Usage: 
             rows = my_bro_reader.read_log(logfile)
             for row in rows:
                 do something with row
-        Because this method returns a generator, it's memory efficient and 
-        does not read the entire file in at once.
 
         Args:
             logfile: The Bro Log file.
-
         """
 
         # Make sure we're at the beginning
@@ -53,7 +50,7 @@ class BroLogReader(object):
 
     def _parse_bro_header(self, logfile):
         """This method tries to parse the Bro log header section.
-        
+
         Note: My googling is failing me on the documentation on the format,
         so just making a lot of assumptions and skipping some shit.
         Assumption 1: The delimeter is a tab.

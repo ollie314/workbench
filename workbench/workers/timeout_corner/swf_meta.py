@@ -1,4 +1,4 @@
-''' SWFMeta worker: This code heavily utilizes https://github.com/timknip/pyswf, all credit for good
+''' SWFMeta worker: This code heavily utilizes http://github.com/timknip/pyswf, all credit for good
                     stuff goes to them, all credit for bad stuff goes to me. :)
 '''
 from swf.movie import SWF

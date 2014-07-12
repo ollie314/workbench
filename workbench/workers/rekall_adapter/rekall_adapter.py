@@ -1,6 +1,6 @@
 
 """rekall_adapter: Helps Workbench utilize the Rekall Memory Forensic Framework.
-    See Google Github: https://github.com/google/rekall
+    See Google Github: http://github.com/google/rekall
     All credit for good stuff goes to them, all credit for bad stuff goes to us. :).
 """
 
@@ -214,7 +214,7 @@ def test():
     if not os.path.isfile(data_path):
         print 'Not finding exemplar4.mem... Downloading now...'
         import urllib
-        urllib.urlretrieve('https://s3-us-west-2.amazonaws.com/workbench-data/memory_images/exemplar4.vmem', data_path)
+        urllib.urlretrieve('http://s3-us-west-2.amazonaws.com/workbench-data/memory_images/exemplar4.vmem', data_path)
 
     # Did we properly download the memory file?
     if not os.path.isfile(data_path):

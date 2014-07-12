@@ -1,6 +1,6 @@
 
 ''' Memory Image ConnScan worker. This worker utilizes the Rekall Memory Forensic Framework.
-    See Google Github: https://github.com/google/rekall
+    See Google Github: http://github.com/google/rekall
     All credit for good stuff goes to them, all credit for bad stuff goes to us. :)
 '''
 import os
