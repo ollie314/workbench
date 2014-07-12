@@ -32,8 +32,6 @@ def run():
             for child_md5 in results['unzip']['payload_md5s']:
                 pprint.pprint(workbench.work_request('meta', child_md5))
 
-import pytest
-@pytest.mark.xfail
 def test():
     """Executes simple_workbench_client test."""
     run()
