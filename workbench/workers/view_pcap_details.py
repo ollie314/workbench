@@ -9,7 +9,7 @@ class ViewPcapDetails(object):
 
     def __init__(self):
         ''' Initialization of ViewPcapDetails '''
-        self.workbench = zerorpc.Client(timeout=120)
+        self.workbench = zerorpc.Client(timeout=300)
         self.workbench.connect("tcp://127.0.0.1:4242")
 
     def execute(self, input_data):
@@ -42,7 +42,7 @@ def test():
 
     # This worker test requires a local server running
     import zerorpc
-    workbench = zerorpc.Client(timeout=120)
+    workbench = zerorpc.Client(timeout=300)
     workbench.connect("tcp://127.0.0.1:4242")
 
     # Generate input for the worker

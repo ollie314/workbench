@@ -24,7 +24,7 @@ def test():
 
     # This worker test requires a local server running
     import zerorpc
-    workbench = zerorpc.Client(timeout=120)
+    workbench = zerorpc.Client(timeout=300)
     workbench.connect("tcp://127.0.0.1:4242")
 
     # Store the sample
@@ -39,15 +39,13 @@ def test():
     worker = MemoryImagePSList()
     output = worker.execute({'sample':{'raw_bytes':raw_bytes}})
     print '\n<<< Unit Test >>>'
-    import pprint
-    pprint.pprint(output)
+    print 'pslist(truncated): %s' % str(output)[:500]
     assert 'Error' not in output
 
     # Execute the worker (server test)
     output = workbench.work_request('mem_pslist', md5)
     print '\n<<< Server Test >>>'
-    import pprint
-    pprint.pprint(output)
+    print 'pslist(truncated): %s' % str(output)[:500]
     assert 'Error' not in output
 
 

@@ -84,7 +84,7 @@ class TCPDumpToWorkbench(object):
         ''' Store a file into workbench '''
         
         # Spin up workbench
-        self.workbench = zerorpc.Client(timeout=120)
+        self.workbench = zerorpc.Client(timeout=300)
         self.workbench.connect("tcp://127.0.0.1:4242")   
 
         # Open the file and send it to workbench
@@ -140,7 +140,7 @@ def main():
     print 'Dumping PCAPs to Workbench server. Use ^C to stop this script...'
 
     # Spin up workbench client
-    workbench = zerorpc.Client(timeout=120)
+    workbench = zerorpc.Client(timeout=300)
     workbench.connect(server+':'+port)
 
     # Spin up our tcpdumper

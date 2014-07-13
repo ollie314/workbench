@@ -12,7 +12,7 @@ class PEDeepSim(object):
     dependencies = ['meta_deep']
 
     def __init__(self):
-        self.workbench = zerorpc.Client(timeout=120)
+        self.workbench = zerorpc.Client(timeout=300)
         self.workbench.connect("tcp://127.0.0.1:4242")
 
     def execute(self, input_data):
@@ -42,7 +42,7 @@ def test():
     ''' pe_deep_sim.py: Unit test '''
 
     # This worker test requires a local server running
-    workbench = zerorpc.Client(timeout=120)
+    workbench = zerorpc.Client(timeout=300)
     workbench.connect("tcp://127.0.0.1:4242")
 
     # Generate input for the worker

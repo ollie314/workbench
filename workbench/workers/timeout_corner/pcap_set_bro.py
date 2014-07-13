@@ -26,7 +26,7 @@ def test():
     ''' pcap_set_bro.py: Unit test'''
     # This worker test requires a local server as it relies on the recursive dependencies
     import zerorpc
-    workbench = zerorpc.Client(timeout=120)
+    workbench = zerorpc.Client(timeout=300)
     workbench.connect("tcp://127.0.0.1:4242")
 
     # Open a bunch of pcaps
