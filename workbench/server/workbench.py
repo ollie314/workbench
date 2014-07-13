@@ -525,7 +525,7 @@ def run():
     # Spin up Workbench ZeroRPC
     try:
         store_args = {'uri': datastore_uri, 'database': database, 'worker_cap':worker_cap, 'samples_cap':samples_cap}
-        workbench = zerorpc.Server(WorkBench(store_args=store_args), name='workbench')
+        workbench = zerorpc.Server(WorkBench(store_args=store_args), name='workbench', heartbeat=60)
         workbench.bind('tcp://0.0.0.0:4242')
         print 'ZeroRPC %s' % ('tcp://0.0.0.0:4242')
         gevent_signal(signal.SIGTERM, workbench.stop)
