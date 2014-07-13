@@ -4,6 +4,7 @@
     All credit for good stuff goes to them, all credit for bad stuff goes to us. :).
 """
 
+
 import os
 import logging
 from rekall import plugins
@@ -17,6 +18,10 @@ import datetime
 import pprint
 import msgpack
 import pytz
+import gevent
+def gsleep():
+    print '<<<<<<<<< Gevent Sleep >>>>>>>>>'
+    gevent.sleep(0)
 
 class RekallAdapter(object):
     """RekallAdapter: Helps utilize the Rekall Memory Forensic Framework."""
@@ -24,9 +29,13 @@ class RekallAdapter(object):
     def __init__(self, raw_bytes):
         """Initialization."""
 
+        gsleep()
         self.MemS = MemSession(raw_bytes)
+        gsleep()
         self.renderer = WorkbenchRenderer()
+        gsleep()
         self.session = self.MemS.get_session()
+        gsleep()
 
     def get_session(self):
         return self.session
