@@ -12,7 +12,7 @@ def run():
     args = workbench_client.grab_server_args()
 
     # Start up workbench connection
-    workbench = zerorpc.Client(timeout=300)
+    workbench = zerorpc.Client(timeout=300, heartbeat=60)
     workbench.connect('tcp://'+args['server']+':'+args['port'])
 
     # Loop through all the pcaps and collect a set of urls(hosts) from the http_log files

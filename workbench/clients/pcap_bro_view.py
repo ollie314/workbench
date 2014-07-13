@@ -12,7 +12,7 @@ def run():
     args = workbench_client.grab_server_args()
 
     # Start up workbench connection
-    workbench = zerorpc.Client(timeout=300)
+    workbench = zerorpc.Client(timeout=300, heartbeat=60)
     workbench.connect('tcp://'+args['server']+':'+args['port'])
 
     # Test out getting the raw Bro logs from a PCAP file

@@ -17,7 +17,7 @@ def test():
     ''' view_log_meta.py: Unit test'''
     # This worker test requires a local server running
     import zerorpc
-    workbench = zerorpc.Client(timeout=120)
+    workbench = zerorpc.Client(timeout=300, heartbeat=60)
     workbench.connect("tcp://127.0.0.1:4242")
 
     # Generate input for the worker

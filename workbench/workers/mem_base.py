@@ -49,7 +49,7 @@ def test():
 
     # This worker test requires a local server running
     import zerorpc
-    c = zerorpc.Client(timeout=120)
+    c = zerorpc.Client(timeout=300, heartbeat=60)
     c.connect("tcp://127.0.0.1:4242")
 
     # Do we have the memory forensics file?

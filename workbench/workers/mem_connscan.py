@@ -18,13 +18,13 @@ class MemoryImageConnScan(mem_base.MemoryImageBase):
 
 # Unit test: Create the class, the proper input and run the execute() method for a test
 import pytest
-@pytest.mark.xfail
+@pytest.mark.rekall
 def test():
     ''' mem_connscan.py: Test '''
 
     # This worker test requires a local server running
     import zerorpc
-    workbench = zerorpc.Client(timeout=120)
+    workbench = zerorpc.Client(timeout=300, heartbeat=60)
     workbench.connect("tcp://127.0.0.1:4242")
 
     # Store the sample

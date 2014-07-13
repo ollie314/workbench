@@ -13,7 +13,7 @@ def run():
     args = workbench_client.grab_server_args()
 
     # Start up workbench connection
-    workbench = zerorpc.Client(timeout=120)
+    workbench = zerorpc.Client(timeout=300, heartbeat=60)
     workbench.connect('tcp://'+args['server']+':'+args['port'])
     
     # Grab all the filenames from the data directory
