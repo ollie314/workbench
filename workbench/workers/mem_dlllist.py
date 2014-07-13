@@ -39,15 +39,13 @@ def test():
     worker = MemoryImageDllList()
     output = worker.execute({'sample':{'raw_bytes':raw_bytes}})
     print '\n<<< Unit Test >>>'
-    import pprint
-    pprint.pprint(output)
+    print 'dlllist(truncated): %s' % str(output)[:500]
     assert 'Error' not in output
 
     # Execute the worker (server test)
     output = workbench.work_request('mem_dlllist', md5)
     print '\n<<< Server Test >>>'
-    import pprint
-    pprint.pprint(output)
+    print 'dlllist(truncated): %s' % str(output)[:500]
     assert 'Error' not in output
 
 
