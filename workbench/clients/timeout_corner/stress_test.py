@@ -30,7 +30,7 @@ def process_files(path):
         type_tag = 'pe'
 
     # Open a connection to workbench
-    workbench = zerorpc.Client(timeout=300)
+    workbench = zerorpc.Client(timeout=300, heartbeat=60)
     workbench.connect("tcp://127.0.0.1:4242")
 
     # Benchmark test on shoving data into workbench

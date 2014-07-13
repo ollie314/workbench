@@ -23,7 +23,7 @@ class MemoryImageProcDump(object):
         self.orig_dir = os.getcwd()
 
         # Spin up workbench connection
-        self.c = zerorpc.Client(timeout=300)
+        self.c = zerorpc.Client(timeout=300, heartbeat=60)
         self.c.connect("tcp://127.0.0.1:4242")        
 
     def execute(self, input_data):
@@ -93,7 +93,7 @@ def test():
 
     # This worker test requires a local server running
     import zerorpc
-    workbench = zerorpc.Client(timeout=300)
+    workbench = zerorpc.Client(timeout=300, heartbeat=60)
     workbench.connect("tcp://127.0.0.1:4242")
 
     # Store the sample

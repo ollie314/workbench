@@ -11,7 +11,7 @@ def workbench_conn(request):
     ''' Workbench Fixture '''
 
     # Connect to the server
-    conn = zerorpc.Client(timeout=300)
+    conn = zerorpc.Client(timeout=300, heartbeat=60)
     conn.connect('tcp://localhost:4242')
 
     # Add a finalize method

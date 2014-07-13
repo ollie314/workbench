@@ -9,7 +9,7 @@ class PcapHTTPGraph(object):
 
     def __init__(self):
         ''' Initialization '''
-        self.workbench = zerorpc.Client(timeout=300)
+        self.workbench = zerorpc.Client(timeout=300, heartbeat=60)
         self.workbench.connect('tcp://127.0.0.1:4242')
         self.mime_types = ['application/x-dosexec', 'application/pdf', 'application/zip',
                            'application/jar', 'application/vnd.ms-cab-compressed',
@@ -154,7 +154,7 @@ class PcapHTTPGraph(object):
 def test():
     ''' pcap_http_graph.py: Unit test '''
     # This worker test requires a local server as it relies on the recursive dependencies
-    workbench = zerorpc.Client(timeout=300)
+    workbench = zerorpc.Client(timeout=300, heartbeat=60)
     workbench.connect("tcp://127.0.0.1:4242")
 
     # Generate the input data for this worker

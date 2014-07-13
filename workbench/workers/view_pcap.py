@@ -7,7 +7,7 @@ class ViewPcap(object):
     dependencies = ['pcap_bro']
 
     def __init__(self):
-        self.workbench = zerorpc.Client(timeout=300)
+        self.workbench = zerorpc.Client(timeout=300, heartbeat=60)
         self.workbench.connect("tcp://127.0.0.1:4242")
 
     def execute(self, input_data):
@@ -33,7 +33,7 @@ def test():
 
     # This worker test requires a local server running
     import zerorpc
-    workbench = zerorpc.Client(timeout=300)
+    workbench = zerorpc.Client(timeout=300, heartbeat=60)
     workbench.connect("tcp://127.0.0.1:4242")
 
     # Generate input for the worker

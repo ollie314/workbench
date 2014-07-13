@@ -14,7 +14,7 @@ class PcapBro(object):
     dependencies = ['sample']
 
     def __init__(self):
-        self.workbench = zerorpc.Client(timeout=300)
+        self.workbench = zerorpc.Client(timeout=300, heartbeat=60)
         self.workbench.connect("tcp://127.0.0.1:4242")
         self.orig_dir = os.path.dirname(os.path.realpath(__file__))
 
@@ -147,7 +147,7 @@ def test():
 
     # This worker test requires a local server running
     import zerorpc
-    workbench = zerorpc.Client(timeout=300)
+    workbench = zerorpc.Client(timeout=300, heartbeat=60)
     workbench.connect("tcp://127.0.0.1:4242")
 
     # Generate the input data for this worker
