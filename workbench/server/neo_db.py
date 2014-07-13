@@ -38,7 +38,8 @@ class NeoDB(object):
         try:
             node.add_labels(*labels)
         except NotImplementedError:
-            print 'Got a NotImplementedError when adding labels. Upgrade your Neo4j DB!'
+            pass
+            # Fixme: print 'Got a NotImplementedError when adding labels. Upgrade your Neo4j DB!'
 
     def has_node(self, node_id):
         """Checks if the node is present.
