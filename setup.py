@@ -31,7 +31,7 @@ setup(
               'workbench.workers.rekall_adapter'],
     package_dir={'workbench': 'workbench'},
     include_package_data=True,
-    scripts = ['workbench/workbench_server'],
+    scripts = ['workbench/server/workbench_server','workbench/clients/workbench'],
     tests_require=['tox'],
     install_requires=['elasticsearch', 'urllib3', 'filemagic', 'pefile', 'py2neo',
                       'pymongo', 'requests', 'cython', 'ssdeep==2.9-0.3', 'watchdog',
