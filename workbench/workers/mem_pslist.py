@@ -15,6 +15,7 @@ class MemoryImagePSList(mem_base.MemoryImageBase):
         ''' Initialization '''
         super(MemoryImagePSList, self).__init__()
         self.set_plugin_name('pslist')
+        self.set_subkey('sections.Info')
 
 # Unit test: Create the class, the proper input and run the execute() method for a test
 import pytest

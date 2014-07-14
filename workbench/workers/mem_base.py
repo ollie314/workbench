@@ -15,10 +15,15 @@ class MemoryImageBase(object):
         ''' Initialization '''
         self.output = {}
         self.plugin_name = 'imageinfo'
+        self.subkey = None
 
     def set_plugin_name(self, name):
         ''' Set the name of the plugin to be used '''
         self.plugin_name = name
+
+    def set_subkey(self, subkey):
+        ''' Set the subkey for the output '''
+        self.subkey = subkey
 
     def execute(self, input_data):
         ''' Execute method '''
@@ -40,6 +45,13 @@ class MemoryImageBase(object):
 
         # Render the plugin and return the data
         self.output = renderer.render(plugin)
+
+        # Pull a subkey?
+        if (self.subkey):
+            tmp = self.output
+            for key in self.subkey.split('.'):
+                tmp = tmp[key]
+            self.output = {'output': tmp}
         return self.output
 
 
