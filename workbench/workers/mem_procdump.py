@@ -61,8 +61,8 @@ class MemoryImageProcDump(object):
                 output_name = output_name.replace('executable.', '')
                 with open(output_file, 'rb') as dumped_file:
                     raw_bytes = dumped_file.read()
-                    self.output['dumped_files'].append({'name': output_name, 
-                                'md5':self.c.store_sample(output_name, raw_bytes, 'pe')})
+                    md5 = self.c.store_sample(output_name, raw_bytes, 'pe')
+                    self.output['dumped_files'].append(self.c.work_request('meta', md5))
 
         return self.output
 
