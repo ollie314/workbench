@@ -17,8 +17,8 @@ def grab_server_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('-s', '--server', type=str, default=server, help='location of workbench server')
     parser.add_argument('-p', '--port', type=int, default=port, help='port used by workbench server')
-    args, unknown = parser.parse_known_args()
+    args, commands = parser.parse_known_args()
     server = str(args.server)
     port = str(args.port)
 
-    return {'server':server, 'port':port}
+    return {'server':server, 'port':port, 'commands': commands}

@@ -33,7 +33,7 @@ def run():
         # Check to see if workbench already has the file
         filename = os.path.basename(my_file)
         raw_bytes = f.read()
-        md5 = workbench.store_sample(filename, raw_bytes, 'log')
+        md5 = workbench.store_sample(filename, raw_bytes, 'pe')
         results = workbench.work_request('view', md5)
         print 'Filename: %s' % filename
         pprint.pprint(results)
