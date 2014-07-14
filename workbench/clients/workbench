@@ -52,6 +52,12 @@ def run():
                     print 'Sample already in Workbench...'
                 print md5
 
+    # Do they want a batch_work_request?
+    elif command == 'batch_work_request':
+        output = workbench(command, parameters[0], {})
+        for row in output:
+            pprint.pprint(row)
+
     # Okay send the command and any optional parameters to workbench
     else:
         output = workbench(command, *parameters)
@@ -60,7 +66,7 @@ def run():
         if isinstance(output, str):
             print output
         else:
-            pprint.pprint(output)
+            pprint.pprint(output[parameters[0]])
 
 
 if __name__ == '__main__':

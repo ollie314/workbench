@@ -464,7 +464,9 @@ class WorkBench(object):
 
     def list_all_commands(self):
         """ Returns a list of all the Workbench commands"""
-        return [name for name, _ in inspect.getmembers(self, predicate=inspect.ismethod)]
+        commands = [name for name, _ in inspect.getmembers(self, predicate=inspect.ismethod) if not name.startswith('_')]
+        commands.append('batch_work_request') # I think the zerorpc decorator messes up inspect
+        return commands
 
     def help_workers(self):
         """ Returns a big string of the loaded Workbench workers and their dependencies """
