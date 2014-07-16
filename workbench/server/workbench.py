@@ -17,11 +17,21 @@ import funcsigs
 import ConfigParser
 
 # Workbench server imports
-from . import data_store
-from . import els_indexer
-from . import neo_db
-from . import plugin_manager
-from bro import bro_log_reader
+try:
+    from . import data_store
+    from . import els_indexer
+    from . import neo_db
+    from . import plugin_manager
+    from bro import bro_log_reader
+
+# Okay this happens when you're running workbench in a debugger so having
+# this is super handy and we'll keep it even though it hurts coverage score.
+except ValueError:
+    import data_store
+    import els_indexer
+    import neo_db
+    import plugin_manager
+    from bro import bro_log_reader
 
 
 class WorkBench(object):
@@ -35,7 +45,10 @@ class WorkBench(object):
             neo_uri: The address where Neo4j is running.
         """
         # Announce Version
-        print '<<< Workbench Version %s >>>' % sys.modules['workbench'].__version__
+        try:
+            print '<<< Workbench Version %s >>>' % sys.modules['workbench'].__version__
+        except KeyError:
+            print '<<< Workbench Version %s >>>' % 'DEBUGGING'
 
         # Open DataStore
         self.data_store = data_store.DataStore(**store_args)
@@ -389,10 +402,11 @@ class WorkBench(object):
 
         # Looking for the sample or sample_set?
         if (worker_class == 'sample'):
-            try:
-                return self.get_sample(md5)
-            except RuntimeError:
+            # If we have a sample set with this md5, return it
+            if self.get_sample_set(md5):
                 return self.get_sample_set(md5)
+            # Return the sample (might raise a RuntimeError)
+            return self.get_sample(md5)
 
         # Do I actually have this plugin? (might have failed, etc)
         if (worker_class not in self.plugin_meta):
@@ -409,12 +423,18 @@ class WorkBench(object):
             else:
                 print 'Updating work results for new plugin: %s' % (worker_class)
 
+        # Okay either need to generate (or re-generate) the work results
         dependencies = self.plugin_meta[worker_class]['dependencies']
         dependant_results = {}
         for dependency in dependencies:
             dependant_results.update(self._recursive_work_resolver(dependency, md5))
         print 'New work for plugin: %s' % (worker_class)
         work_results = self.plugin_meta[worker_class]['class']().execute(dependant_results)
+
+        # Enforce dictionary output
+        if not isinstance(work_results, dict):
+            print 'Critical: Plugin %s MUST produce a python dictionary!' % worker_class
+            return None
 
         # Store the results and return
         self._store_work_results(work_results, collection, md5)
@@ -538,8 +558,7 @@ def run():
         gevent_signal(signal.SIGINT, workbench.stop)
         gevent_signal(signal.SIGKILL, workbench.stop)
         workbench.run()
-        print '\nWorkbench Server Shutting Down...'
-        exit(0)        
+        print '\nWorkbench Server Shutting Down... and dreaming of sheep...'
     except zmq.error.ZMQError:
         print '\nInfo: Could not start Workbench server (no worries, probably already running...)\n'
 
