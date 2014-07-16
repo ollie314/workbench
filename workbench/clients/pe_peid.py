@@ -17,9 +17,9 @@ def run():
 
     # Test out PEFile -> peid
     data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),'../data/pe/bad')
-    file_list = [os.path.join(data_path, child) for child in os.listdir(data_path)][:10]
+    file_list = [os.path.join(data_path, child) for child in os.listdir(data_path)][:5]
     data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),'../data/pe/good')
-    file_list += [os.path.join(data_path, child) for child in os.listdir(data_path)][:10]
+    file_list += [os.path.join(data_path, child) for child in os.listdir(data_path)][:5]
     for filename in file_list:
 
         # Skip OS generated files
