@@ -6,7 +6,42 @@ import os
 import pprint
 import hashlib
 import zerorpc
+import tabulate
 import workbench.clients.workbench_client as workbench_client
+
+def try_get_tables(data):
+    ''' Try to determine if this data has table keys '''
+
+    table_list = []
+    if 'tables' in data.keys():
+        for table in data['tables']:
+            if isinstance(data[table], list):
+                table_list.append(table)
+
+    # At this point the list has data in it or is an empty list
+    return table_list
+
+def table_xform(table, force_to_str=False):
+    ''' Transform a table from a list of dicts to dict of lists'''
+    import collections
+
+    new_table = collections.defaultdict(list)
+    for row in table:
+        for key, value in row.items():
+            if force_to_str:
+                new_table[key].append(str(value)[:25])
+            elif isinstance(value, str):
+                new_table[key].append(value[:25])
+            else:
+                new_table[key].append(value)
+    return new_table
+
+def print_table(table):
+    ''' Print the table using tabulate '''
+    try:
+        print tabulate.tabulate(table_xform(table), headers="keys")
+    except TypeError:
+        print tabulate.tabulate(table_xform(table, force_to_str=True), headers="keys")
 
 def run():
     ''' Running the workbench CLI ''' 
@@ -58,15 +93,32 @@ def run():
         for row in output:
             pprint.pprint(row)
 
-    # Okay send the command and any optional parameters to workbench
+    # Okay must be a 'normal' command so send the command and any optional parameters to workbench
     else:
         output = workbench(command, *parameters)
-    
-        # Pretty print the output
+
+        # Try to do different stuff based on the output
         if isinstance(output, str):
             print output
+
+        # Okay for non-string output it will always be keyed by the worker name
+        # which in this case in parameter[0]
+        elif isinstance(output, dict):
+
+            worker_name = parameters[0]
+            output = output[worker_name]
+
+            # If the data contains table keys/information then print as tables
+            # if not we just kinda punt and do a pprint on the data.
+            table_list = try_get_tables(output)
+            if table_list:
+                for table in table_list:
+                    print '\n<<<<<< %s >>>>>>' % table
+                    print_table(output[table])
+            else:
+                pprint.pprint(output)
         else:
-            pprint.pprint(output[parameters[0]])
+            print 'Critical: I have no idea what to do with output of type: %s' % type(output)
 
 
 if __name__ == '__main__':
