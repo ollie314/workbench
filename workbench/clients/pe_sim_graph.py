@@ -109,8 +109,11 @@ def run():
     strings = [{'md5': r['md5'], 'features': r['string_list']} for r in string_gen]
 
     # Compute pe_peid on all files of type pe, just pull back the match_list
+    # Fixme: commenting this out until we figure out why peid is SO slow
+    '''
     peid_gen = workbench.batch_work_request('pe_peid', {'md5_list': all_md5s, 'subkeys':['md5', 'match_list']})
     peids = [{'md5': r['md5'], 'features': r['match_list']} for r in peid_gen]
+    '''
 
     # Compute the Jaccard Index between imported systems and store as relationships
     sims = jaccard_sims(imports)
@@ -128,9 +131,12 @@ def run():
         workbench.add_rel(sim_info['source'], sim_info['target'], 'strings')
 
     # Compute the Jaccard Index between peids and store as relationships
+    # Fixme: commenting this out until we figure out why peid is SO slow
+    '''
     sims = jaccard_sims(peids)
     for sim_info in sims:
         workbench.add_rel(sim_info['source'], sim_info['target'], 'peids')
+    '''
 
     # Compute pe_deep_sim on all files of type pe
     results = workbench.batch_work_request('pe_deep_sim', {'type_tag': 'pe'})
