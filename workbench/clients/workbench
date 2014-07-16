@@ -29,9 +29,9 @@ def table_xform(table, force_to_str=False):
     for row in table:
         for key, value in row.items():
             if force_to_str:
-                new_table[key].append(str(value)[:25])
+                new_table[key].append(str(value)[:40])
             elif isinstance(value, str):
-                new_table[key].append(value[:25])
+                new_table[key].append(value[:40])
             else:
                 new_table[key].append(value)
     return new_table
@@ -113,7 +113,7 @@ def run():
             table_list = try_get_tables(output)
             if table_list:
                 for table in table_list:
-                    print '\n<<<<<< %s >>>>>>' % table
+                    print '\n\n<<<<<< %s >>>>>\n' % table
                     print_table(output[table])
             else:
                 pprint.pprint(output)

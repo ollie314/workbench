@@ -16,13 +16,29 @@ class MemoryImageDllList(mem_base.MemoryImageBase):
         super(MemoryImageDllList, self).__init__()
         self.set_plugin_name('dlllist')
 
+    @staticmethod
+    def safe_key(key):
+        return key.replace('.','_')
+
     def execute(self, input_data):
         output = super(MemoryImageDllList, self).execute(input_data)
 
         # Organize the output a bit
-        output['tables'] = ['dlllist']
-        output['dlllist'] = output['sections']['Info']
+        # This worker has 'keys' for each process and the value is a list of dlls
+        # The 'Info' section has nothing for this worker so we're going to remove it.
+        processes = output['sections'].keys()
+        processes.remove('Info')
+
+        # The 'safe_key' call is because Mongo can't have keys with a period in them so
+        # when the data gets saved into Mongo the '.' will be replaced with a '_' so
+        # doing that replacment now explicitly so it doesn't bite us later on.
+        output['tables'] = [self.safe_key(process) for process in processes]
+        for process in processes:
+            output[self.safe_key(process)] = output['sections'][process]
+
+        # No longer need the sections data
         del output['sections']
+
         return output
 
 # Unit test: Create the class, the proper input and run the execute() method for a test
@@ -48,13 +64,13 @@ def test():
     worker = MemoryImageDllList()
     output = worker.execute({'sample':{'raw_bytes':raw_bytes}})
     print '\n<<< Unit Test >>>'
-    print 'dlllist(truncated): %s' % str(output)[:500]
+    print 'dlllist(truncated): %s' % str(output)[:1000]
     assert 'Error' not in output
 
     # Execute the worker (server test)
     output = workbench.work_request('mem_dlllist', md5)
     print '\n<<< Server Test >>>'
-    print 'dlllist(truncated): %s' % str(output)[:500]
+    print 'dlllist(truncated): %s' % str(output)[:1000]
     assert 'Error' not in output
 
 

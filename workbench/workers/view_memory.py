@@ -6,16 +6,15 @@ import pprint
 
 class ViewMemory(object):
     ''' ViewMemory: Generates a view for meta data on the sample '''
-    dependencies = ['mem_connscan', 'mem_dlllist', 'mem_meta', 'mem_procdump', 'mem_pslist']
+    dependencies = ['mem_connscan', 'mem_meta', 'mem_procdump', 'mem_pslist']
 
     def execute(self, input_data):
         ''' Execute the ViewMemory worker '''
 
         # Aggregate the output from all the memory workers and place
         # their results into named tables in the output.
-        output = {'tables': ['connscan', 'dlllist', 'meta_info', 'meta_layout', 'procdump', 'pslist']}
+        output = {'tables': ['connscan', 'meta_info', 'meta_layout', 'procdump', 'pslist']}
         output.update({'connscan': input_data['mem_connscan']['connscan']})
-        output.update({'dlllist': input_data['mem_dlllist']['dlllist']})
         output.update({'meta_info': input_data['mem_meta']['meta_info']})
         output.update({'meta_layout': input_data['mem_meta']['meta_layout']})
         output.update({'procdump': input_data['mem_procdump']['dumped_files']})
@@ -41,7 +40,6 @@ def test():
 
     # Grab the input data
     input_data = workbench.work_request('mem_connscan', md5)
-    input_data.update(workbench.work_request('mem_dlllist', md5))
     input_data.update(workbench.work_request('mem_meta', md5))
     input_data.update(workbench.work_request('mem_procdump', md5))
     input_data.update(workbench.work_request('mem_pslist', md5))

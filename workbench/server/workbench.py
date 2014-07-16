@@ -559,6 +559,8 @@ def run():
         gevent_signal(signal.SIGKILL, workbench.stop)
         workbench.run()
         print '\nWorkbench Server Shutting Down... and dreaming of sheep...'
+        import time
+        time.sleep(1)
     except zmq.error.ZMQError:
         print '\nInfo: Could not start Workbench server (no worries, probably already running...)\n'
 
