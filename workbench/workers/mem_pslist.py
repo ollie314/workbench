@@ -6,6 +6,7 @@
 import os
 import hashlib
 import mem_base
+import re
 
 class MemoryImagePSList(mem_base.MemoryImageBase):
     ''' This worker computes pslist-data for memory image files. '''
@@ -15,7 +16,15 @@ class MemoryImagePSList(mem_base.MemoryImageBase):
         ''' Initialization '''
         super(MemoryImagePSList, self).__init__()
         self.set_plugin_name('pslist')
-        self.set_subkey('sections.Info')
+
+    def execute(self, input_data):
+        output = super(MemoryImagePSList, self).execute(input_data)
+
+        # Special processing for Offset (V)
+        for row in output['sections']['Info']:
+            sub_offset = re.search('@ (.*)\n', row['Offset (V)'])
+            row['Offset (V)'] = sub_offset.group(1)
+        return output
 
 # Unit test: Create the class, the proper input and run the execute() method for a test
 import pytest
@@ -34,7 +43,7 @@ def test():
         raw_bytes = mem_file.read()
         md5 = hashlib.md5(raw_bytes).hexdigest()
         if not workbench.has_sample(md5):
-            md5 = workbenchstore_sample('exemplar4.vmem', open(data_path, 'rb').read(), 'mem')
+            md5 = workbench.store_sample('exemplar4.vmem', open(data_path, 'rb').read(), 'mem')
 
     # Execute the worker (unit test)
     worker = MemoryImagePSList()

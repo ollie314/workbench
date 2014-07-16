@@ -33,7 +33,7 @@ def test():
         raw_bytes = mem_file.read()
         md5 = hashlib.md5(raw_bytes).hexdigest()
         if not workbench.has_sample(md5):
-            md5 = workbenchstore_sample('exemplar4.vmem', open(data_path, 'rb').read(), 'mem')
+            md5 = workbench.store_sample('exemplar4.vmem', open(data_path, 'rb').read(), 'mem')
 
     # Execute the worker (unit test)
     worker = MemoryImageMeta()
