@@ -273,6 +273,8 @@ class DataStore(object):
             md5: the md5 of sample data to be updated.
 
         """
+
+        # Make sure the md5 and time stamp is on the data before storing
         results['md5'] = md5
         results['__time_stamp'] = datetime.datetime.utcnow()
 

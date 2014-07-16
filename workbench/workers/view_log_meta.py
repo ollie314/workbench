@@ -24,8 +24,7 @@ def test():
     import os
     data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../data/log/system.log')
     md5 = workbench.store_sample('system.log', open(data_path, 'rb').read(), 'log')
-    input_data = workbench.get_sample(md5)
-    input_data.update(workbench.work_request('log_meta', md5))
+    input_data = workbench.work_request('log_meta', md5)
 
     # Execute the worker (unit test)
     worker = ViewLogMeta()

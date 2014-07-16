@@ -16,6 +16,15 @@ class MemoryImageConnScan(mem_base.MemoryImageBase):
         super(MemoryImageConnScan, self).__init__()
         self.set_plugin_name('connscan')
 
+    def execute(self, input_data):
+        output = super(MemoryImageConnScan, self).execute(input_data)
+
+        # Organize the output a bit
+        output['tables'] = ['connscan']
+        output['connscan'] = output['sections']['Info']
+        del output['sections']
+        return output
+
 # Unit test: Create the class, the proper input and run the execute() method for a test
 import pytest
 @pytest.mark.rekall
@@ -33,7 +42,7 @@ def test():
         raw_bytes = mem_file.read()
         md5 = hashlib.md5(raw_bytes).hexdigest()
         if not workbench.has_sample(md5):
-            md5 = workbenchstore_sample('exemplar4.vmem', open(data_path, 'rb').read(), 'mem')
+            md5 = workbench.store_sample('exemplar4.vmem', open(data_path, 'rb').read(), 'mem')
 
     # Execute the worker (unit test)
     worker = MemoryImageConnScan()

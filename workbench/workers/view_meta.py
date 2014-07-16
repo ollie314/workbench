@@ -26,8 +26,7 @@ def test():
     data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
                              '../data/pe/bad/033d91aae8ad29ed9fbb858179271232')
     md5 = workbench.store_sample('bad_pe', open(data_path, 'rb').read(), 'pe')
-    input_data = workbench.get_sample(md5)
-    input_data.update(workbench.work_request('meta', md5))
+    input_data = workbench.work_request('meta', md5)
 
     # Execute the worker (unit test)
     worker = ViewMetaData()
