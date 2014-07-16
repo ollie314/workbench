@@ -16,6 +16,15 @@ class MemoryImageDllList(mem_base.MemoryImageBase):
         super(MemoryImageDllList, self).__init__()
         self.set_plugin_name('dlllist')
 
+    def execute(self, input_data):
+        output = super(MemoryImageDllList, self).execute(input_data)
+
+        # Organize the output a bit
+        output['tables'] = ['dlllist']
+        output['dlllist'] = output['sections']['Info']
+        del output['sections']
+        return output
+
 # Unit test: Create the class, the proper input and run the execute() method for a test
 import pytest
 @pytest.mark.rekall

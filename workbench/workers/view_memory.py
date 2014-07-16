@@ -14,12 +14,12 @@ class ViewMemory(object):
         # Aggregate the output from all the memory workers and place
         # their results into named tables in the output.
         output = {'tables': ['connscan', 'dlllist', 'meta_info', 'meta_layout', 'procdump', 'pslist']}
-        output.update({'connscan': input_data['mem_connscan']['sections']['Info']})
-        output.update({'dlllist': input_data['mem_dlllist']['sections']['Info']})
-        output.update({'meta_info': input_data['mem_meta']['sections']['Info']})
-        output.update({'meta_layout': input_data['mem_meta']['sections']['Physical Layout']})
+        output.update({'connscan': input_data['mem_connscan']['connscan']})
+        output.update({'dlllist': input_data['mem_dlllist']['dlllist']})
+        output.update({'meta_info': input_data['mem_meta']['meta_info']})
+        output.update({'meta_layout': input_data['mem_meta']['meta_layout']})
         output.update({'procdump': input_data['mem_procdump']['dumped_files']})
-        output.update({'pslist': input_data['mem_pslist']['sections']['Info']})
+        output.update({'pslist': input_data['mem_pslist']['pslist']})
         return output
 
 # Unit test: Create the class, the proper input and run the execute() method for a test

@@ -16,6 +16,16 @@ class MemoryImageMeta(mem_base.MemoryImageBase):
         super(MemoryImageMeta, self).__init__()
         self.set_plugin_name('imageinfo')
 
+    def execute(self, input_data):
+        output = super(MemoryImageMeta, self).execute(input_data)
+
+        # Organize the output a bit
+        output['tables'] = ['meta_info', 'meta_layout']
+        output['meta_info'] = output['sections']['Info']
+        output['meta_layout'] = output['sections']['Physical Layout']
+        del output['sections']
+        return output
+
 # Unit test: Create the class, the proper input and run the execute() method for a test
 import pytest
 @pytest.mark.rekall

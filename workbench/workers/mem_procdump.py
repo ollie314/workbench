@@ -71,6 +71,8 @@ class MemoryImageProcDump(object):
                     del meta['mime_type']
                     self.output['dumped_files'].append(meta)
 
+        # Organize the output a bit
+        self.output['tables'] = ['dumped_files']
         return self.output
 
     @contextlib.contextmanager
