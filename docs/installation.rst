@@ -1,19 +1,6 @@
 Installing Workbench
 ====================
 
-Workbench Client
-----------------
-
-::
-
-    $ pip install zerorpc
-
-That's it! 
-
-If you have a workbench server setup (somewhere) you can now start writing clients
-against that server (see :ref:`MakingClient`)
-
-
 Workbench Server (Minimum Install)
 ----------------------------------
 The workbench server is extremely robust to worker failure. In fact it can run without many of the dependencies
@@ -35,16 +22,32 @@ Ubuntu (14.04 and 12.04)
     $ sudo apt-get install python-dev
     $ sudo apt-get install g++
 
-Workbench
-~~~~~~~~~
+Workbench Python Modules
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 ::
 
     $ pip install workbench --pre
-    $ workbench
+    $ workbench_server
 
 That's it, the workbench server will come up and is ready to start servicing requests.
 Note: Some workers will fail to load but that is fine, to have all workers run see 'Full Install'.
+
+
+Workbench Client(s)
+-------------------
+
+::
+
+    $ pip install workbench --pre
+    $ workbench (this runs the Workbench CLI)
+
+That's it! 
+
+If you have a workbench server setup (somewhere) you can now start the workbench CLI client,
+or any of the existing clients (in workbench/clients) or even start writing your own clients
+against that server (see :ref:`MakingClient`)
+
 
 Workbench Server (Full Install)
 -------------------------------
@@ -118,8 +121,8 @@ Ubuntu (14.04 and 12.04)
 
 
 
-Install Python Modules
-~~~~~~~~~~~~~~~~~~~~~~
+Workbench Python Modules
+~~~~~~~~~~~~~~~~~~~~~~~~
 
     Note: Workbench is continuously tested with python 2.7. We're currently
     working on Python 3 support (`Issue 92 <https://github.com/SuperCowPowers/workbench/issues/92>`_).
@@ -129,7 +132,7 @@ Install Python Modules
     ::
     
         $ pip install workbench --pre
-        $ workbench
+        $ workbench_server
     
     **OR**
     
@@ -137,7 +140,7 @@ Install Python Modules
     
         $ cd workbench
         $ python setup.py develop
-        $ workbench
+        $ workbench_server
 
 Optional Tools
 ~~~~~~~~~~~~~~
