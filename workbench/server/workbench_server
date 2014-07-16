@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+
 import workbench.server.workbench as workbench
 
 def run():
     ''' Running the workbench server '''
     workbench.run()
+    exit(0)
 
 if __name__ == '__main__':
     run()
