@@ -1,3 +1,13 @@
 [run]
 timid = True
 coroutine = gevent
+
+[report]
+exclude_lines =
+    pragma: no cover
+    def __repr__
+    except AttributeError
+    except ValueError
+    except KeyError
+    except RuntimeError
+    except SystemExit

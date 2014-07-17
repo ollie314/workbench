@@ -6,8 +6,14 @@ Server (localhost or server machine)
 
 ::
 
-   $ pip install workbench
-   $ workbench
+    $ pip install workbench --pre
+    $ workbench_server
+
+CLI (Command Line Interface)
+----------------------------
+
+::
+    $ workbench
 
 Example Clients (use -s for remote server)
 ------------------------------------------
@@ -18,8 +24,8 @@ client (looking for node devs to pop some pull requests :).
 
 ::
 
-   $ cd workbench/clients
-   $ python simple_workbench_client.py [-s tcp://mega.server.com]
+    $ cd workbench/clients
+    $ python simple_workbench_client.py [-s tcp://mega.server.com]
 
 Workbench Examples
 ------------------
@@ -33,8 +39,8 @@ Workbench Examples
 -  `Generator Pipelines Notebook <http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/workbench/notebooks/Generator_Pipelines.ipynb>`_
 -  WIP Notebooks
 
-   -  `Network Stream Analysis Notebook <http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/workbench/notebooks/Network_Stream.ipynb>`_
-   -  `PE File Static Analysis Notebook <http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/workbench/notebooks/PE_Static_Analysis.ipynb>`_
+    -  `Network Stream Analysis Notebook <http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/workbench/notebooks/Network_Stream.ipynb>`_
+    -  `PE File Static Analysis Notebook <http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/workbench/notebooks/PE_Static_Analysis.ipynb>`_
 
 
 Making your own Worker
@@ -48,12 +54,12 @@ Workbench Conventions
 Workers should adhere to the following naming conventions (not enforced)
 
 -  If you work on a specific type of sample than start the name with
-   that
+    that
 -  Examples: pcap\_bro.py, pe\_features.py, log\_meta.py
 -  A worker that is new/experimental should start with 'x\_'
-   (x\_pcap\_razor.py)
+    (x\_pcap\_razor.py)
 -  A 'view'(worker that handles 'presentation') should start with
-   'view\_'
+    'view\_'
 -  Examples: view\_log\_meta.py, view\_pdf.py, view\_pe.py
 
 
@@ -108,7 +114,7 @@ Unit testing, sub-pipeline tests, and full pipeline tests
 
 ::
 
-   $ tox
+    $ tox
 
 Benign Error
 ~~~~~~~~~~~~
@@ -120,10 +126,10 @@ opening an issue and pull request. :)
 
 ::
 
-   ERROR:zerorpc.channel:zerorpc.ChannelMultiplexer, unable to route event:
-   _zpc_more {'response_to': '67d7df3f-1f3e-45f4-b2e6-352260fa1507', 'zmqid':
-   ['\x00\x82*\x01\xea'], 'message_id': '67d7df42-1f3e-45f4-b2e6-352260fa1507',
-   'v': 3} [...]
+    ERROR:zerorpc.channel:zerorpc.ChannelMultiplexer, unable to route event:
+    _zpc_more {'response_to': '67d7df3f-1f3e-45f4-b2e6-352260fa1507', 'zmqid':
+    ['\x00\x82*\x01\xea'], 'message_id': '67d7df42-1f3e-45f4-b2e6-352260fa1507',
+    'v': 3} [...]
 
 VirusTotal Warning
 ~~~~~~~~~~~~~~~~~~

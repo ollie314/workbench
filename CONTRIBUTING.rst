@@ -92,7 +92,7 @@ PyPI Checklist (Senior Dev Stuff)
 
 ::
 
-	$ pip install workbench
+	$ pip install workbench --pre
 	$ workbench_server (in one terminal)
 	$ pip install pytest-cov
 	$ cd workbench/workers
