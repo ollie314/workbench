@@ -59,20 +59,18 @@ def run():
     if not args['commands']:
         args['commands'] = ['help']
 
-    # The first element will be the command the rest will be parameters
-    command = args['commands'][0]
-
-    # If the command is help make sure it's got _cli on it
-    if 'help' in command:
-        command += '_cli'
-
     # Check to see if the command is valid if it's not assume they want a 'work_request'
+    command = args['commands'][0]
     orig_command = command
     if command in workbench.list_all_commands():
         parameters = args['commands'][1:]
     else:
         command = 'work_request'
         parameters = args['commands']
+
+    # Do they want a help command ?
+    if 'help' in command:
+        parameters += {'cli':True}
 
     # Do they want 'store_sample'?
     if command == 'store_sample':
@@ -98,7 +96,7 @@ def run():
 
     # Do they want a batch_work_request?
     elif command == 'batch_work_request':
-        output = workbench(command, parameters[0], {})
+        output = workbench(command, parameters[0])
         for row in output:
             pprint.pprint(row)
 

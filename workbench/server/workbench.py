@@ -78,9 +78,6 @@ class WorkBench(object):
         # Get Help System
         self.help_system = help_system.HelpSystem(self)
 
-        # Dynamically generate CLI Help commands
-        self._generate_cli_h_commands()
-
 
     #######################
     # Sample Methods
@@ -306,7 +303,7 @@ class WorkBench(object):
         return work_results
 
     @zerorpc.stream
-    def batch_work_request(self, worker_class, kwargs):
+    def batch_work_request(self, worker_class, kwargs={}):
         """Make a batch work request for an existing set of stored samples.
 
         A subset of sample can be specified with kwargs.
@@ -427,18 +424,6 @@ class WorkBench(object):
     def help_everything(self, cli=False):
         """ Returns advanced help commands """
         return self.help_system.help_everything()
-
-    ##################
-    # Help CLI
-    ##################
-    def _generate_cli_h_commands(self):
-        """ Generate CLI wrappers for all the help commands"""
-        from types import MethodType
-
-        help_commands = [name for name, _ in inspect.getmembers(self, predicate=inspect.ismethod) if 'help' in name]
-        for command in help_commands:
-            cli_command = command+'_cli'
-            setattr(self, cli_command, MethodType(self.command(self, True), self))
 
 
     ##################
