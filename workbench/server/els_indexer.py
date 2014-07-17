@@ -20,10 +20,10 @@ class ELSIndexer(object):
             self.els_search = elasticsearch.Elasticsearch(hosts)
             info = self.els_search.info()
             version = info['version']
-            print 'ELS Indexer connected: %s %s %s %s' % (str(hosts), info['name'],
+            print '\t- ELS Indexer connected: %s %s %s %s' % (str(hosts), info['name'],
                                                           version['number'], version['lucene_version'])
         except elasticsearch.exceptions.ConnectionError:
-            print 'ELS connection failed! Is your ELS server running?'
+            print '\t- ELS connection failed! Is your ELS server running?'
             exit(1)
 
     def index_data(self, data, index_name='meta', doc_type='unknown'):

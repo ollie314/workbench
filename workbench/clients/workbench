@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """Workbench CLI Client"""
-import os
+import os, sys
 import pprint
 import hashlib
 import zerorpc
@@ -44,8 +44,10 @@ def print_table(table):
         print tabulate.tabulate(table_xform(table, force_to_str=True), headers="keys")
 
 def run():
-    ''' Running the workbench CLI ''' 
-    
+    ''' Running the workbench CLI '''
+    # Announce Version
+    print '<<< Workbench Version %s >>>' % sys.modules['workbench'].__version__
+
     # Grab arguments
     args = workbench_client.grab_server_args()
 

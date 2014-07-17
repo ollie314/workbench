@@ -18,9 +18,9 @@ class NeoDB(object):
             # Open the Neo4j DB and get version (just testing Neo connection)
             self.graph_db = neo4j.GraphDatabaseService(uri)
             version = self.graph_db.neo4j_version
-            print 'Neo4j GraphDB connected: %s %s' % (str(uri), version)
+            print '\t- Neo4j GraphDB connected: %s %s' % (str(uri), version)
         except packages.httpstream.http.SocketError:
-            print 'Neo4j connection failed! Is your Neo4j server running? $ neo4j start'
+            print '\t- Neo4j connection failed! Is your Neo4j server running? $ neo4j start'
             raise RuntimeError('Could not connect to Neo4j')
 
     def add_node(self, node_id, name, labels):

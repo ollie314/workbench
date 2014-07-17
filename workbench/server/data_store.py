@@ -45,7 +45,7 @@ class DataStore(object):
         self.last_ops_run = time.time()
         self.periodic_ops()
 
-        print 'WorkBench DataStore connected: %s:%s' % (self.uri, self.database_name)
+        print '\t- WorkBench DataStore connected: %s:%s' % (self.uri, self.database_name)
 
     def get_uri(self):
         """ Return the uri of the data store."""
