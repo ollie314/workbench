@@ -78,6 +78,9 @@ class WorkBench(object):
         # Get Help System
         self.help_system = help_system.HelpSystem(self)
 
+        # Dynamically generate CLI Help commands
+        self._generate_cli_h_commands()
+
 
     #######################
     # Sample Methods
@@ -393,37 +396,49 @@ class WorkBench(object):
     ##################
     # Help
     ##################
-    def help(self):
+    def help(self, cli=False):
         """ Returns help commands """
-        return self.help_system.help()
+        return self.help_system.help(cli)
 
-    def help_basic(self):
+    def help_basic(self, cli=False):
         """ Returns basic help commands """
         return self.help_system.help_basic()
 
-    def help_commands(self):
+    def help_commands(self, cli=False):
         """ Returns a big string of Workbench commands and signatures """
         return self.help_system.help_commands()
 
-    def help_command(self, command):
+    def help_command(self, command, cli=False):
         """ Returns a specific Workbench command and docstring """
         return self.help_system.help_command(command)
 
-    def help_workers(self):
+    def help_workers(self, cli=False):
         """ Returns a big string of the loaded Workbench workers and their dependencies """
         return self.help_system.help_workers()
 
-    def help_worker(self, worker):
+    def help_worker(self, worker, cli=False):
         """ Returns a specific Workbench worker and docstring """
         return self.help_system.help_worker(worker)
 
-    def help_advanced(self):
+    def help_advanced(self, cli=False):
         """ Returns advanced help commands """
         return self.help_system.help_advanced()
 
-    def help_everything(self):
+    def help_everything(self, cli=False):
         """ Returns advanced help commands """
         return self.help_system.help_everything()
+
+    ##################
+    # Help CLI
+    ##################
+    def _generate_cli_h_commands(self):
+        """ Generate CLI wrappers for all the help commands"""
+        from types import MethodType
+
+        help_commands = [name for name, _ in inspect.getmembers(self, predicate=inspect.ismethod) if 'help' in name]
+        for command in help_commands:
+            cli_command = command+'_cli'
+            setattr(self, cli_command, MethodType(command(self, True), self))
 
 
     ##################
