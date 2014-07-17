@@ -22,7 +22,9 @@ def run():
     print workbench.help_workers()
     print workbench.help_worker('meta')
     print workbench.help_advanced()
-    print workbench.list_all_workers()
+    print workbench.help_everything()
+
+    # Call a test worker
     print workbench.test_worker('meta')
     
 
