@@ -438,7 +438,7 @@ class WorkBench(object):
         help_commands = [name for name, _ in inspect.getmembers(self, predicate=inspect.ismethod) if 'help' in name]
         for command in help_commands:
             cli_command = command+'_cli'
-            setattr(self, cli_command, MethodType(command(self, True), self))
+            setattr(self, cli_command, MethodType(self.command(self, True), self))
 
 
     ##################
