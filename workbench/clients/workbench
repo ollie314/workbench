@@ -59,8 +59,15 @@ def run():
     if not args['commands']:
         args['commands'] = ['help']
 
-    # Check to see if the command is valid if it's not assume they want a 'work_request'
+    # The first element will be the command the rest will be parameters
     command = args['commands'][0]
+
+    # If the command is help make sure it's got _cli on it
+    if 'help' in command:
+        command += '_cli'
+
+    # Check to see if the command is valid if it's not assume they want a 'work_request'
+    orig_command = command
     if command in workbench.list_all_commands():
         parameters = args['commands'][1:]
     else:
@@ -97,7 +104,11 @@ def run():
 
     # Okay must be a 'normal' command so send the command and any optional parameters to workbench
     else:
-        output = workbench(command, *parameters)
+        try:
+            output = workbench(command, *parameters)
+        except zerorpc.exceptions.RemoteError:
+            print 'Failed to run command: %s' % orig_command
+            exit(1)
 
         # Try to do different stuff based on the output
         if isinstance(output, str):
