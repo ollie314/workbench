@@ -36,8 +36,6 @@ class PEIDWorker(object):
 
 
 # Unit test: Create the class, the proper input and run the execute() method for a test
-import pytest
-@pytest.mark.xfail
 def test():
     ''' pe_peid.py: Unit test'''
 

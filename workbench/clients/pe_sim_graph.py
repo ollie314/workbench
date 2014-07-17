@@ -150,8 +150,7 @@ def run():
     print 'All done: go to http://localhost:7474/browser and execute this query: "%s"' % \
         ('match (n)-[r]-() return n,r')
 
-import pytest
-@pytest.mark.xfail
+
 def test():
     """Executes pe_sim_graph test."""
     run()

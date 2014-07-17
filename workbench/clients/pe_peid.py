@@ -17,9 +17,9 @@ def run():
 
     # Test out PEFile -> peid
     data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),'../data/pe/bad')
-    file_list = [os.path.join(data_path, child) for child in os.listdir(data_path)][:3]
+    file_list = [os.path.join(data_path, child) for child in os.listdir(data_path)][:2]
     data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),'../data/pe/good')
-    file_list += [os.path.join(data_path, child) for child in os.listdir(data_path)][:3]
+    file_list += [os.path.join(data_path, child) for child in os.listdir(data_path)][:2]
     for filename in file_list:
 
         # Skip OS generated files
@@ -30,8 +30,7 @@ def run():
             results = workbench.work_request('pe_peid', md5)
             pprint.pprint(results)
 
-import pytest
-@pytest.mark.xfail
+
 def test():
     """Executes pe_peid test."""
     run()
