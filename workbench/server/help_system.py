@@ -69,7 +69,15 @@ class HelpSystem(object):
         help_string = 'Workbench Commands:'
         for name, meth in inspect.getmembers(self.my_wb, predicate=inspect.ismethod):
             if not name.startswith('_'):
-                help_string += '\n\t%s%s' % (name,funcsigs.signature(meth))
+                sig = str(funcsigs.signature(meth))
+
+                # Strip off the () from the signature and replace ',' with ''
+                if cli:
+                    sig = ' '+sig[1:-1].replace(',','')
+                    sig = sig.replace('cli=False','')
+                    sig = sig.replace('predicate={}','\'{"type_tag","exe"}\' (optional MongoDB predicate)')
+
+                help_string += '\n\t%s%s' % (name, sig)
         return help_string
 
     def help_command(self, command, cli=False):
