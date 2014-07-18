@@ -2,18 +2,20 @@
 ''' HelpCLI worker '''
 
 import colorama; colorama.init()
-from colorama import Fore
+from colorama import Fore, Style
 
 class HelpCLI(object):
-    ''' This worker computes deeper meta-data '''
+    ''' This worker computes help (CLI, colored) for a worker '''
     dependencies = ['worker_info']
 
     def execute(self, input_data):
         fields = ['name', 'doc', 'dependencies', 'mod_time']
         data = input_data['worker_info']
-        output = '%s%s %s(%s):' % (Fore.YELLOW, data['name'], Fore.BLUE, data['dependencies'])
+        dependencies = str([str(dep) for dep in data['dependencies']])
+        dependencies = dependencies.replace('\'','')
+        output = '\n%s%s%s %s%s%s:' % (Style.BRIGHT, Fore.YELLOW, data['name'], Style.RESET_ALL, Fore.BLUE, dependencies)
         output += '%s\n%s%s' % (Fore.GREEN, data['doc'], Fore.RESET)
-        return {'output':output}
+        return {'output': output}
 
 # Unit test: Create the class, the proper input and run the execute() method for a test
 def test():

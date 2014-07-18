@@ -12,8 +12,8 @@ class HelpSystem(object):
         """Initialize the Help System.
 
         Args:
-            workbench_instance: an instance of a workbench class so that 
-                                we can make introspection calls
+            workbench_instance: an instance of a workbench class so that we can make
+                                introspection calls and calls to help workers
         """
 
         # Set workbench instance
@@ -90,17 +90,19 @@ class HelpSystem(object):
     def help_workers(self, cli=False):
         """ Returns a big string of the loaded Workbench workers and their dependencies """
         help_string = 'Workbench Workers:'
-        for name, plugin in sorted(self.my_wb.plugin_meta.iteritems()):
-            help_string += '\n\t%s %s' % (name, str(plugin['class'].dependencies))
+        for worker in self.my_wb.list_all_workers():
+            if cli:
+                help_string += self.my_wb.work_request('help_cli', worker)['help_cli']['output']
+            else:
+                help_string += self.my_wb.work_request('help', worker)['help']['output']
         return help_string
 
     def help_worker(self, worker, cli=False):
         """ Returns a specific Workbench worker and docstring """
-        try:
-            plugin = self.my_wb.plugin_meta[worker]
-            return '\n Worker: %s %s\n\t%s' % (worker, str(plugin['class'].dependencies), plugin['class'].__doc__)
-        except KeyError:
-            return '%s worker not found.. misspelled?' % worker
+        if cli:
+            return self.my_wb.work_request('help_cli', worker)['help_cli']['output']
+        else:
+            return self.my_wb.work_request('help', worker)['help']['output']
 
     def help_advanced(self, cli=False):
         """ Returns advanced help commands """
