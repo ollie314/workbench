@@ -27,7 +27,7 @@ class Mock(object):
 
     @classmethod
     def __getattr__(cls, name):
-        if name in ('__file__', '__path__','event'):
+        if name in ('__file__', '__path__'):
             return '/dev/null'
         elif name[0] == name[0].upper():
             mockType = type(name, (), {})
@@ -37,8 +37,7 @@ class Mock(object):
             return Mock()
 
  
-MOCK_MODULES = ['cython', 'yara', 'zmq', 'yaml', 'gevent', 'ssdeep', 'amd64', 
-                'gevent.event']
+MOCK_MODULES = ['cython']
 for mod_name in MOCK_MODULES:
   sys.modules[mod_name] = Mock()
 
