@@ -26,7 +26,8 @@ def run():
         if '.DS_Store' in filename: continue
 
         with open(filename,'rb') as f:
-            md5 = workbench.store_sample(filename, f.read(), 'pcap')
+            base_name = os.path.basename(filename)
+            md5 = workbench.store_sample(base_name, f.read(), 'pcap')
             results = workbench.work_request('pcap_bro', md5)
 
             # Results is just a dictionary of Bro log file names and their MD5s in workbench

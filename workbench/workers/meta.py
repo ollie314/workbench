@@ -48,7 +48,7 @@ def test():
     import os
     data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
                              '../data/pe/bad/033d91aae8ad29ed9fbb858179271232')
-    md5 = workbench.store_sample('bad_pe', open(data_path, 'rb').read(), 'pe')
+    md5 = workbench.store_sample('bad_pe', open(data_path, 'rb').read(), 'exe')
     input_data = workbench.get_sample(md5)
 
     # Execute the worker (unit test)

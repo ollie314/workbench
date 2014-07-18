@@ -26,7 +26,7 @@ class ELSIndexer(object):
             print '\t- ELS connection failed! Is your ELS server running?'
             exit(1)
 
-    def index_data(self, data, index_name='meta', doc_type='unknown'):
+    def index_data(self, data, index_name, doc_type):
         """Take an arbitrary dictionary of data and index it with ELS.
 
         Args:
@@ -83,7 +83,7 @@ class ELSStubIndexer(object):
         print 'Install ElasticSearch and python bindings for ELS indexer. See README.md'
         print '%s %s' % (self, hosts)
 
-    def index_data(self, data, index_name='meta', doc_type='unknown'):
+    def index_data(self, data, index_name, doc_type):
         """Index data in Stub Indexer."""
 
         print 'ELS Stub Indexer getting called...'

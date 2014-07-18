@@ -21,7 +21,7 @@ class PEDeepSim(object):
         my_md5 = input_data['meta_deep']['md5']
 
         # For every PE sample in the database compute my ssdeep fuzzy match
-        results = self.workbench.batch_work_request('meta_deep', {'type_tag':'pe','subkeys':['md5','ssdeep']})
+        results = self.workbench.batch_work_request('meta_deep', {'type_tag':'exe','subkeys':['md5','ssdeep']})
         sim_list = []
         for result in results:
             if result['md5'] != my_md5:
@@ -48,7 +48,7 @@ def test():
     # Generate input for the worker
     data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
                              '../data/pe/bad/033d91aae8ad29ed9fbb858179271232')
-    md5 = workbench.store_sample('bad', open(data_path, 'rb').read(), 'pe')
+    md5 = workbench.store_sample('bad', open(data_path, 'rb').read(), 'exe')
     input_data = workbench.work_request('meta_deep', md5)
 
     # Execute the worker (unit test)

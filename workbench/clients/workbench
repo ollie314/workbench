@@ -61,11 +61,16 @@ def run():
 
     # Check to see if the command is valid if it's not assume they want a 'work_request'
     command = args['commands'][0]
+    orig_command = command
     if command in workbench.list_all_commands():
         parameters = args['commands'][1:]
     else:
         command = 'work_request'
         parameters = args['commands']
+
+    # Do they want a help command ?
+    if 'help' in command:
+        parameters += {'cli':True}
 
     # Do they want 'store_sample'?
     if command == 'store_sample':
@@ -91,13 +96,25 @@ def run():
 
     # Do they want a batch_work_request?
     elif command == 'batch_work_request':
-        output = workbench(command, parameters[0], {})
+        output = workbench(command, parameters[0])
         for row in output:
             pprint.pprint(row)
 
+    # Do they want to list_samples?
+    elif command == 'list_samples':
+        
+        # They might have a predicate
+        predicate = json.loads(parameters[0]) if len(parameters) else None
+        output = workbench(command, predicate)
+        print_table(output)
+
     # Okay must be a 'normal' command so send the command and any optional parameters to workbench
     else:
-        output = workbench(command, *parameters)
+        try:
+            output = workbench(command, *parameters)
+        except zerorpc.exceptions.RemoteError:
+            print 'Failed to run command: %s' % orig_command
+            exit(1)
 
         # Try to do different stuff based on the output
         if isinstance(output, str):
