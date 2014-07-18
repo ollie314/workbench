@@ -9,6 +9,8 @@ from datetime import datetime
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 import inspect
+import colorama; colorama.init()
+from colorama import Fore, Back, Style
 
 class PluginManager(FileSystemEventHandler):
     """Plugin Manager for Workbench."""
@@ -73,6 +75,7 @@ class PluginManager(FileSystemEventHandler):
             if plugin_name in sys.modules:
                 try:
                     handler = reload(sys.modules[plugin_name])
+                    print'\t- %s %s(re-loading)%s' % (plugin_name, Fore.YELLOW, Fore.RESET)
                 except ImportError, error:
                     print 'Failed to import plugin: %s (%s)' % (plugin_name, error)
                     return
@@ -86,6 +89,7 @@ class PluginManager(FileSystemEventHandler):
 
             # Run the handler through plugin validation
             plugin = self.validate(handler)
+            print '\t- %s %s(ok)%s' % (plugin_name, Fore.GREEN, Fore.RESET)
             if plugin:
 
                 # Okay must be successfully loaded so capture the plugin meta-data,

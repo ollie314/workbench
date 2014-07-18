@@ -513,7 +513,6 @@ class WorkBench(object):
     ####################
     def _new_plugin(self, plugin, mod_time):
         """ Internal: This method handles the mechanics around new plugins. """
-        print '\t- %s: loaded...' % (plugin['name'])
         plugin['time_stamp'] = mod_time # datetime.datetime.utcnow()
         self.plugin_meta[plugin['name']] = plugin
 
