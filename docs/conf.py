@@ -16,7 +16,7 @@ import sys
 import os
 import mock
  
-MOCK_MODULES = ['cython', 'yara', 'zmq', 'yaml', 'gevent.event']
+MOCK_MODULES = ['cython', 'yara', 'zmq', 'yaml', 'gevent']
 for mod_name in MOCK_MODULES:
   sys.modules[mod_name] = mock.Mock()
 
