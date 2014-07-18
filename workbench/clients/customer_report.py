@@ -15,7 +15,7 @@ def run():
     workbench = zerorpc.Client(timeout=300, heartbeat=60)
     workbench.connect('tcp://'+args['server']+':'+args['port'])
 
-    results = workbench.batch_work_request('view_customer', {})
+    results = workbench.batch_work_request('view_customer')
     pprint.pprint(list(results))
 
 def test():

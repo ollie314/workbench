@@ -20,7 +20,8 @@ def add_it(workbench, file_list, labels):
     for filename in file_list:
         if filename != '.DS_Store':
             with open(filename, 'rb') as pe_file:
-                md5 = workbench.store_sample(filename,  pe_file.read(), 'pe')
+                base_name = os.path.basename(filename)
+                md5 = workbench.store_sample(base_name,  pe_file.read(), 'exe')
                 workbench.add_node(md5, md5[:6], labels)
                 md5s.append(md5)
     return md5s
@@ -84,15 +85,15 @@ def run():
 
     # Test out PEFile -> pe_deep_sim -> pe_jaccard_sim -> graph
     data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),'../data/pe/bad')
-    bad_files = [os.path.join(data_path, child) for child in os.listdir(data_path)][:10]
+    bad_files = [os.path.join(data_path, child) for child in os.listdir(data_path)][:5]
     data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),'../data/pe/good')
-    good_files = [os.path.join(data_path, child) for child in os.listdir(data_path)][:10]
+    good_files = [os.path.join(data_path, child) for child in os.listdir(data_path)][:5]
 
     # Clear any graph in the Neo4j database
     workbench.clear_graph_db()
 
     # First throw them into workbench and add them as nodes into the graph
-    all_md5s = add_it(workbench, bad_files, ['pe', 'bad']) + add_it(workbench, good_files, ['pe', 'good'])
+    all_md5s = add_it(workbench, bad_files, ['exe', 'bad']) + add_it(workbench, good_files, ['exe', 'good'])
 
     # Compute pe_features on all files of type pe, just pull back the sparse features
     import_gen = workbench.batch_work_request('pe_features',
@@ -139,7 +140,7 @@ def run():
     '''
 
     # Compute pe_deep_sim on all files of type pe
-    results = workbench.batch_work_request('pe_deep_sim', {'type_tag': 'pe'})
+    results = workbench.batch_work_request('pe_deep_sim', {'type_tag': 'exe'})
 
     # Store the ssdeep sims as relationships
     for result in list(results):

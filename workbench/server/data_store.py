@@ -45,7 +45,7 @@ class DataStore(object):
         self.last_ops_run = time.time()
         self.periodic_ops()
 
-        print 'WorkBench DataStore connected: %s:%s' % (self.uri, self.database_name)
+        print '\t- WorkBench DataStore connected: %s:%s' % (self.uri, self.database_name)
 
     def get_uri(self):
         """ Return the uri of the data store."""
@@ -57,7 +57,7 @@ class DataStore(object):
         Args:
             filename: Name of the file.
             sample_bytes: Actual bytes of sample. 
-            type_tag: Type of sample ('pe','pcap','pdf','json','swf', or ...).
+            type_tag: Type of sample ('exe','pcap','pdf','json','swf', or ...).
 
         Returns:
             Digest md5 digest of the sample.
@@ -218,7 +218,7 @@ class DataStore(object):
         """Get a window of samples not to exceed size (in MB).
 
         Args:
-            type_tag: Type of sample ('pe','pcap','pdf','json','swf', or ...).
+            type_tag: Type of sample ('exe','pcap','pdf','json','swf', or ...).
             size: Size of samples in MBs.
 
         Returns:
@@ -251,9 +251,6 @@ class DataStore(object):
 
         Returns:
             True if sample with this md5 is present, else False.
-
-        Raises:
-            RuntimeError: If no sample is present with this md5.
         """
 
         # The easiest thing is to simply get the sample and if that
@@ -263,6 +260,18 @@ class DataStore(object):
             return True
         except RuntimeError:
             return False
+
+    def list_samples(self, predicate={}):
+        """List all samples that meet the predicate or all if predicate is not specified.
+
+        Args:
+            predicate: Match samples against this predicate (or all if not specified)
+
+        Returns:
+            List of dictionaries with matching samples {'md5':md5, 'filename': 'foo.exe', 'type_tag': 'exe'}
+        """
+        cursor = self.database[self.sample_collection].find(predicate, {'_id':0, 'md5':1, 'filename':1, 'type_tag':1})
+        return list(cursor)
 
     def store_work_results(self, results, collection, md5):
         """Store the output results of the worker.
@@ -300,7 +309,7 @@ class DataStore(object):
         return self.database[collection].find_one({'md5':md5})
 
     def all_sample_md5s(self, type_tag=None):
-        """Return a list of all md5 matching the type_tag ('pe','pdf', etc).
+        """Return a list of all md5 matching the type_tag ('exe','pdf', etc).
 
         Args:
             type_tag: the type of sample.

@@ -61,7 +61,7 @@ class MemoryImageProcDump(object):
                 output_name = output_name.replace('executable.', '')
                 with open(output_file, 'rb') as dumped_file:
                     raw_bytes = dumped_file.read()
-                    md5 = self.c.store_sample(output_name, raw_bytes, 'pe')
+                    md5 = self.c.store_sample(output_name, raw_bytes, 'exe')
 
                     # Remove some columns from meta data
                     meta = self.c.work_request('meta', md5)['meta']
