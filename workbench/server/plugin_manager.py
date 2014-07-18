@@ -6,13 +6,12 @@
 
 import os, sys
 from datetime import datetime
-from watchdog.observers import Observer
-from watchdog.events import FileSystemEventHandler
+import dir_watcher
 import inspect
 import colorama; colorama.init()
-from colorama import Fore, Back, Style
+from colorama import Fore
 
-class PluginManager(FileSystemEventHandler):
+class PluginManager(object):
     """Plugin Manager for Workbench."""
 
     def __init__(self, plugin_callback, plugin_dir = 'workers'):
@@ -40,25 +39,36 @@ class PluginManager(FileSystemEventHandler):
             self.add_plugin(f)
 
         # Now setup dynamic monitoring of the plugins directory
-        observer = Observer()
-        observer.schedule(self, path=self.plugin_path)
-        observer.start()
+        self.watcher = dir_watcher.DirWatcher(self.plugin_path)
+        self.watcher.register_callbacks(self.on_created, self.on_modified, self.on_deleted)
+        self.watcher.start_monitoring()
 
-    def on_created(self, event):
+    def on_created(self, file_list):
         """Watcher callback
 
         Args:
             event: The creation event.
         """
-        self.add_plugin(event.src_path)
+        for plugin in file_list:
+            self.add_plugin(plugin)
 
-    def on_modified(self, event):
+    def on_modified(self, file_list):
         """Watcher callback.
 
         Args:
             event: The modification event.
         """
-        self.add_plugin(event.src_path)
+        for plugin in file_list:
+            self.add_plugin(plugin)
+
+    def on_deleted(self, event):
+        """Watcher callback.
+
+        Args:
+            event: The modification event.
+        """
+        for plugin in file_list:
+            print 'Plugin was deleted: %s' % plugin
 
     def add_plugin(self, f):
         """Adding and verifying plugin.
@@ -75,7 +85,7 @@ class PluginManager(FileSystemEventHandler):
             if plugin_name in sys.modules:
                 try:
                     handler = reload(sys.modules[plugin_name])
-                    print'\t- %s %s(re-loading)%s' % (plugin_name, Fore.YELLOW, Fore.RESET)
+                    print'\t- %s %s[reloading]%s' % (plugin_name, Fore.YELLOW, Fore.RESET)
                 except ImportError, error:
                     print 'Failed to import plugin: %s (%s)' % (plugin_name, error)
                     return
@@ -89,15 +99,16 @@ class PluginManager(FileSystemEventHandler):
 
             # Run the handler through plugin validation
             plugin = self.validate(handler)
-            print '\t- %s %s(ok)%s' % (plugin_name, Fore.GREEN, Fore.RESET)
+            print '\t- %s %s[ok]%s' % (plugin_name, Fore.GREEN, Fore.RESET)
             if plugin:
 
                 # Okay must be successfully loaded so capture the plugin meta-data,
                 # modification time and register the plugin through the callback
                 plugin['name'] = plugin_name
                 plugin['dependencies'] = plugin['class'].dependencies
-                mod_time = datetime.utcfromtimestamp(os.path.getmtime(f))
-                self.plugin_callback(plugin, mod_time)
+                plugin['doc'] = plugin['class'].__doc__
+                plugin['mod_time'] = datetime.utcfromtimestamp(os.path.getmtime(f))
+                self.plugin_callback(plugin)
 
     def validate(self, handler):
         """Validate the plugin, each plugin must have the following:

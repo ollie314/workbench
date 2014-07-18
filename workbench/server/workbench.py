@@ -1,7 +1,7 @@
 
 """Workbench: Open Source Security Framework """
 
-from gevent import monkey; monkey.patch_all(thread=False) # Monkey!
+from gevent import monkey; monkey.patch_all() # Monkey!
 from gevent import signal as gevent_signal
 import signal
 import sys, os
@@ -483,9 +483,10 @@ class WorkBench(object):
 
     def worker_info(self, worker_name):
         """ Get the information about this worker """
-        plugin = self.plugin_meta[worker_name]
-        return {'dependencies': plugin['class'].dependencies, 'doc': plugin['class'].__doc__}
 
+        # Grab it, clean it and ship it
+        work_results = self._get_work_results('worker_info', worker_name)
+        return self.data_store.clean_for_serialization(work_results)
 
     ##################
     # Testing
@@ -511,9 +512,14 @@ class WorkBench(object):
     ####################
     # Internal Methods
     ####################
-    def _new_plugin(self, plugin, mod_time):
+    def _new_plugin(self, plugin):
         """ Internal: This method handles the mechanics around new plugins. """
-        plugin['time_stamp'] = mod_time # datetime.datetime.utcnow()
+
+        # First store the plugin info into our data store
+        worker_info = {key:value for key,value in plugin.iteritems() if key !='class' and key != 'test'}
+        self._store_work_results(worker_info, 'worker_info', plugin['name'])
+
+        # Place it into our active plugin list
         self.plugin_meta[plugin['name']] = plugin
 
     def _store_work_results(self, results, collection, md5):
@@ -532,23 +538,27 @@ class WorkBench(object):
                passed down the pipeline until htting the requested worker. """
 
         # Looking for the sample or sample_set?
-        if (worker_name == 'sample'):
+        if worker_name == 'sample':
             # If we have a sample set with this md5, return it
             if self.get_sample_set(md5):
                 return self.get_sample_set(md5)
             # Return the sample (might raise a RuntimeError)
             return self.get_sample(md5)
 
+        # Looking for worker_info?
+        if worker_name == 'worker_info':
+            return self._get_work_results('worker_info', md5)
+
         # Do I actually have this plugin? (might have failed, etc)
         if (worker_name not in self.plugin_meta):
             print 'Request for non-existing or failed plugin: %s' % (worker_name)
             return {}
 
-        # If the results exist and the time_stamp is newer than the plugin's, I'm done
+        # If the results exist and the mod_time is newer than the plugin's, I'm done
         collection = self.plugin_meta[worker_name]['name']
         work_results = self._get_work_results(collection, md5)
         if work_results:
-            if self.plugin_meta[worker_name]['time_stamp'] < work_results[collection]['__time_stamp']:
+            if self.plugin_meta[worker_name]['mod_time'] < work_results[collection]['__time_stamp']:
                 print 'Returning cached work results for plugin: %s' % (worker_name)
                 return work_results
             else:
