@@ -100,6 +100,14 @@ def run():
         for row in output:
             pprint.pprint(row)
 
+    # Do they want to list_samples?
+    elif command == 'list_samples':
+        
+        # They might have a predicate
+        predicate = json.loads(parameters[0]) if len(parameters) else None
+        output = workbench(command, predicate)
+        print_table(output)
+
     # Okay must be a 'normal' command so send the command and any optional parameters to workbench
     else:
         try:

@@ -15,6 +15,7 @@ import hashlib
 import inspect
 import funcsigs
 import ConfigParser
+import magic
 
 # Workbench server imports
 try:
@@ -87,10 +88,16 @@ class WorkBench(object):
             Args:
                 filename: name of the file (used purely as meta data not for lookup)
                 input_bytes: the actual bytes of the sample e.g. f.read()
-                type_tag: ('pe','pcap','pdf','json','swf', or ...)
+                type_tag: ('exe','pcap','pdf','json','swf', or ...)
             Returns:
                 the md5 of the sample.
         """
+
+        # If the sample comes in with an unknown type_tag try to determine it
+        if type_tag == 'unknown':
+            print '<<< Unknown File: Trying to Determine Type >>>'
+            type_tag = self.guess_type_tag(input_bytes)
+
         return self.data_store.store_sample(filename, input_bytes, type_tag)
 
     def get_sample(self, md5):
@@ -107,7 +114,7 @@ class WorkBench(object):
     def get_sample_window(self, type_tag, size):
         """ Get a sample from the DataStore.
             Args:
-                type_tag: the type of samples ('pcap','pe','pdf')
+                type_tag: the type of samples ('pcap','exe','pdf')
                 size: the size of the window in MegaBytes (10 = 10MB)
             Returns:
                 A list of md5s representing the newest samples within the size window
@@ -122,6 +129,17 @@ class WorkBench(object):
                 True or False
         """
         return self.data_store.has_sample(md5)
+
+    def list_samples(self, predicate={}):
+        """List all samples that meet the predicate or all if predicate is not specified.
+
+        Args:
+            predicate: Match samples against this predicate (or all if not specified)
+
+        Returns:
+            List of dictionaries with matching samples {'md5':md5, 'filename': 'foo.exe', 'type_tag': 'exe'}
+        """
+        return self.data_store.list_samples(predicate)
 
     @zerorpc.stream
     def stream_sample(self, md5, max_rows):
@@ -160,6 +178,31 @@ class WorkBench(object):
             return generator
         else:
             raise RuntimeError('Cannot stream file %s with type_tag:%s' % (md5, type_tag))
+
+    def guess_type_tag(self, input_bytes):
+        """ Try to guess the type_tag for this sample """
+        mime_to_type = {'application/x-dosexec': 'exe',
+                        'application/pdf': 'pdf',
+                        'application/zip': 'zip',
+                        'application/jar': 'jar',
+                        'application/vnd.ms-cab-compressed': 'cab',
+                        'text/plain': 'txt',
+                        'image/gif': 'gif',
+                        'image/jpeg': 'jpg',
+                        'image/png': 'png',
+                        'text/html': 'html',
+                        'application/vnd.ms-fontobject': 'ms_font',
+                        'application/x-shockwave-flash': 'swf'}
+
+        # See what filemagic can determine
+        with magic.Magic(flags=magic.MAGIC_MIME_TYPE) as mag:
+            mime_type = mag.id_buffer(input_bytes[:1024])
+            if mime_type in mime_to_type:
+                return mime_to_type[mime_type]
+            else:
+                print '<<< Sample Type could not be Determined >>>'
+                return 'unknown'
+
 
 
     #######################
@@ -310,7 +353,7 @@ class WorkBench(object):
         Args:
             worker_name: 'strings', 'pe_features', whatever
             kwargs: a way of specifying subsets of samples ({} for all)
-                type_tag: subset based on sample type (e.g. type_tag='pe')
+                type_tag: subset based on sample type (e.g. type_tag='exe')
                 md5_list: subset just the samples in this list
                 subkeys: return just this subkey (e.g. 'foo' or 'foo.bar')
         Returns:
@@ -452,15 +495,15 @@ class WorkBench(object):
 
         # First find the plugin
         try:
-            plugin = self.plugin_meta[worker]
+            plugin = self.plugin_meta[worker_name]
         except KeyError:
-            return '%s worker not found.. misspelled?' % worker
+            return '%s worker not found.. misspelled?' % worker_name
 
         # Now try to run the test
         try:
             return plugin['test']()
         except (AttributeError, KeyError) as error:
-            output = 'Failure for plugin: %s' % (worker)
+            output = 'Failure for plugin: %s' % (worker_name)
             output += 'Error: %s' % error
             return output
 

@@ -39,7 +39,8 @@ def test():
         if '.DS_Store' in filename: continue        
 
         with open(filename,'rb') as f:
-            pcap_md5s.append(workbench.store_sample(filename, f.read(), 'pcap'))
+            base_name = os.path.basename(filename)
+            pcap_md5s.append(workbench.store_sample(base_name, f.read(), 'pcap'))
 
     # Now store the sample set
     set_md5 = workbench.store_sample_set(pcap_md5s)

@@ -53,7 +53,8 @@ def test():
         if '.DS_Store' in filename: continue
 
         with open(filename,'rb') as pe_file:
-            md5_list.append(workbench.store_sample(filename, pe_file.read(), 'pe'))
+            base_name = os.path.basename(filename)
+            md5_list.append(workbench.store_sample(base_name, pe_file.read(), 'exe'))
 
     # Store the md5 list on the server as a sample set
     workbench.store_sample_set(md5_list)

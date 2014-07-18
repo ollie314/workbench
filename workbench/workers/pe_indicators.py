@@ -426,10 +426,10 @@ def test():
     import os
     data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
                              '../data/pe/bad/033d91aae8ad29ed9fbb858179271232')
-    md5_bad = workbench.store_sample('bad', open(data_path, 'rb').read(), 'pe')
+    md5_bad = workbench.store_sample('bad', open(data_path, 'rb').read(), 'exe')
     data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
                              '../data/pe/good/4be7ec02133544cde7a580875e130208')
-    md5_good = workbench.store_sample('good_pe', open(data_path, 'rb').read(), 'pe')
+    md5_good = workbench.store_sample('good_pe', open(data_path, 'rb').read(), 'exe')
 
     # Execute the worker (unit test)
     worker = PEIndicators()
