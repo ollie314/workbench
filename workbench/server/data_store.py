@@ -1,5 +1,6 @@
 """DataStore class for WorkBench."""
 
+from gevent import monkey; monkey.patch_socket()
 import pymongo
 import gridfs
 import hashlib
