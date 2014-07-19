@@ -1,11 +1,10 @@
 
 """Workbench: Open Source Security Framework """
 
-import sys
-if 'threading' in sys.modules:
-    print 'Alert: threading module loaded before patching!'
-    del sys.modules['threading']
-from gevent import monkey; monkey.patch_all() # Monkey!
+# Okay this monkey patch call needs to be first
+# Note: The thread=False parameters appears to be needed
+#       for MongoDB, if you know a better way please do PR :)
+from gevent import monkey; monkey.patch_all(thread=False) # Monkey!
 from gevent import signal as gevent_signal
 import signal
 import sys, os
