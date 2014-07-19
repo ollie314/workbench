@@ -26,7 +26,7 @@ class DirWatcher(object):
 
     def start_monitoring(self):
         """ Monitor the path given """
-        self.jobs = [gevent.spawn(self._start_monitoring)]
+        # self.jobs = [gevent.spawn(self._start_monitoring)]
 
     def _start_monitoring(self):
         """ Internal method that monitors the directory for changes """
