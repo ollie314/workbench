@@ -33,8 +33,7 @@ def run():
             workbench.index_worker_output('view_pcap', md5, 'pcap_bro', None)
             print '\n\n<<< PCAP Bro log Data: %s Indexed>>>' % (base_name)
 
-import pytest
-@pytest.mark.xfail
+
 def test():
     """Executes pcap_bro_indexer test."""
     run()
