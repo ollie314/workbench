@@ -1,5 +1,5 @@
 [run]
-timid = False
+timid = True
 coroutine = gevent
 
 [report]
