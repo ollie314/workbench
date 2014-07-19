@@ -1,7 +1,7 @@
 
 ''' HelpCLI worker '''
 
-import colorama; colorama.init()
+import colorama
 from colorama import Fore, Style
 
 class HelpCLI(object):

@@ -8,7 +8,7 @@ import os, sys
 from datetime import datetime
 import dir_watcher
 import inspect
-import colorama # Is this being naughty? ; colorama.init()
+import colorama
 from colorama import Fore
 
 class PluginManager(object):
