@@ -6,11 +6,10 @@ from colorama import Fore, Style
 
 class HelpCLI(object):
     ''' This worker computes help (CLI, colored) for a worker '''
-    dependencies = ['worker_info']
+    dependencies = ['help']
 
     def execute(self, input_data):
-        fields = ['name', 'doc', 'dependencies', 'mod_time']
-        data = input_data['worker_info']
+        data = input_data['help']['output']
         dependencies = str([str(dep) for dep in data['dependencies']])
         dependencies = dependencies.replace('\'','')
         output = '\n%s%s%s %s%s%s:' % (Style.BRIGHT, Fore.YELLOW, data['name'], Style.RESET_ALL, Fore.BLUE, dependencies)
@@ -27,7 +26,7 @@ def test():
     workbench.connect("tcp://127.0.0.1:4242")
 
     # Generate input for the worker
-    input_data = workbench.worker_info('meta')
+    input_data = workbench.work_request('help', 'meta')
 
     # Execute the worker (unit test)
     worker = HelpCLI()
