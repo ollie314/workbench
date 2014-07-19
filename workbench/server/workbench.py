@@ -1,6 +1,10 @@
 
 """Workbench: Open Source Security Framework """
 
+import sys
+if 'threading' in sys.modules:
+    print 'Alert: threading module loaded before patching!'
+    del sys.modules['threading']
 from gevent import monkey; monkey.patch_all() # Monkey!
 from gevent import signal as gevent_signal
 import signal

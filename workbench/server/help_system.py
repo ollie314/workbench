@@ -94,7 +94,7 @@ class HelpSystem(object):
             if cli:
                 help_string += self.my_wb.work_request('help_cli', worker)['help_cli']['output']
             else:
-                help_string += self.my_wb.work_request('help', worker)['help']['output']
+                help_string += str(self.my_wb.work_request('help', worker)['help']['output'])
         return help_string
 
     def help_worker(self, worker, cli=False):
@@ -122,12 +122,12 @@ class HelpSystem(object):
         # have proper docstrings and make sure help works, etc
         output += self.help_commands()
         for command in self.my_wb.list_all_commands():
-            output += self.help_command(command)
+            output += str(self.help_command(command))
 
         # Yes this is verbose but useful to see what workers
         # have proper docstrings and make sure help works, etc
         output += self.help_workers()
         for worker in self.my_wb.list_all_workers():
-            output += self.help_worker(worker)
+            output += str(self.help_worker(worker))
 
         return output

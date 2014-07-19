@@ -1,7 +1,5 @@
 ''' This client calls a bunch of help commands from workbench '''
 import zerorpc
-import pprint
-import os
 import workbench_client
 
 def run():

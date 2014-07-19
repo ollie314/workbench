@@ -12,7 +12,8 @@ class HelpCLI(object):
         data = input_data['help']['output']
         dependencies = str([str(dep) for dep in data['dependencies']])
         dependencies = dependencies.replace('\'','')
-        output = '\n%s%s%s %s%s%s:' % (Style.BRIGHT, Fore.YELLOW, data['name'], Style.RESET_ALL, Fore.BLUE, dependencies)
+        output = '\n%s%s%s %s%s%s:' % (Style.BRIGHT, Fore.YELLOW, data['name'], 
+                                       Style.RESET_ALL, Fore.BLUE, dependencies)
         output += '%s\n%s%s' % (Fore.GREEN, data['doc'], Fore.RESET)
         return {'output': output}
 
