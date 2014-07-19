@@ -3,11 +3,11 @@
 
 class Help(object):
     ''' This worker computes help for a worker '''
-    dependencies = ['worker_info']
+    dependencies = ['info']
 
     def execute(self, input_data):
         fields = ['name', 'doc', 'dependencies', 'mod_time']
-        return {'output': {key:value for key,value in input_data['worker_info'].iteritems() if key in fields}}
+        return {'output': {key:value for key,value in input_data['info'].iteritems() if key in fields}}
 
 # Unit test: Create the class, the proper input and run the execute() method for a test
 def test():
@@ -19,7 +19,7 @@ def test():
     workbench.connect("tcp://127.0.0.1:4242")
 
     # Generate input for the worker
-    input_data = workbench.worker_info('meta')
+    input_data = workbench.info('meta')
 
     # Execute the worker (unit test)
     worker = Help()

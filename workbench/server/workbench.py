@@ -484,11 +484,11 @@ class WorkBench(object):
         """ List all the currently loaded workers """
         return self.plugin_meta.keys()
 
-    def worker_info(self, worker_name):
-        """ Get the information about this worker """
+    def info(self, component):
+        """ Get the information about this component """
 
         # Grab it, clean it and ship it
-        work_results = self._get_work_results('worker_info', worker_name)
+        work_results = self._get_work_results('info', component)
         return self.data_store.clean_for_serialization(work_results)
 
     ##################
@@ -519,8 +519,8 @@ class WorkBench(object):
         """ Internal: This method handles the mechanics around new plugins. """
 
         # First store the plugin info into our data store
-        worker_info = {key:value for key,value in plugin.iteritems() if key !='class' and key != 'test'}
-        self._store_work_results(worker_info, 'worker_info', plugin['name'])
+        info = {key:value for key,value in plugin.iteritems() if key !='class' and key != 'test'}
+        self._store_work_results(info, 'info', plugin['name'])
 
         # Place it into our active plugin list
         self.plugin_meta[plugin['name']] = plugin
@@ -548,9 +548,9 @@ class WorkBench(object):
             # Return the sample (might raise a RuntimeError)
             return self.get_sample(md5)
 
-        # Looking for worker_info?
-        if worker_name == 'worker_info':
-            return self._get_work_results('worker_info', md5)
+        # Looking for info?
+        if worker_name == 'info':
+            return self._get_work_results('info', md5)
 
         # Do I actually have this plugin? (might have failed, etc)
         if (worker_name not in self.plugin_meta):
