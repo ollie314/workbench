@@ -85,7 +85,7 @@ class PluginManager(object):
             if plugin_name in sys.modules:
                 try:
                     handler = reload(sys.modules[plugin_name])
-                    print'\t- %s %s[reloading]%s' % (plugin_name, Fore.YELLOW, Fore.RESET)
+                    print'\t- %s %sRELOAD%s' % (plugin_name, Fore.YELLOW, Fore.RESET)
                 except ImportError, error:
                     print 'Failed to import plugin: %s (%s)' % (plugin_name, error)
                     return
@@ -99,7 +99,7 @@ class PluginManager(object):
 
             # Run the handler through plugin validation
             plugin = self.validate(handler)
-            print '\t- %s %s[ok]%s' % (plugin_name, Fore.GREEN, Fore.RESET)
+            print '\t- %s %sOK%s' % (plugin_name, Fore.GREEN, Fore.RESET)
             if plugin:
 
                 # Okay must be successfully loaded so capture the plugin meta-data,
