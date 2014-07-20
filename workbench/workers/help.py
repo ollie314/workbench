@@ -2,12 +2,12 @@
 ''' Help worker '''
 
 class Help(object):
-    ''' This worker computes help for a worker '''
+    ''' This worker computes help for any 'info' object '''
     dependencies = ['info']
 
     def execute(self, input_data):
-        fields = ['name', 'doc', 'dependencies', 'mod_time']
-        return {'output': {key:value for key,value in input_data['info'].iteritems() if key in fields}}
+        ''' Fixme: have this do something more interesting '''
+        return input_data
 
 # Unit test: Create the class, the proper input and run the execute() method for a test
 def test():

@@ -41,7 +41,7 @@ except ValueError:
 
 
 class WorkBench(object):
-    """Workbench: Open Source Security Framework."""
+    """ Workbench: Open Source Security Framework. """
 
     def __init__(self, store_args=None, els_hosts=None, neo_uri=None):
         """Initialize the Framework.
@@ -53,9 +53,10 @@ class WorkBench(object):
         """
         # Announce Version
         try:
-            print '<<< Workbench Version %s >>>' % sys.modules['workbench'].__version__
+            self.version = sys.modules['workbench'].__version__
         except (AttributeError, KeyError):
-            print '<<< Workbench Version %s >>>' % 'DEBUGGING'
+            self.version = 'unknown'
+        print '<<< Workbench Version %s >>>' % self.version
 
         # Open DataStore
         self.data_store = data_store.DataStore(**store_args)
@@ -79,8 +80,12 @@ class WorkBench(object):
         plugin_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)),'../workers')
         self.plugin_manager = plugin_manager.PluginManager(self._new_plugin, plugin_dir=plugin_dir)
 
-        # Get Help System
-        self.help_system = help_system.HelpSystem(self)
+        # Store some information about workbench
+        self.store_info({'help': '<<< Workbench Version %s >>>' % self.version}, 'workbench')
+
+        # Store help and command information
+        self._store_help_information()
+        self._store_command_info()
 
 
     #######################
@@ -438,37 +443,37 @@ class WorkBench(object):
     ##################
     # Help
     ##################
-    def help(self, cli=False):
-        """ Returns help commands """
-        return self.help_system.help(cli)
+    def help(self, topic=None):
+        """ Returns help topics """
+        if not topic:
+            return self.work_request('help', 'help')
+        else:
+            return self.work_request('help', topic)
 
-    def help_basic(self, cli=False):
-        """ Returns basic help commands """
-        return self.help_system.help_basic(cli)
+    def help_cli(self, topic=None):
+        """ Returns help topics for CLI """
+        if not topic:
+            return self.work_request('help_cli', 'help')
+        else:
+            return self.work_request('help_cli', topic)
 
-    def help_commands(self, cli=False):
-        """ Returns a big string of Workbench commands and signatures """
-        return self.help_system.help_commands(cli)
+    def help_info(self):
+        """ Stores help text into the workbench information system """
+        help = '\nWelcome to Workbench Help:\n\t- workbench.help() for Python\n\t- workbench help for CLI'
+        help += '\nUseful help topics: basic, commands, workers'
+        help += '\n\nSee http://github.com/SuperCowPowers/workbench for more information'
+        return help
 
-    def help_command(self, command, cli=False):
-        """ Returns a specific Workbench command and docstring """
-        return self.help_system.help_command(command,cli)
-
-    def help_workers(self, cli=False):
-        """ Returns a big string of the loaded Workbench workers and their dependencies """
-        return self.help_system.help_workers(cli)
-
-    def help_worker(self, worker, cli=False):
-        """ Returns a specific Workbench worker and docstring """
-        return self.help_system.help_worker(worker, cli)
-
-    def help_advanced(self, cli=False):
-        """ Returns advanced help commands """
-        return self.help_system.help_advanced(cli)
-
-    def help_everything(self, cli=False):
-        """ Returns advanced help commands """
-        return self.help_system.help_everything(cli)
+    def help_basic(self):
+        """ Stores basic help text into the workbench information system """
+        help =  '\nWorkbench: Getting started...'
+        help += '\n\t - 1) $ help commands : for a list of commands'
+        help += '\n\t - 2) $ help command store_sample : for into on a specific command'
+        help += '\n\t - 3) $ help workers : for a list a workers'
+        help += '\n\t - 4) $ help meta : (any worker name) for info on a specific worker'
+        help += '\n\t - 5) $ workbench store_sample /path/to/file.exe'
+        help += '\n\t - 6) $ workbench meta md5 (from store sample)'
+        return help
 
 
     ##################
@@ -490,6 +495,20 @@ class WorkBench(object):
         # Grab it, clean it and ship it
         work_results = self._get_work_results('info', component)
         return self.data_store.clean_for_serialization(work_results)
+
+    def store_info(self, info_dict, component):
+        """ Store information about a component. The component could be a
+            worker or a commands or a class, or whatever you want, the
+            only thing to be aware of is name collisions. """
+
+        # Enforce dictionary input
+        if not isinstance(info_dict, dict):
+            print 'Critical: info_dict must be a python dictionary, got %s' % type(info_dict)
+            return
+
+        # Ensure values are not functions/methods/classes
+        info_storage = {key:value for key, value in info_dict.iteritems() if not hasattr(value, '__call__')}
+        self._store_work_results(info_storage, 'info', component)
 
     ##################
     # Testing
@@ -515,12 +534,23 @@ class WorkBench(object):
     ####################
     # Internal Methods
     ####################
+    def _store_help_information(self):
+        """ Stores help text into the workbench information system """
+        self.store_info({'help': self.help_info()}, 'help')
+        self.store_info({'help': self.help_basic()}, 'basic')
+
+    def _store_command_info(self):
+        """ Stores information on Workbench commands and signatures """
+        for name, meth in inspect.getmembers(self, predicate=inspect.ismethod):
+            if not name.startswith('_'):
+                info = {'command': name, 'sig': str(funcsigs.signature(meth)), 'doc': meth.__doc__}
+                self.store_info(info, name)
+
     def _new_plugin(self, plugin):
         """ Internal: This method handles the mechanics around new plugins. """
 
         # First store the plugin info into our data store
-        info = {key:value for key,value in plugin.iteritems() if key !='class' and key != 'test'}
-        self._store_work_results(info, 'info', plugin['name'])
+        self.store_info(plugin, plugin['name'])
 
         # Place it into our active plugin list
         self.plugin_meta[plugin['name']] = plugin

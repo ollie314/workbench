@@ -5,7 +5,7 @@ import colorama
 from colorama import Fore, Style
 
 class HelpCLI(object):
-    ''' This worker computes help (CLI, colored) for a worker '''
+    ''' This worker does CLI coloring for any help object '''
     dependencies = ['help']
 
     def execute(self, input_data):
