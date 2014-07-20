@@ -15,26 +15,19 @@
 import sys
 import os
 
-class Mock(object):
+import mock
 
-    __all__ = []
+MOCK_MODULES = ['coverage', 'cython', 'distorm3>=0', 'elasticsearch',
+                'funcsigs', 'filemagic', 'pefile', 'peutils', 'py2neo',
+                'pymongo', 'pytest-cov', 'rekall', 'rekall.plugins',
+                'rekall.plugins.addrspaces', 'rekall.ui',
+                'rekall.ui.renderer', 'bson', 'msgpack','pytz',
+                'requests', 'gevent', 'gevent.subprocess', 'magic',
+                'ssdeep', 'tabulate', 'tox', 'urllib3', 'zmq', 'gridfs',
+                'watchdog', 'watchdog.observers',  'watchdog.events', 'yara', 'zerorpc']
+for mod_name in MOCK_MODULES:
+    sys.modules[mod_name] = mock.Mock()
 
-    def __init__(self, *args, **kwargs):
-        pass
-
-    def __call__(self, *args, **kwargs):
-        return Mock()
-
-    @classmethod
-    def __getattr__(cls, name):
-        if name in ('__file__', '__path__'):
-            return '/dev/null'
-        elif name[0] == name[0].upper():
-            mockType = type(name, (), {})
-            mockType.__module__ = __name__
-            return mockType
-        else:
-            return Mock()
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
