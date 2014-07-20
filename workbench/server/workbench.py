@@ -80,11 +80,8 @@ class WorkBench(object):
         plugin_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)),'../workers')
         self.plugin_manager = plugin_manager.PluginManager(self._new_plugin, plugin_dir=plugin_dir)
 
-        # Store some information about workbench
-        self.store_info({'help': '<<< Workbench Version %s >>>' % self.version}, 'workbench')
-
         # Store help and command information
-        self._store_help_information()
+        self._store_help_info()
         self._store_command_info()
 
 
@@ -443,36 +440,37 @@ class WorkBench(object):
     ##################
     # Help
     ##################
-    def help(self, topic=None):
+    def help(self, topic):
         """ Returns help topics """
-        if not topic:
-            return self.work_request('help', 'help')
-        else:
-            return self.work_request('help', topic)
+        return self.work_request('help', topic)
 
-    def help_cli(self, topic=None):
+    def help_cli(self, topic):
         """ Returns help topics for CLI """
-        if not topic:
-            return self.work_request('help_cli', 'help')
-        else:
-            return self.work_request('help_cli', topic)
+        return self.work_request('help_cli', topic)
 
-    def help_info(self):
-        """ Stores help text into the workbench information system """
-        help = '\nWelcome to Workbench Help:\n\t- workbench.help() for Python\n\t- workbench help for CLI'
+    def help_workbench(self):
+        """ Help on Workbench """
+        help = 'Welcome to Workbench Help:\n\t- workbench.help(topic) for Python\n\t- workbench help topic for CLI'
         help += '\nUseful help topics: basic, commands, workers'
         help += '\n\nSee http://github.com/SuperCowPowers/workbench for more information'
         return help
 
     def help_basic(self):
-        """ Stores basic help text into the workbench information system """
-        help =  '\nWorkbench: Getting started...'
-        help += '\n\t - 1) $ help commands : for a list of commands'
-        help += '\n\t - 2) $ help command store_sample : for into on a specific command'
+        """ Help for Workbench Basics """
+        help =  'Workbench: Getting started...'
+        help += '\n\t - 1) $ help commands  (for a list of commands)'
+        help += '\n\t - 2) $ help [command] :for into on a specific command'
         help += '\n\t - 3) $ help workers : for a list a workers'
-        help += '\n\t - 4) $ help meta : (any worker name) for info on a specific worker'
-        help += '\n\t - 5) $ workbench store_sample /path/to/file.exe'
-        help += '\n\t - 6) $ workbench meta md5 (from store sample)'
+        help += '\n\t - 4) $ help [worker] : for info on a specific worker'
+        help += '\n\t - 5) Storing a sample: $ workbench store_sample /path/to/file.exe'
+        help += '\n\t - 6) Running a worker on a sample $ workbench meta md5'
+        return help
+
+    def help_commands(self):
+        """ Help on all the available commands """
+        help =  'Workbench Commands:'
+        for command in self.list_all_commands():
+            help += '\n\t%s' % self.work_request('help_cli', command)
         return help
 
 
@@ -482,7 +480,7 @@ class WorkBench(object):
     def list_all_commands(self):
         """ Returns a list of all the Workbench commands"""
         commands = [name for name, _ in inspect.getmembers(self, predicate=inspect.ismethod) if not name.startswith('_')]
-        commands.append('batch_work_request') # I think the zerorpc decorator messes up inspect
+        # commands.append('batch_work_request') # I think the zerorpc decorator messes up inspect
         return commands
 
     def list_all_workers(self):
@@ -496,7 +494,7 @@ class WorkBench(object):
         work_results = self._get_work_results('info', component)
         return self.data_store.clean_for_serialization(work_results)
 
-    def store_info(self, info_dict, component):
+    def store_info(self, info_dict, component, type_tag):
         """ Store information about a component. The component could be a
             worker or a commands or a class, or whatever you want, the
             only thing to be aware of is name collisions. """
@@ -508,6 +506,9 @@ class WorkBench(object):
 
         # Ensure values are not functions/methods/classes
         info_storage = {key:value for key, value in info_dict.iteritems() if not hasattr(value, '__call__')}
+
+        # Place the type_tag on it and store it
+        info_storage['type_tag'] = type_tag
         self._store_work_results(info_storage, 'info', component)
 
     ##################
@@ -534,23 +535,25 @@ class WorkBench(object):
     ####################
     # Internal Methods
     ####################
-    def _store_help_information(self):
+    def _store_help_info(self):
         """ Stores help text into the workbench information system """
-        self.store_info({'help': self.help_info()}, 'help')
-        self.store_info({'help': self.help_basic()}, 'basic')
+        self.store_info({'help': '<<< Workbench Version %s >>>'}, 'version', type_tag='help')
+        self.store_info({'help': self.help_workbench()}, 'workbench', type_tag='help')
+        self.store_info({'help': self.help_basic()}, 'basic', type_tag='help')
+        self.store_info({'help': self.help_commands()}, 'commands', type_tag='help')
 
     def _store_command_info(self):
         """ Stores information on Workbench commands and signatures """
         for name, meth in inspect.getmembers(self, predicate=inspect.ismethod):
             if not name.startswith('_'):
                 info = {'command': name, 'sig': str(funcsigs.signature(meth)), 'docstring': meth.__doc__}
-                self.store_info(info, name)
+                self.store_info(info, name, type_tag='command')
 
     def _new_plugin(self, plugin):
         """ Internal: This method handles the mechanics around new plugins. """
 
         # First store the plugin info into our data store
-        self.store_info(plugin, plugin['name'])
+        self.store_info(plugin, plugin['name'], type_tag='worker')
 
         # Place it into our active plugin list
         self.plugin_meta[plugin['name']] = plugin

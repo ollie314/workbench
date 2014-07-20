@@ -43,8 +43,29 @@ def print_table(table):
     except TypeError:
         print tabulate.tabulate(table_xform(table, force_to_str=True), headers="keys")
 
+def store_sample(file_path):
+
+    # Do they want everything under a directory?
+    if os.path.isdir(file_path):
+        file_list = [os.path.join(file_path, child) for child in os.listdir(file_path)]
+    else:
+        file_list = [file_path]
+
+    # Upload the files into workbench
+    for path in file_list:
+        with open(path, 'rb') as my_file:
+            raw_bytes = my_file.read()
+            md5 = hashlib.md5(raw_bytes).hexdigest()
+            if not workbench.has_sample(md5):
+                print 'Storing Sample...'
+                md5 = workbench.store_sample(os.path.basename(path), raw_bytes, 'unknown')
+            else:
+                print 'Sample already in Workbench...'
+            print md5
+
 def run():
     ''' Running the workbench CLI '''
+
     # Announce Version
     print '<<< Workbench Version %s >>>' % sys.modules['workbench'].__version__
 
@@ -55,89 +76,75 @@ def run():
     workbench = zerorpc.Client(timeout=300, heartbeat=60)
     workbench.connect('tcp://'+args['server']+':'+args['port'])
 
-    # If no command than assume they want help
+    # Help commands
     if not args['commands']:
-        args['commands'] = ['help']
+        print workbench.help_cli('workbench')['help_cli']['help']
+        return
+    elif args['commands'][0] == 'help':
+        if len(args['commands']) == 1:
+            print workbench.help_cli('workbench')['help_cli']['help']
+        else:
+            print workbench.help_cli(args['commands'][1])['help_cli']['help']
+        return
 
-    # Check to see if the command is valid if it's not assume they want a 'work_request'
+    # Split out command and parameters (with logic for not including work_request)
     command = args['commands'][0]
-    orig_command = command
     if command in workbench.list_all_commands():
         parameters = args['commands'][1:]
     else:
         command = 'work_request'
         parameters = args['commands']
 
-    # Do they want a help command ?
-    if 'help' in command:
-        parameters += {'cli':True}
-
     # Do they want 'store_sample'?
     if command == 'store_sample':
-        file_path = parameters[0]
-
-        # Do they want everything under a directory?
-        if os.path.isdir(file_path):
-            file_list = [os.path.join(file_path, child) for child in os.listdir(file_path)]
-        else:
-            file_list = [file_path]
-        
-        # Upload the files into workbench
-        for path in file_list:
-            with open(path, 'rb') as my_file:
-                raw_bytes = my_file.read()
-                md5 = hashlib.md5(raw_bytes).hexdigest()
-                if not workbench.has_sample(md5):
-                    print 'Storing Sample...'
-                    md5 = workbench.store_sample(os.path.basename(path), raw_bytes, 'unknown')
-                else:
-                    print 'Sample already in Workbench...'
-                print md5
+        store_sample(parameters[0])
+        return
 
     # Do they want a batch_work_request?
-    elif command == 'batch_work_request':
+    if command == 'batch_work_request':
         output = workbench(command, parameters[0])
         for row in output:
             pprint.pprint(row)
+        return
 
     # Do they want to list_samples?
-    elif command == 'list_samples':
+    if command == 'list_samples':
         
         # They might have a predicate
         predicate = json.loads(parameters[0]) if len(parameters) else None
         output = workbench(command, predicate)
         print_table(output)
+        return
 
     # Okay must be a 'normal' command so send the command and any optional parameters to workbench
-    else:
-        try:
-            output = workbench(command, *parameters)
-        except zerorpc.exceptions.RemoteError:
-            print 'Failed to run command: %s' % orig_command
-            exit(1)
+    try:
+        output = workbench(command, *parameters)
+    except zerorpc.exceptions.RemoteError:
+        print 'Failed to run command: %s' % ' '.join(args['commands'])
+        exit(1)
 
-        # Try to do different stuff based on the output
-        if isinstance(output, str):
-            print output
+    # Try to do different stuff based on the output
+    if isinstance(output, str):
+        print output
 
-        # Okay for non-string output it will always be keyed by the worker name
-        # which in this case in parameter[0]
-        elif isinstance(output, dict):
+    # Okay for non-string output it will always be keyed by the worker name
+    # which in this case in parameter[0]
+    elif isinstance(output, dict):
 
-            worker_name = parameters[0]
-            output = output[worker_name]
+        worker_name = parameters[0]
+        output = output[worker_name]
 
-            # If the data contains table keys/information then print as tables
-            # if not we just kinda punt and do a pprint on the data.
-            table_list = try_get_tables(output)
-            if table_list:
-                for table in table_list:
-                    print '\n\n<<<<<< %s >>>>>\n' % table
-                    print_table(output[table])
-            else:
-                pprint.pprint(output)
+        # If the data contains table keys/information then print as tables
+        # if not we just kinda punt and do a pprint on the data.
+        table_list = try_get_tables(output)
+        if table_list:
+            for table in table_list:
+                print '\n\n<<<<<< %s >>>>>\n' % table
+                print_table(output[table])
         else:
-            print 'Critical: I have no idea what to do with output of type: %s' % type(output)
+            pprint.pprint(output)
+    else:
+        print 'Critical: I have no idea what to do with output of type: %s' % type(output)
 
 
 if __name__ == '__main__':
