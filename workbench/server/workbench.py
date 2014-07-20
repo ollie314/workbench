@@ -543,7 +543,7 @@ class WorkBench(object):
         """ Stores information on Workbench commands and signatures """
         for name, meth in inspect.getmembers(self, predicate=inspect.ismethod):
             if not name.startswith('_'):
-                info = {'command': name, 'sig': str(funcsigs.signature(meth)), 'doc': meth.__doc__}
+                info = {'command': name, 'sig': str(funcsigs.signature(meth)), 'docstring': meth.__doc__}
                 self.store_info(info, name)
 
     def _new_plugin(self, plugin):
