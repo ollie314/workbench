@@ -80,9 +80,8 @@ class WorkBench(object):
         plugin_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)),'../workers')
         self.plugin_manager = plugin_manager.PluginManager(self._new_plugin, plugin_dir=plugin_dir)
 
-        # Store help and command information
-        self._store_help_info()
-        self._store_command_info()
+        # Store information about commands and workbench
+        self._store_information()
 
 
     #######################
@@ -309,6 +308,9 @@ class WorkBench(object):
         """
         self.data_store.clear_db()
 
+        # Store information about commands and workbench
+        self._store_information()        
+
 
     #######################
     # Work Request Methods
@@ -441,12 +443,8 @@ class WorkBench(object):
     # Help
     ##################
     def help(self, topic):
-        """ Returns help topics """
-        return self.work_request('help', topic)
-
-    def help_cli(self, topic):
-        """ Returns help topics for CLI """
-        return self.work_request('help_cli', topic)
+        """ Returns the formatted, colored help """
+        return self.work_request('help_cli', topic)['help_cli']['help']
 
     def help_workbench(self):
         """ Help on Workbench """
@@ -535,19 +533,22 @@ class WorkBench(object):
     ####################
     # Internal Methods
     ####################
-    def _store_help_info(self):
-        """ Stores help text into the workbench information system """
-        self.store_info({'help': '<<< Workbench Version %s >>>'}, 'version', type_tag='help')
-        self.store_info({'help': self.help_workbench()}, 'workbench', type_tag='help')
-        self.store_info({'help': self.help_basic()}, 'basic', type_tag='help')
-        self.store_info({'help': self.help_commands()}, 'commands', type_tag='help')
+    def _store_information(self):
+        """ Store infomation about Workbench and its commands """
+        
+        print '<<< Generating Information Storage >>>'
 
-    def _store_command_info(self):
         """ Stores information on Workbench commands and signatures """
         for name, meth in inspect.getmembers(self, predicate=inspect.ismethod):
             if not name.startswith('_'):
                 info = {'command': name, 'sig': str(funcsigs.signature(meth)), 'docstring': meth.__doc__}
                 self.store_info(info, name, type_tag='command')
+
+        """ Stores help text into the workbench information system """
+        self.store_info({'help': '<<< Workbench Version %s >>>'}, 'version', type_tag='help')
+        self.store_info({'help': self.help_workbench()}, 'workbench', type_tag='help')
+        self.store_info({'help': self.help_basic()}, 'basic', type_tag='help')
+        self.store_info({'help': self.help_commands()}, 'commands', type_tag='help')
 
     def _new_plugin(self, plugin):
         """ Internal: This method handles the mechanics around new plugins. """
@@ -595,7 +596,6 @@ class WorkBench(object):
         work_results = self._get_work_results(collection, md5)
         if work_results:
             if self.plugin_meta[worker_name]['mod_time'] < work_results[collection]['__time_stamp']:
-                print 'Returning cached work results for plugin: %s' % (worker_name)
                 return work_results
             else:
                 print 'Updating work results for new plugin: %s' % (worker_name)
