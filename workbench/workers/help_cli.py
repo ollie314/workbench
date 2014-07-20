@@ -14,7 +14,7 @@ class HelpCLI(object):
         dependencies = dependencies.replace('\'','')
         output = '\n%s%s%s %s%s%s:' % (Style.BRIGHT, Fore.YELLOW, data['name'], 
                                        Style.RESET_ALL, Fore.BLUE, dependencies)
-        output += '%s\n%s%s' % (Fore.GREEN, data['doc'], Fore.RESET)
+        output += '%s\n%s%s' % (Fore.GREEN, data['docstring'], Fore.RESET)
         return {'output': output}
 
 # Unit test: Create the class, the proper input and run the execute() method for a test

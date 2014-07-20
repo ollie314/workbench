@@ -106,7 +106,7 @@ class PluginManager(object):
                 # modification time and register the plugin through the callback
                 plugin['name'] = plugin_name
                 plugin['dependencies'] = plugin['class'].dependencies
-                plugin['doc'] = plugin['class'].__doc__
+                plugin['docstring'] = plugin['class'].__doc__
                 plugin['mod_time'] = datetime.utcfromtimestamp(os.path.getmtime(f))
                 self.plugin_callback(plugin)
 
