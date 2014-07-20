@@ -33,7 +33,7 @@ setup(
     include_package_data=True,
     scripts=['workbench/server/workbench_server', 'workbench/clients/workbench'],
     tests_require=['tox'],
-    install_requires=['coverage', 'distorm3>=0', 'elasticsearch',
+    install_requires=['coverage', 'cython', 'distorm3>=0', 'elasticsearch',
                       'funcsigs', 'filemagic', 'mock', 'pefile', 'py2neo',
                       'pymongo', 'pytest>=2.5', 'pytest-cov', 'rekall==1.0rc11',
                       'requests', 'sphinx', 'sphinxcontrib-napoleon',
