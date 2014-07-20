@@ -21,7 +21,7 @@ MOCK_MODULES = ['coverage', 'cython', 'distorm3>=0', 'elasticsearch',
                 'funcsigs', 'filemagic', 'pefile', 'peutils', 'py2neo',
                 'pymongo', 'pytest-cov', 'rekall', 'rekall.plugins',
                 'rekall.plugins.addrspaces', 'rekall.ui',
-                'rekall.ui.renderer', 'bson', 'msgpack','pytz',
+                'rekall.ui.renderer', 'bson', 'msgpack','pytz','pytest',
                 'requests', 'gevent', 'gevent.subprocess', 'magic',
                 'ssdeep', 'tabulate', 'tox', 'urllib3', 'zmq', 'gridfs',
                 'watchdog', 'watchdog.observers',  'watchdog.events', 'yara', 'zerorpc']
