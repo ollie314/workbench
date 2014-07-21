@@ -15,12 +15,26 @@
 import sys
 import os
 
+import mock
+
+MOCK_MODULES = ['coverage', 'cython', 'distorm3>=0', 'elasticsearch',
+                'funcsigs', 'filemagic', 'pefile', 'peutils', 'py2neo',
+                'pymongo', 'pytest-cov', 'rekall', 'rekall.plugins',
+                'rekall.plugins.addrspaces', 'rekall.ui',
+                'rekall.ui.renderer', 'bson', 'msgpack','pytz','pytest',
+                'requests', 'gevent', 'gevent.subprocess', 'magic',
+                'ssdeep', 'tabulate', 'tox', 'urllib3', 'zmq', 'gridfs',
+                'watchdog', 'watchdog.observers',  'watchdog.events', 'yara', 'zerorpc']
+for mod_name in MOCK_MODULES:
+    sys.modules[mod_name] = mock.Mock()
+
+
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 sys.path.insert(0, os.path.abspath('../../workbench/'))
-# sys.path.insert(0, os.path.abspath('../../workbench/clients/'))
-# sys.path.insert(0, os.path.abspath('../../workbench/server/'))
+sys.path.insert(0, os.path.abspath('../../workbench/clients/'))
+sys.path.insert(0, os.path.abspath('../../workbench/server/'))
 
 # -- General configuration ------------------------------------------------
 
