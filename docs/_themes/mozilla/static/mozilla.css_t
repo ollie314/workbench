@@ -292,47 +292,69 @@ div.viewcode-block:target {
     margin: 50px 30px 0px 20px;
 }
 
-#workbench-server-reference dl {margin-bottom:24px}
-#workbench-server-reference dl dt {font-weight:bold}
-#workbench-server-reference dl p,#workbench-server-reference dl table,#workbench-server-reference dl ul,#workbench-server-reference dl ol {margin-bottom:12px !important}
-#workbench-server-reference dl dd {margin:0 0 12px 24px}
-#workbench-server-reference dl:not(.docutils) {margin-bottom:24px}
-#workbench-server-reference dl:not(.docutils) dt {display:inline-block;margin:6px 0;font-size:90%;line-height:normal;background:#e7f2fa;color:#2980b9;border-top:solid 3px #6ab0de;padding:6px;position:relative}
-#workbench-server-reference dl:not(.docutils) dt:before {color:#6ab0de}
-#workbench-server-reference dl:not(.docutils) dt .headerlink {color:#404040;font-size:100% !important}
-#workbench-server-reference dl:not(.docutils) dl dt {margin-bottom:6px;border:none;border-left:solid 3px #ccc;background:#f0f0f0;color:gray}
-#workbench-server-reference dl:not(.docutils) dl dt .headerlink {color:#404040;font-size:100% !important}
-#workbench-server-reference dl:not(.docutils) dt:first-child {margin-top:0}
-#workbench-server-reference dl:not(.docutils) tt {font-weight:bold}
-#workbench-server-reference dl:not(.docutils) tt.descname,#workbench-server-reference dl:not(.docutils) tt.descclassname {background-color:transparent;border:none;padding:0;font-size:100% !important}
-#workbench-server-reference dl:not(.docutils) tt.descname {font-weight:bold}
-#workbench-server-reference dl:not(.docutils) .optional {display:inline-block;padding:0 4px;color:#000;font-weight:bold}
-#workbench-server-reference dl:not(.docutils) .property {display:inline-block;padding-right:8px}
-#workbench-server-reference .viewcode-link,#workbench-server-reference .viewcode-back {display:inline-block;color:#27ae60;font-size:80%;padding-left:24px}
-#workbench-server-reference .viewcode-back {display:block;float:right}
+#workbench-server-package dl {margin-bottom:24px}
+#workbench-server-package dl dt {font-weight:bold}
+#workbench-server-package dl p,#workbench-server-package dl table,#workbench-server-package dl ul,#workbench-server-package dl ol {margin-bottom:12px !important}
+#workbench-server-package dl dd {margin:0 0 12px 24px}
+#workbench-server-package dl:not(.docutils) {margin-bottom:24px}
+#workbench-server-package dl:not(.docutils) dt {display:inline-block;margin:6px 0;font-size:90%;line-height:normal;background:#e7f2fa;color:#2980b9;border-top:solid 3px #6ab0de;padding:6px;position:relative}
+#workbench-server-package dl:not(.docutils) dt:before {color:#6ab0de}
+#workbench-server-package dl:not(.docutils) dt .headerlink {color:#404040;font-size:100% !important}
+#workbench-server-package dl:not(.docutils) dl dt {margin-bottom:6px;border:none;border-left:solid 3px #ccc;background:#f0f0f0;color:gray}
+#workbench-server-package dl:not(.docutils) dl dt .headerlink {color:#404040;font-size:100% !important}
+#workbench-server-package dl:not(.docutils) dt:first-child {margin-top:0}
+#workbench-server-package dl:not(.docutils) tt {font-weight:bold}
+#workbench-server-package dl:not(.docutils) tt.descname,#workbench-server-package dl:not(.docutils) tt.descclassname {background-color:transparent;border:none;padding:0;font-size:100% !important}
+#workbench-server-package dl:not(.docutils) tt.descname {font-weight:bold}
+#workbench-server-package dl:not(.docutils) .optional {display:inline-block;padding:0 4px;color:#000;font-weight:bold}
+#workbench-server-package dl:not(.docutils) .property {display:inline-block;padding-right:8px}
+#workbench-server-package .viewcode-link,#workbench-server-package .viewcode-back {display:inline-block;color:#27ae60;font-size:80%;padding-left:24px}
+#workbench-server-package .viewcode-back {display:block;float:right}
 @media screen and (max-width: 480px) {
-  #workbench-server-reference .sidebar {width:100%}
+  #workbench-server-package .sidebar {width:100%}
 }
 span[id*='MathJax-Span'] {color:#404040}  
 
-#workers-reference dl {margin-bottom:24px}
-#workers-reference dl dt {font-weight:bold}
-#workers-reference dl p,#workers-reference dl table,#workers-reference dl ul,#workers-reference dl ol {margin-bottom:12px !important}
-#workers-reference dl dd {margin:0 0 12px 24px}
-#workers-reference dl:not(.docutils) {margin-bottom:24px}
-#workers-reference dl:not(.docutils) dt {display:inline-block;margin:6px 0;font-size:90%;line-height:normal;background:#e7f2fa;color:#2980b9;border-top:solid 3px #6ab0de;padding:6px;position:relative}
-#workers-reference dl:not(.docutils) dt:before {color:#6ab0de}
-#workers-reference dl:not(.docutils) dt .headerlink {color:#404040;font-size:100% !important}
-#workers-reference dl:not(.docutils) dl dt {margin-bottom:6px;border:none;border-left:solid 3px #ccc;background:#f0f0f0;color:gray}
-#workers-reference dl:not(.docutils) dl dt .headerlink {color:#404040;font-size:100% !important}
-#workers-reference dl:not(.docutils) dt:first-child {margin-top:0}
-#workers-reference dl:not(.docutils) tt {font-weight:bold}
-#workers-reference dl:not(.docutils) tt.descname,#workers-reference dl:not(.docutils) tt.descclassname {background-color:transparent;border:none;padding:0;font-size:100% !important}
-#workers-reference dl:not(.docutils) tt.descname {font-weight:bold}
-#workers-reference dl:not(.docutils) .optional {display:inline-block;padding:0 4px;color:#000;font-weight:bold}
-#workers-reference dl:not(.docutils) .property {display:inline-block;padding-right:8px}
-#workers-reference .viewcode-link,#workers-reference .viewcode-back {display:inline-block;color:#27ae60;font-size:80%;padding-left:24px}
-#workers-reference .viewcode-back {display:block;float:right}
+#workbench-workers-package dl {margin-bottom:24px}
+#workbench-workers-package dl dt {font-weight:bold}
+#workbench-workers-package dl p,#workbench-workers-package dl table,#workbench-workers-package dl ul,#workbench-workers-package dl ol {margin-bottom:12px !important}
+#workbench-workers-package dl dd {margin:0 0 12px 24px}
+#workbench-workers-package dl:not(.docutils) {margin-bottom:24px}
+#workbench-workers-package dl:not(.docutils) dt {display:inline-block;margin:6px 0;font-size:90%;line-height:normal;background:#e7f2fa;color:#2980b9;border-top:solid 3px #6ab0de;padding:6px;position:relative}
+#workbench-workers-package dl:not(.docutils) dt:before {color:#6ab0de}
+#workbench-workers-package dl:not(.docutils) dt .headerlink {color:#404040;font-size:100% !important}
+#workbench-workers-package dl:not(.docutils) dl dt {margin-bottom:6px;border:none;border-left:solid 3px #ccc;background:#f0f0f0;color:gray}
+#workbench-workers-package dl:not(.docutils) dl dt .headerlink {color:#404040;font-size:100% !important}
+#workbench-workers-package dl:not(.docutils) dt:first-child {margin-top:0}
+#workbench-workers-package dl:not(.docutils) tt {font-weight:bold}
+#workbench-workers-package dl:not(.docutils) tt.descname,#workbench-workers-package dl:not(.docutils) tt.descclassname {background-color:transparent;border:none;padding:0;font-size:100% !important}
+#workbench-workers-package dl:not(.docutils) tt.descname {font-weight:bold}
+#workbench-workers-package dl:not(.docutils) .optional {display:inline-block;padding:0 4px;color:#000;font-weight:bold}
+#workbench-workers-package dl:not(.docutils) .property {display:inline-block;padding-right:8px}
+#workbench-workers-package .viewcode-link,#workbench-workers-package .viewcode-back {display:inline-block;color:#27ae60;font-size:80%;padding-left:24px}
+#workbench-workers-package .viewcode-back {display:block;float:right}
 @media screen and (max-width: 480px) {
-  #workers-reference .sidebar {width:100%}
+  #workbench-workers-package .sidebar {width:100%}
+}
+
+#workbench-clients-package dl {margin-bottom:24px}
+#workbench-clients-package dl dt {font-weight:bold}
+#workbench-clients-package dl p,#workbench-clients-package dl table,#workbench-clients-package dl ul,#workbench-clients-package dl ol {margin-bottom:12px !important}
+#workbench-clients-package dl dd {margin:0 0 12px 24px}
+#workbench-clients-package dl:not(.docutils) {margin-bottom:24px}
+#workbench-clients-package dl:not(.docutils) dt {display:inline-block;margin:6px 0;font-size:90%;line-height:normal;background:#e7f2fa;color:#2980b9;border-top:solid 3px #6ab0de;padding:6px;position:relative}
+#workbench-clients-package dl:not(.docutils) dt:before {color:#6ab0de}
+#workbench-clients-package dl:not(.docutils) dt .headerlink {color:#404040;font-size:100% !important}
+#workbench-clients-package dl:not(.docutils) dl dt {margin-bottom:6px;border:none;border-left:solid 3px #ccc;background:#f0f0f0;color:gray}
+#workbench-clients-package dl:not(.docutils) dl dt .headerlink {color:#404040;font-size:100% !important}
+#workbench-clients-package dl:not(.docutils) dt:first-child {margin-top:0}
+#workbench-clients-package dl:not(.docutils) tt {font-weight:bold}
+#workbench-clients-package dl:not(.docutils) tt.descname,#workbench-clients-package dl:not(.docutils) tt.descclassname {background-color:transparent;border:none;padding:0;font-size:100% !important}
+#workbench-clients-package dl:not(.docutils) tt.descname {font-weight:bold}
+#workbench-clients-package dl:not(.docutils) .optional {display:inline-block;padding:0 4px;color:#000;font-weight:bold}
+#workbench-clients-package dl:not(.docutils) .property {display:inline-block;padding-right:8px}
+#workbench-clients-package .viewcode-link,#workbench-clients-package .viewcode-back {display:inline-block;color:#27ae60;font-size:80%;padding-left:24px}
+#workbench-clients-package .viewcode-back {display:block;float:right}
+@media screen and (max-width: 480px) {
+  #workbench-clients-package .sidebar {width:100%}
 }
