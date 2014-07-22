@@ -1,151 +1,144 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""Workbench CLI Client"""
+"""Workbench CLI using IPython Interactive Shell"""
 import os, sys
-import pprint
 import hashlib
 import zerorpc
 import tabulate
 import workbench.clients.workbench_client as workbench_client
+import IPython
+import functools
 
-def try_get_tables(data):
-    ''' Try to determine if this data has table keys '''
+# These little helpers get around IPython wanting to take the
+# __repr__ of string output instead of __str__.
+class repr_to_str(str):
+    def __repr__(self):
+        return str(self)
 
-    table_list = []
-    if 'tables' in data.keys():
-        for table in data['tables']:
-            if isinstance(data[table], list):
-                table_list.append(table)
+def repr_to_str_decorator(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        return repr_to_str(func(*args, **kwargs))
+    return wrapper   
 
-    # At this point the list has data in it or is an empty list
-    return table_list
+class Session(object):
+    """Store information specific to the user session"""
+    def __init__(self):
+        """Initialization of Session object"""
+        self.filename = '-'
+        self.md5 = '-'
+        self.server = 'localhost'
 
-def table_xform(table, force_to_str=False):
-    ''' Transform a table from a list of dicts to dict of lists'''
-    import collections
+class WorkbenchCLI(object):
+    """Workbench CLI using IPython Interactive Shell"""
 
-    new_table = collections.defaultdict(list)
-    for row in table:
-        for key, value in row.items():
-            if force_to_str:
-                new_table[key].append(str(value)[:40])
-            elif isinstance(value, str):
-                new_table[key].append(value[:40])
-            else:
-                new_table[key].append(value)
-    return new_table
+    def __init__(self):
+        ''' Workbench CLI Initialization '''
 
-def print_table(table):
-    ''' Print the table using tabulate '''
-    try:
-        print tabulate.tabulate(table_xform(table), headers="keys")
-    except TypeError:
-        print tabulate.tabulate(table_xform(table, force_to_str=True), headers="keys")
+        # Grab server arguments
+        server_info = workbench_client.grab_server_args()
 
-def store_sample(file_path):
+        # Spin up workbench server
+        self.workbench = zerorpc.Client(timeout=300, heartbeat=60)
+        self.workbench.connect('tcp://'+server_info['server']+':'+server_info['port'])
 
-    # Do they want everything under a directory?
-    if os.path.isdir(file_path):
-        file_list = [os.path.join(file_path, child) for child in os.listdir(file_path)]
-    else:
-        file_list = [file_path]
+        # Create a user session
+        self.session = Session()
 
-    # Upload the files into workbench
-    for path in file_list:
-        with open(path, 'rb') as my_file:
-            raw_bytes = my_file.read()
-            md5 = hashlib.md5(raw_bytes).hexdigest()
-            if not workbench.has_sample(md5):
-                print 'Storing Sample...'
-                md5 = workbench.store_sample(os.path.basename(path), raw_bytes, 'unknown')
-            else:
-                print 'Sample already in Workbench...'
-            print md5
+        # We have a namespace dictionariy for our Interactive Shell
+        self.namespace = self.make_namespace()
 
-def run():
-    ''' Running the workbench CLI '''
+    def try_get_tables(self, data):
+        ''' Try to determine if this data has table keys '''
 
-    # Announce Version
-    print '<<< Workbench Version %s >>>' % sys.modules['workbench'].__version__
+        table_list = []
+        if 'tables' in data.keys():
+            for table in data['tables']:
+                if isinstance(data[table], list):
+                    table_list.append(table)
 
-    # Grab arguments
-    args = workbench_client.grab_server_args()
+        # At this point the list has data in it or is an empty list
+        return table_list
 
-    # Start up workbench connection
-    workbench = zerorpc.Client(timeout=300, heartbeat=60)
-    workbench.connect('tcp://'+args['server']+':'+args['port'])
+    def table_xform(self, table, force_to_str=False):
+        ''' Transform a table from a list of dicts to dict of lists'''
+        import collections
 
-    # Help commands
-    if not args['commands']:
-        print workbench.help_cli('workbench')['help_cli']['help']
-        return
-    elif args['commands'][0] == 'help':
-        if len(args['commands']) == 1:
-            print workbench.help_cli('workbench')['help_cli']['help']
+        new_table = collections.defaultdict(list)
+        for row in table:
+            for key, value in row.items():
+                if force_to_str:
+                    new_table[key].append(str(value)[:40])
+                elif isinstance(value, str):
+                    new_table[key].append(value[:40])
+                else:
+                    new_table[key].append(value)
+        return new_table
+
+    def print_table(self, table):
+        ''' Print the table using tabulate '''
+        try:
+            print(tabulate.tabulate(table_xform(table), headers="keys"))
+        except TypeError:
+            print(tabulate.tabulate(table_xform(table, force_to_str=True), headers="keys"))
+
+    def store_sample(self, file_path):
+
+        # Do they want everything under a directory?
+        if os.path.isdir(file_path):
+            file_list = [os.path.join(file_path, child) for child in os.listdir(file_path)]
         else:
-            print workbench.help_cli(args['commands'][1])['help_cli']['help']
-        return
+            file_list = [file_path]
 
-    # Split out command and parameters (with logic for not including work_request)
-    command = args['commands'][0]
-    if command in workbench.list_all_commands():
-        parameters = args['commands'][1:]
-    else:
-        command = 'work_request'
-        parameters = args['commands']
+        # Upload the files into workbench
+        for path in file_list:
+            with open(path, 'rb') as my_file:
+                raw_bytes = my_file.read()
+                md5 = hashlib.md5(raw_bytes).hexdigest()
+                if not workbench.has_sample(md5):
+                    print('Storing Sample...')
+                    md5 = workbench.store_sample(os.path.basename(path), raw_bytes, 'unknown')
+                else:
+                    print('Sample already in Workbench...')
+                print(md5)
 
-    # Do they want 'store_sample'?
-    if command == 'store_sample':
-        store_sample(parameters[0])
-        return
+    def make_namespace(self):
+        """Create a customized namespace for Workbench with a bunch of shortcuts
+            and helper/alias functions that will make using the shell MUCH easier.
+        """
+        return {
+            'workbench': self.workbench,
+            'help': repr_to_str_decorator(self.workbench.help), 
+            'filename': self.session.filename
+        }
 
-    # Do they want a batch_work_request?
-    if command == 'batch_work_request':
-        output = workbench(command, parameters[0])
-        for row in output:
-            pprint.pprint(row)
-        return
+    def run(self):
+        ''' Running the workbench CLI '''
 
-    # Do they want to list_samples?
-    if command == 'list_samples':
-        
-        # They might have a predicate
-        predicate = json.loads(parameters[0]) if len(parameters) else None
-        output = workbench(command, predicate)
-        print_table(output)
-        return
+        # Announce Version
+        print(self.workbench.help('version'))
 
-    # Okay must be a 'normal' command so send the command and any optional parameters to workbench
-    try:
-        output = workbench(command, *parameters)
-    except zerorpc.exceptions.RemoteError:
-        print 'Failed to run command: %s' % ' '.join(args['commands'])
-        exit(1)
+        # Now that we have the Workbench connection spun up, we register some stuff 
+        # with the embedded IPython interpreter and than spin it up
+        cfg = IPython.config.loader.Config()
+        cfg.InteractiveShellEmbed.autocall = 2
+        cfg.InteractiveShellEmbed.colors = 'Linux'
+        cfg.InteractiveShellEmbed.color_info = True
+        cfg.InteractiveShellEmbed.autoindent = False
+        cfg.InteractiveShellEmbed.deep_reload = True        
+        cfg.PromptManager.in_template = (
+            '{color.Purple}'
+            '{filename}'
+            '{color.LightGray} Workbench{color.Green}[\#]> ')
+        cfg.PromptManager.out_template = ''
 
-    # Try to do different stuff based on the output
-    if isinstance(output, str):
-        print output
-
-    # Okay for non-string output it will always be keyed by the worker name
-    # which in this case in parameter[0]
-    elif isinstance(output, dict):
-
-        worker_name = parameters[0]
-        output = output[worker_name]
-
-        # If the data contains table keys/information then print as tables
-        # if not we just kinda punt and do a pprint on the data.
-        table_list = try_get_tables(output)
-        if table_list:
-            for table in table_list:
-                print '\n\n<<<<<< %s >>>>>\n' % table
-                print_table(output[table])
-        else:
-            pprint.pprint(output)
-    else:
-        print 'Critical: I have no idea what to do with output of type: %s' % type(output)
+        ipshell = IPython.terminal.embed.InteractiveShellEmbed(
+            config=cfg, banner1=self.workbench.help('workbench'), exit_msg='\nWorkbench has SuperCowPowers...')
+        ipshell(local_ns=self.namespace)
 
 
 if __name__ == '__main__':
-    run()
+
+    cli = WorkbenchCLI()
+    cli.run()

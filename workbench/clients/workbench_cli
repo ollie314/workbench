@@ -8,7 +8,6 @@ import hashlib
 import zerorpc
 import tabulate
 import workbench.clients.workbench_client as workbench_client
-import IPython
 
 def try_get_tables(data):
     ''' Try to determine if this data has table keys '''
@@ -76,8 +75,6 @@ def run():
     # Start up workbench connection
     workbench = zerorpc.Client(timeout=300, heartbeat=60)
     workbench.connect('tcp://'+args['server']+':'+args['port'])
-
-    IPython.embed()
 
     # Help commands
     if not args['commands']:

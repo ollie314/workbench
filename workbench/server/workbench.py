@@ -441,30 +441,36 @@ class WorkBench(object):
 
     ##################
     # Help
-    ##################
-    def help(self, topic):
+    ##################        
+    def help(self, topic=None):
         """ Returns the formatted, colored help """
+        if not topic:
+            topic = 'workbench'
         return self.work_request('help_cli', topic)['help_cli']['help']
 
-    def help_workbench(self):
+    # Fixme: These are internal methods that basically just provide help text
+    def _help_workbench(self):
         """ Help on Workbench """
-        help = 'Welcome to Workbench Help:\n\t- workbench.help(topic) for Python\n\t- workbench help topic for CLI'
-        help += '\nUseful help topics: basic, commands, workers'
-        help += '\n\nSee http://github.com/SuperCowPowers/workbench for more information'
+        help = 'Welcome to Workbench Help:'
+        help += '\n\t- workbench.help(topic) -- where topic can be a help, command or worker'
+        help += '\n\t- workbench.help(\'basic\') -- for getting started help'
+        help += '\n\t- workbench.help(\'commands\') -- for help on workbench commands'
+        help += '\n\t- workbench.help(\'workers\') -- for help on available workers'
+        help += '\n\nSee http://github.com/SuperCowPowers/workbench for more information\n'
         return help
 
-    def help_basic(self):
+    def _help_basic(self):
         """ Help for Workbench Basics """
         help =  'Workbench: Getting started...'
-        help += '\n\t - 1) $ help commands  (for a list of commands)'
-        help += '\n\t - 2) $ help [command] :for into on a specific command'
-        help += '\n\t - 3) $ help workers : for a list a workers'
-        help += '\n\t - 4) $ help [worker] : for info on a specific worker'
-        help += '\n\t - 5) Storing a sample: $ workbench store_sample /path/to/file.exe'
-        help += '\n\t - 6) Running a worker on a sample $ workbench meta md5'
+        help += '\n\t - 1) $ workbench.help(\'commands\') -- for help on workbench commands'
+        help += '\n\t - 2) $ workbench.help(\'store_sample\') -- for help on storing a new sample'
+        help += '\n\t - 3) $ workbench.help(\'workers\') -- for help on available workers'
+        help += '\n\t - 4) $ workbench.help(\'meta\') -- for help on the meta worker'
+        help += '\n\t - 5) $ workbench.store_sample(\'evil.exe\', raw_bytes, \'exe\')'
+        help += '\n\t - 6) $ workbench.work_request(\'meta\', md5)'
         return help
 
-    def help_commands(self):
+    def _help_commands(self):
         """ Help on all the available commands """
         help =  'Workbench Commands:'
         for command in self.list_all_commands():
@@ -545,10 +551,10 @@ class WorkBench(object):
                 self.store_info(info, name, type_tag='command')
 
         """ Stores help text into the workbench information system """
-        self.store_info({'help': '<<< Workbench Version %s >>>'}, 'version', type_tag='help')
-        self.store_info({'help': self.help_workbench()}, 'workbench', type_tag='help')
-        self.store_info({'help': self.help_basic()}, 'basic', type_tag='help')
-        self.store_info({'help': self.help_commands()}, 'commands', type_tag='help')
+        self.store_info({'help': '<<< Workbench Version %s >>>' % self.version}, 'version', type_tag='help')
+        self.store_info({'help': self._help_workbench()}, 'workbench', type_tag='help')
+        self.store_info({'help': self._help_basic()}, 'basic', type_tag='help')
+        self.store_info({'help': self._help_commands()}, 'commands', type_tag='help')
 
     def _new_plugin(self, plugin):
         """ Internal: This method handles the mechanics around new plugins. """

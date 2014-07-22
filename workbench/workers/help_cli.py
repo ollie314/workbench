@@ -15,23 +15,18 @@ class HelpCLI(object):
 
         # Standard help text
         if type_tag == 'help':
-            output = '\n%s%s%s' % (Fore.CYAN, input_data['help'], Fore.RESET)
+            output = '\n%s%s%s%s%s' % (Style.BRIGHT, Fore.BLUE, input_data['help'], Fore.RESET, Style.RESET_ALL)
 
         # Worker
         elif type_tag == 'worker':
-            dependencies = str([str(dep) for dep in input_data['dependencies']])
-            dependencies = dependencies.replace('\'','')
             output = '\n%s%s%s%s' % (Style.BRIGHT, Fore.YELLOW, input_data['name'], Style.RESET_ALL)
             output += '\n%s%s' % (Fore.GREEN, input_data['docstring'])
-            output += '\n %sInput: %s%s%s' % (Fore.BLUE, Fore.GREEN, dependencies, Fore.RESET)
+            output += '\n %sInput: %s%s%s' % (Fore.BLUE, Fore.GREEN, input_data['dependencies'], Fore.RESET)
 
         # Command
         elif type_tag == 'command':
-            
-            # Fix the signature for CLI
-            sig = input_data['sig'][1:-1].replace(',','')
-            output = '\n%s%s%s %s%s%s' % (Style.BRIGHT, Fore.MAGENTA, input_data['command'],
-                                             Style.RESET_ALL, Fore.BLUE, sig)
+            output = '\n%s%s%s %s%s%s' % (Style.BRIGHT, Fore.YELLOW, input_data['command'],
+                                             Style.RESET_ALL, Fore.BLUE, input_data['sig'])
             output += '%s\n%s%s' % (Fore.GREEN, input_data['docstring'], Fore.RESET)
 
         # WTF: Alert on unknown type_tag and return a string of the input_data
