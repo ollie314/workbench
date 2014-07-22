@@ -47,7 +47,7 @@ def test():
     workbench.connect("tcp://127.0.0.1:4242")
 
     # Generate input for the worker
-    input_data1 = workbench.work_request('help', 'workbench_help')
+    input_data1 = workbench.work_request('help', 'workbench')
     input_data2 = workbench.work_request('help', 'meta')
     input_data3 = workbench.work_request('help', 'store_sample')
 
