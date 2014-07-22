@@ -26,7 +26,6 @@ try:
     from . import els_indexer
     from . import neo_db
     from . import plugin_manager
-    from . import help_system
     from bro import bro_log_reader
 
 # Okay this happens when you're running workbench in a debugger so having
@@ -36,7 +35,6 @@ except ValueError:
     import els_indexer
     import neo_db
     import plugin_manager
-    import help_system
     from bro import bro_log_reader
 
 
