@@ -13,7 +13,10 @@ import functools
 
 class my_transformer(IPython.core.prefilter.PrefilterTransformer):
     def transform(self, line, continue_prompt):
-        if line.startswith('help'):
+        skip_it = ['"',"\"",'(',')']
+        if line.startswith('help ') and not any([skip in line for skip in skip_it]):
+            return ','+line
+        elif line.startswith('load_sample '):
             return ','+line
         else:
             return line
@@ -28,14 +31,16 @@ def repr_to_str_decorator(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         return repr_to_str(func(*args, **kwargs))
-    return wrapper   
+    return wrapper    
 
+    
 class Session(object):
     """Store information specific to the user session"""
     def __init__(self):
         """Initialization of Session object"""
         self.filename = '-'
         self.md5 = '-'
+        self.short_md5 = '-'
         self.server = 'localhost'
 
 class WorkbenchCLI(object):
@@ -53,9 +58,14 @@ class WorkbenchCLI(object):
 
         # Create a user session
         self.session = Session()
+        # {'filename': '-', 'md5': '-', 'short_md5': '-', 'server': 'localhost'}
 
         # We have a namespace dictionariy for our Interactive Shell
         self.namespace = self.make_namespace()
+
+        # Our Interactive IPython shell
+        self.ipshell = None
+ 
 
     def try_get_tables(self, data):
         ''' Try to determine if this data has table keys '''
@@ -91,7 +101,9 @@ class WorkbenchCLI(object):
         except TypeError:
             print(tabulate.tabulate(table_xform(table, force_to_str=True), headers="keys"))
 
-    def store_sample(self, file_path):
+    def load_sample(self, file_path):
+        """Load a sample (or samples) into workbench
+           load_sample </path/to/file_or_dir> """
 
         # Do they want everything under a directory?
         if os.path.isdir(file_path):
@@ -104,22 +116,53 @@ class WorkbenchCLI(object):
             with open(path, 'rb') as my_file:
                 raw_bytes = my_file.read()
                 md5 = hashlib.md5(raw_bytes).hexdigest()
-                if not workbench.has_sample(md5):
+                if not self.workbench.has_sample(md5):
                     print('Storing Sample...')
-                    md5 = workbench.store_sample(os.path.basename(path), raw_bytes, 'unknown')
+                    basename = os.path.basename(path)
+                    md5 = self.workbench.store_sample(basename, raw_bytes, 'unknown')
                 else:
                     print('Sample already in Workbench...')
-                print(md5)
+
+                # Store information about the sample into the sesssion
+                basename = os.path.basename(path)
+                self.session.filename = basename
+                self.session.md5 = md5
+                self.session.short_md5 = md5[:6]
+                self.ipshell.push({'short_md5': self.session.short_md5})
+
+    def work_request(self, worker, md5=None):
+        """Wrapper for a work_request to workbench"""
+        if not md5 and not self.session.md5:
+            return 'Must call worker with an md5 argument...'
+    
+        # Set the md5 to the session md5
+        md5 = self.session.md5
+
+        # Make the work_request with worker and md5 args
+        return self.workbench.work_request(worker, md5)
 
     def make_namespace(self):
         """Create a customized namespace for Workbench with a bunch of shortcuts
             and helper/alias functions that will make using the shell MUCH easier.
         """
-        return {
+        
+        # First add all the workers
+        commands = {}
+        for worker in self.workbench.list_all_workers():
+            commands[worker] = lambda *args: self.work_request(worker, *args)
+
+        # Now the general commands which are often overloads
+        # for some of the workbench commands
+        general = {
             'workbench': self.workbench,
             'help': repr_to_str_decorator(self.workbench.help), 
-            'filename': self.session.filename
+            'load_sample': self.load_sample,
+            'short_md5': self.session.short_md5
         }
+        commands.update(general)
+
+        # Return the list of workbench commands
+        return commands
 
     def run(self):
         ''' Running the workbench CLI '''
@@ -134,22 +177,22 @@ class WorkbenchCLI(object):
         cfg.InteractiveShellEmbed.colors = 'Linux'
         cfg.InteractiveShellEmbed.color_info = True
         cfg.InteractiveShellEmbed.autoindent = False
-        cfg.InteractiveShellEmbed.deep_reload = True        
+        cfg.InteractiveShellEmbed.deep_reload = True
         cfg.PromptManager.in_template = (
             '{color.Purple}'
-            '{filename}'
+            '{short_md5}'
             '{color.LightGray} Workbench{color.Green}[\#]> ')
         cfg.PromptManager.out_template = ''
 
         # Create the IPython shell
-        ipshell = IPython.terminal.embed.InteractiveShellEmbed(
+        self.ipshell = IPython.terminal.embed.InteractiveShellEmbed(
             config=cfg, banner1=self.workbench.help('workbench'), exit_msg='\nWorkbench has SuperCowPowers...')
 
         # Register our transformer
-        transformer = my_transformer(ipshell, ipshell.prefilter_manager) 
+        transformer = my_transformer(self.ipshell, self.ipshell.prefilter_manager) 
 
         # Start up the shell with our namespace
-        ipshell(local_ns=self.namespace)
+        self.ipshell(local_ns=self.namespace)
 
 
 if __name__ == '__main__':
