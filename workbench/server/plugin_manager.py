@@ -27,6 +27,7 @@ class PluginManager(FileSystemEventHandler):
         # First go through the existing python files in the plugin directory
         self.plugin_path = os.path.realpath(plugin_dir)
         sys.path.append(plugin_dir)
+        print '<<< Plugin Manager >>>'
         for f in [os.path.join(plugin_dir, child) for child in os.listdir(plugin_dir)]:
 
             # Skip certain files
@@ -165,8 +166,8 @@ class PluginManager(FileSystemEventHandler):
 def test():
     """Executes plugin_manager.py test."""
 
-    # This test actually does more than it appears. The workers
-    # directory will get scanned and stuff will get loaded, etworkbench.
+    # This test actually does more than it appears. The workers directory
+    # will get scanned and stuff will get loaded into workbench.
     def new_plugin(plugin, mod_time):
         """new plugin callback """
         print '%s %s' % (plugin, mod_time)

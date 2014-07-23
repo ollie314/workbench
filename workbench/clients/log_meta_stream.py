@@ -22,11 +22,12 @@ def run():
         with open(filename,'rb') as f:
 
             # Skip OS generated files
-            if '.DS_Store' in filename: continue
+            base_name = os.path.basename(filename)
+            if base_name == '.DS_Store': continue
 
-            md5 = workbench.store_sample(filename, f.read(), 'log')
+            md5 = workbench.store_sample(base_name, f.read(), 'log')
             results = workbench.work_request('view_log_meta', md5)
-            print 'Filename: %s\n' % (filename)
+            print 'Filename: %s\n' % (base_name)
             pprint.pprint(results)
             stream_log = workbench.stream_sample(md5, 20)
             for row in stream_log:

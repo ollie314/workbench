@@ -27,7 +27,7 @@ def process_files(path):
     if 'pdf' in path:
         type_tag = 'pdf'
     else:
-        type_tag = 'pe'
+        type_tag = 'exe'
 
     # Open a connection to workbench
     workbench = zerorpc.Client(timeout=300, heartbeat=60)
@@ -41,9 +41,10 @@ def process_files(path):
     for i in xrange(10):
         for filename in file_list:
             with open(filename, 'rb') as f:
-                md5 = workbench.store_sample(filename, f.read(), type_tag)
+                base_name = os.path.basename(filename)
+                md5 = workbench.store_sample(base_name, f.read(), type_tag)
                 workbench.work_request('view', md5)
-                print 'Filename: %s' % (filename)
+                print 'Filename: %s' % (base_name)
         total_files += num_files
     end = datetime.datetime.now()
     delta = end - start

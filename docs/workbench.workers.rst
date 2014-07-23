@@ -211,6 +211,14 @@ workbench.workers.view_log_meta module
     :undoc-members:
     :show-inheritance:
 
+workbench.workers.view_memory module
+------------------------------------
+
+.. automodule:: workbench.workers.view_memory
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 workbench.workers.view_meta module
 ----------------------------------
 

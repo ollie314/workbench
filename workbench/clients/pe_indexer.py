@@ -16,7 +16,7 @@ def run():
 
     # Test out PEFile -> strings -> indexer -> search
     data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),'../data/pe/bad')
-    file_list = [os.path.join(data_path, child) for child in os.listdir(data_path)]
+    file_list = [os.path.join(data_path, child) for child in os.listdir(data_path)][:20]
     for filename in file_list:
 
         # Skip OS generated files
@@ -24,14 +24,15 @@ def run():
             continue
 
         with open(filename, 'rb') as f:
-            md5 = workbench.store_sample(filename, f.read(), 'pe')
+            base_name = os.path.basename(filename)
+            md5 = workbench.store_sample(base_name, f.read(), 'exe')
 
             # Index the strings and features output (notice we can ask for any worker output)
             # Also (super important) it all happens on the server side.
             workbench.index_worker_output('strings', md5, 'strings', None)
-            print '\n<<< Strings for PE: %s Indexed>>>' % (filename)
+            print '\n<<< Strings for PE: %s Indexed>>>' % (base_name)
             workbench.index_worker_output('pe_features', md5, 'pe_features', None)
-            print '<<< Features for PE: %s Indexed>>>' % (filename)
+            print '<<< Features for PE: %s Indexed>>>' % (base_name)
 
     # Well we should execute some queries against ElasticSearch at this point but as of
     # version 1.2+ the dynamic scripting disabled by default, see

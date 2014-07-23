@@ -36,8 +36,6 @@ class PEIDWorker(object):
 
 
 # Unit test: Create the class, the proper input and run the execute() method for a test
-import pytest
-@pytest.mark.xfail
 def test():
     ''' pe_peid.py: Unit test'''
 
@@ -50,9 +48,8 @@ def test():
     import os
     data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
                              '../data/pe/bad/033d91aae8ad29ed9fbb858179271232')
-    md5 = workbench.store_sample('bad', open(data_path, 'rb').read(), 'pe')
+    md5 = workbench.store_sample('bad', open(data_path, 'rb').read(), 'exe')
     input_data = workbench.get_sample(md5)
-    input_data.update(workbench.work_request('meta', md5))
 
     # Execute the worker (unit test)
     worker = PEIDWorker()

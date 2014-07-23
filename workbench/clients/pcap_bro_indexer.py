@@ -25,12 +25,13 @@ def run():
             continue
 
         with open(filename, 'rb') as pcap_file:
-            md5 = workbench.store_sample(filename, pcap_file.read(), 'pcap')
+            base_name = os.path.basename(filename)
+            md5 = workbench.store_sample(base_name, pcap_file.read(), 'pcap')
 
             # Index the view_pcap output (notice we can ask for any worker output)
             # Also (super important) it all happens on the server side.
             workbench.index_worker_output('view_pcap', md5, 'pcap_bro', None)
-            print '\n\n<<< PCAP Bro log Data: %s Indexed>>>' % (filename)
+            print '\n\n<<< PCAP Bro log Data: %s Indexed>>>' % (base_name)
 
 
 def test():

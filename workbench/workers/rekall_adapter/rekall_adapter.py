@@ -20,7 +20,7 @@ import msgpack
 import pytz
 import gevent
 def gsleep():
-    print '<<<<<<<<< Gevent Sleep >>>>>>>>>'
+    print '*** Gevent Sleep ***'
     gevent.sleep(0)
 
 class RekallAdapter(object):

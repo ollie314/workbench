@@ -4,7 +4,3 @@
 
 # Amazing command
 -e .
-
-# Do we really want these here? (Fixme)
-sphinx
-sphinxcontrib-napoleon

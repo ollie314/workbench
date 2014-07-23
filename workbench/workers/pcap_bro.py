@@ -94,7 +94,7 @@ class PcapBro(object):
                 output_name = os.path.basename(output_file)
                 with open(output_file, 'rb') as extracted_file:
                     if output_name.endswith('exe'):
-                        type_tag = 'pe'
+                        type_tag = 'exe'
                     else:
                         type_tag = output_name[-3:]
                     raw_bytes = extracted_file.read()
@@ -177,7 +177,8 @@ def test():
             continue
 
         with open(filename, 'rb') as pcap_file:
-            pcap_md5s.append(workbench.store_sample(filename, pcap_file.read(), 'pcap'))
+            base_name = os.path.basename(filename)
+            pcap_md5s.append(workbench.store_sample(base_name, pcap_file.read(), 'pcap'))
 
     # Now store the sample set
     set_md5 = workbench.store_sample_set(pcap_md5s)

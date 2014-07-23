@@ -70,10 +70,10 @@ PyPI Checklist (Senior Dev Stuff)
 	$ tar xzvf workbench-0.x.y.tar.gz
 	$ cd workbench-0.x.y/
 	$ python setup.py install
-	$ workbench
+	$ workbench_server
 
 - look at output, make sure EVERYTHING comes up okay
-- quit workbench (ctrl-c in the server window)
+- quit workbench_server (ctrl-c in the server window)
 
 ::
 
@@ -92,8 +92,8 @@ PyPI Checklist (Senior Dev Stuff)
 
 ::
 
-	$ pip install workbench
-	$ workbench (in one terminal)
+	$ pip install workbench --pre
+	$ workbench_server (in one terminal)
 	$ pip install pytest-cov
 	$ cd workbench/workers
 	$ ./runtests (in another terminal)

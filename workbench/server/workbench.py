@@ -15,17 +15,31 @@ import hashlib
 import inspect
 import funcsigs
 import ConfigParser
+import magic
 
 # Workbench server imports
-from . import data_store
-from . import els_indexer
-from . import neo_db
-from . import plugin_manager
-from bro import bro_log_reader
+try:
+    from . import data_store
+    from . import els_indexer
+    from . import neo_db
+    from . import plugin_manager
+    from . import help_system
+    from bro import bro_log_reader
+
+# Okay this happens when you're running workbench in a debugger so having
+# this is super handy and we'll keep it even though it hurts coverage score.
+except ValueError:
+    import data_store
+    import els_indexer
+    import neo_db
+    import plugin_manager
+    import help_system
+    from bro import bro_log_reader
 
 
 class WorkBench(object):
     """Workbench: Open Source Security Framework."""
+
     def __init__(self, store_args=None, els_hosts=None, neo_uri=None):
         """Initialize the Framework.
 
@@ -35,7 +49,10 @@ class WorkBench(object):
             neo_uri: The address where Neo4j is running.
         """
         # Announce Version
-        print '<<< Workbench Version %s >>>' % sys.modules['workbench'].__version__
+        try:
+            print '<<< Workbench Version %s >>>' % sys.modules['workbench'].__version__
+        except (AttributeError, KeyError):
+            print '<<< Workbench Version %s >>>' % 'DEBUGGING'
 
         # Open DataStore
         self.data_store = data_store.DataStore(**store_args)
@@ -59,18 +76,28 @@ class WorkBench(object):
         plugin_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)),'../workers')
         self.plugin_manager = plugin_manager.PluginManager(self._new_plugin, plugin_dir=plugin_dir)
 
-    #
+        # Get Help System
+        self.help_system = help_system.HelpSystem(self)
+
+
+    #######################
     # Sample Methods
-    #
+    #######################
     def store_sample(self, filename, input_bytes, type_tag):
         """ Store a sample into the DataStore.
             Args:
                 filename: name of the file (used purely as meta data not for lookup)
                 input_bytes: the actual bytes of the sample e.g. f.read()
-                type_tag: ('pe','pcap','pdf','json','swf', or ...)
+                type_tag: ('exe','pcap','pdf','json','swf', or ...)
             Returns:
                 the md5 of the sample.
         """
+
+        # If the sample comes in with an unknown type_tag try to determine it
+        if type_tag == 'unknown':
+            print '<<< Unknown File: Trying to Determine Type >>>'
+            type_tag = self.guess_type_tag(input_bytes)
+
         return self.data_store.store_sample(filename, input_bytes, type_tag)
 
     def get_sample(self, md5):
@@ -87,7 +114,7 @@ class WorkBench(object):
     def get_sample_window(self, type_tag, size):
         """ Get a sample from the DataStore.
             Args:
-                type_tag: the type of samples ('pcap','pe','pdf')
+                type_tag: the type of samples ('pcap','exe','pdf')
                 size: the size of the window in MegaBytes (10 = 10MB)
             Returns:
                 A list of md5s representing the newest samples within the size window
@@ -102,6 +129,17 @@ class WorkBench(object):
                 True or False
         """
         return self.data_store.has_sample(md5)
+
+    def list_samples(self, predicate={}):
+        """List all samples that meet the predicate or all if predicate is not specified.
+
+        Args:
+            predicate: Match samples against this predicate (or all if not specified)
+
+        Returns:
+            List of dictionaries with matching samples {'md5':md5, 'filename': 'foo.exe', 'type_tag': 'exe'}
+        """
+        return self.data_store.list_samples(predicate)
 
     @zerorpc.stream
     def stream_sample(self, md5, max_rows):
@@ -141,9 +179,35 @@ class WorkBench(object):
         else:
             raise RuntimeError('Cannot stream file %s with type_tag:%s' % (md5, type_tag))
 
-    #
+    def guess_type_tag(self, input_bytes):
+        """ Try to guess the type_tag for this sample """
+        mime_to_type = {'application/x-dosexec': 'exe',
+                        'application/pdf': 'pdf',
+                        'application/zip': 'zip',
+                        'application/jar': 'jar',
+                        'application/vnd.ms-cab-compressed': 'cab',
+                        'text/plain': 'txt',
+                        'image/gif': 'gif',
+                        'image/jpeg': 'jpg',
+                        'image/png': 'png',
+                        'text/html': 'html',
+                        'application/vnd.ms-fontobject': 'ms_font',
+                        'application/x-shockwave-flash': 'swf'}
+
+        # See what filemagic can determine
+        with magic.Magic(flags=magic.MAGIC_MIME_TYPE) as mag:
+            mime_type = mag.id_buffer(input_bytes[:1024])
+            if mime_type in mime_to_type:
+                return mime_to_type[mime_type]
+            else:
+                print '<<< Sample Type could not be Determined >>>'
+                return 'unknown'
+
+
+
+    #######################
     # Index Methods
-    #
+    #######################
     def index_sample(self, md5, index_name):
         """ Index a stored sample with the Indexer.
             Args:
@@ -156,10 +220,10 @@ class WorkBench(object):
         for row in generator:
             self.indexer.index_data(row, index_name)
 
-    def index_worker_output(self, worker_class, md5, index_name, subfield):
+    def index_worker_output(self, worker_name, md5, index_name, subfield):
         """ Index worker output with the Indexer.
             Args:
-                worker_class: 'strings', 'pe_features', whatever
+                worker_name: 'strings', 'pe_features', whatever
                 md5: the md5 of the sample
                 index_name: the name of the index
                 subfield: index just this subfield (None for all)
@@ -169,9 +233,9 @@ class WorkBench(object):
 
         # Grab the data
         if subfield:
-            data = self.work_request(worker_class, md5)[worker_class][subfield]
+            data = self.work_request(worker_name, md5)[worker_name][subfield]
         else:
-            data = self.work_request(worker_class, md5)[worker_class]
+            data = self.work_request(worker_name, md5)[worker_name]
 
         # Okay now index the data
         self.indexer.index_data(data, index_name=index_name, doc_type='unknown')
@@ -186,9 +250,10 @@ class WorkBench(object):
         """
         return self.indexer.search(index_name, query)
 
-    #
+
+    #######################
     # Graph Methods
-    #
+    #######################
     def add_node(self, node_id, name, labels):
         """ Add a node to the graph with name and labels.
             Args:
@@ -239,37 +304,35 @@ class WorkBench(object):
         """
         self.data_store.clear_db()
 
-    #
-    # Work Request Methods
-    #
 
-    # Make a work request for an existing stored sample
-    def work_request(self, worker_class, md5, subkeys=None):
+    #######################
+    # Work Request Methods
+    #######################
+    def work_request(self, worker_name, md5, subkeys=None):
         """ Make a work request for an existing stored sample.
             Args:
-                worker_class: 'strings', 'pe_features', whatever
+                worker_name: 'strings', 'pe_features', whatever
                 md5: the md5 of the sample
-                index_name: the name of the index
                 subkeys: just return a subfield e.g. 'foo' or 'foo.bar' (None for all) 
             Returns:
                 The output of the worker or just the subfield of the worker output
         """
 
         # Check valid
-        if worker_class not in self.plugin_meta.keys():
-            raise RuntimeError('Invalid work request for class %s (not found)' % (worker_class))
+        if worker_name not in self.plugin_meta.keys():
+            raise RuntimeError('Invalid work request for class %s (not found)' % (worker_name))
 
         # Get results (even if we have to wait for them)
         # Note: Yes, we're going to wait. Gevent concurrent execution will mean this
         #       code gets spawned off and new requests can be handled without issue.
-        work_results = self._recursive_work_resolver(worker_class, md5)
+        work_results = self._recursive_work_resolver(worker_name, md5)
 
         # Subkeys? (Fixme this is super klutzy)
         if subkeys:
             try:
                 sub_results = {}
                 for subkey in subkeys:
-                    tmp = work_results[worker_class]
+                    tmp = work_results[worker_name]
                     for key in subkey.split('.'):
                         tmp = tmp[key]
                         sub_results[key] = tmp
@@ -282,15 +345,15 @@ class WorkBench(object):
         return work_results
 
     @zerorpc.stream
-    def batch_work_request(self, worker_class, kwargs):
+    def batch_work_request(self, worker_name, kwargs={}):
         """Make a batch work request for an existing set of stored samples.
 
         A subset of sample can be specified with kwargs.
 
         Args:
-            worker_class: 'strings', 'pe_features', whatever
+            worker_name: 'strings', 'pe_features', whatever
             kwargs: a way of specifying subsets of samples ({} for all)
-                type_tag: subset based on sample type (e.g. type_tag='pe')
+                type_tag: subset based on sample type (e.g. type_tag='exe')
                 md5_list: subset just the samples in this list
                 subkeys: return just this subkey (e.g. 'foo' or 'foo.bar')
         Returns:
@@ -308,9 +371,9 @@ class WorkBench(object):
         for md5 in md5_list:
             try:
                 if subkeys:
-                    yield self.work_request(worker_class, md5, subkeys)
+                    yield self.work_request(worker_name, md5, subkeys)
                 else:
-                    yield self.work_request(worker_class, md5)[worker_class]
+                    yield self.work_request(worker_name, md5)[worker_name]
             except KeyError:
                 continue
 
@@ -368,53 +431,142 @@ class WorkBench(object):
         """
         return self.data_store.get_uri()
 
+
+    ##################
+    # Help
+    ##################
+    def help(self, cli=False):
+        """ Returns help commands """
+        return self.help_system.help(cli)
+
+    def help_basic(self, cli=False):
+        """ Returns basic help commands """
+        return self.help_system.help_basic(cli)
+
+    def help_commands(self, cli=False):
+        """ Returns a big string of Workbench commands and signatures """
+        return self.help_system.help_commands(cli)
+
+    def help_command(self, command, cli=False):
+        """ Returns a specific Workbench command and docstring """
+        return self.help_system.help_command(command,cli)
+
+    def help_workers(self, cli=False):
+        """ Returns a big string of the loaded Workbench workers and their dependencies """
+        return self.help_system.help_workers(cli)
+
+    def help_worker(self, worker, cli=False):
+        """ Returns a specific Workbench worker and docstring """
+        return self.help_system.help_worker(worker, cli)
+
+    def help_advanced(self, cli=False):
+        """ Returns advanced help commands """
+        return self.help_system.help_advanced(cli)
+
+    def help_everything(self, cli=False):
+        """ Returns advanced help commands """
+        return self.help_system.help_everything(cli)
+
+
+    ##################
+    # Introspection
+    ##################
+    def list_all_commands(self):
+        """ Returns a list of all the Workbench commands"""
+        commands = [name for name, _ in inspect.getmembers(self, predicate=inspect.ismethod) if not name.startswith('_')]
+        commands.append('batch_work_request') # I think the zerorpc decorator messes up inspect
+        return commands
+
+    def list_all_workers(self):
+        """ List all the currently loaded workers """
+        return self.plugin_meta.keys()
+
+    def worker_info(self, worker_name):
+        """ Get the information about this worker """
+        plugin = self.plugin_meta[worker_name]
+        return {'dependencies': plugin['class'].dependencies, 'doc': plugin['class'].__doc__}
+
+
+    ##################
+    # Testing
+    ##################
+    def test_worker(self, worker_name):
+        """ Run the test for a specific worker """
+
+        # First find the plugin
+        try:
+            plugin = self.plugin_meta[worker_name]
+        except KeyError:
+            return '%s worker not found.. misspelled?' % worker_name
+
+        # Now try to run the test
+        try:
+            return plugin['test']()
+        except (AttributeError, KeyError) as error:
+            output = 'Failure for plugin: %s' % (worker_name)
+            output += 'Error: %s' % error
+            return output
+
+
+    ####################
+    # Internal Methods
+    ####################
     def _new_plugin(self, plugin, mod_time):
-        """ The method handles the mechanics around new plugins. """
-        print '< %s: loaded >' % (plugin['name'])
+        """ Internal: This method handles the mechanics around new plugins. """
+        print '\t- %s: loaded...' % (plugin['name'])
         plugin['time_stamp'] = mod_time # datetime.datetime.utcnow()
         self.plugin_meta[plugin['name']] = plugin
 
     def _store_work_results(self, results, collection, md5):
-        """Internal method for storing work results."""
+        """ Internal: Stores the work results of a worker."""
         self.data_store.store_work_results(results, collection, md5)
     def _get_work_results(self, collection, md5):
-        """Internal method for fetching work results."""
+        """ Internal: Method for fetching work results."""
         results = self.data_store.get_work_results(collection, md5)
         return {collection: results} if results else None
 
 
     # So the trick here is that since each worker just stores it's input dependencies
     # we can resursively backtrack and all the needed work gets done.
-    def _recursive_work_resolver(self, worker_class, md5):
+    def _recursive_work_resolver(self, worker_name, md5):
+        """ Internal: Input dependencies are resursively backtracked, invoked and then
+               passed down the pipeline until htting the requested worker. """
 
         # Looking for the sample or sample_set?
-        if (worker_class == 'sample'):
-            try:
-                return self.get_sample(md5)
-            except RuntimeError:
+        if (worker_name == 'sample'):
+            # If we have a sample set with this md5, return it
+            if self.get_sample_set(md5):
                 return self.get_sample_set(md5)
+            # Return the sample (might raise a RuntimeError)
+            return self.get_sample(md5)
 
         # Do I actually have this plugin? (might have failed, etc)
-        if (worker_class not in self.plugin_meta):
-            print 'Request for non-existing or failed plugin: %s' % (worker_class)
+        if (worker_name not in self.plugin_meta):
+            print 'Request for non-existing or failed plugin: %s' % (worker_name)
             return {}
 
         # If the results exist and the time_stamp is newer than the plugin's, I'm done
-        collection = self.plugin_meta[worker_class]['name']
+        collection = self.plugin_meta[worker_name]['name']
         work_results = self._get_work_results(collection, md5)
         if work_results:
-            if self.plugin_meta[worker_class]['time_stamp'] < work_results[collection]['__time_stamp']:
-                print 'Returning cached work results for plugin: %s' % (worker_class)
+            if self.plugin_meta[worker_name]['time_stamp'] < work_results[collection]['__time_stamp']:
+                print 'Returning cached work results for plugin: %s' % (worker_name)
                 return work_results
             else:
-                print 'Updating work results for new plugin: %s' % (worker_class)
+                print 'Updating work results for new plugin: %s' % (worker_name)
 
-        dependencies = self.plugin_meta[worker_class]['dependencies']
+        # Okay either need to generate (or re-generate) the work results
+        dependencies = self.plugin_meta[worker_name]['dependencies']
         dependant_results = {}
         for dependency in dependencies:
             dependant_results.update(self._recursive_work_resolver(dependency, md5))
-        print 'New work for plugin: %s' % (worker_class)
-        work_results = self.plugin_meta[worker_class]['class']().execute(dependant_results)
+        print 'New work for plugin: %s' % (worker_name)
+        work_results = self.plugin_meta[worker_name]['class']().execute(dependant_results)
+
+        # Enforce dictionary output
+        if not isinstance(work_results, dict):
+            print 'Critical: Plugin %s MUST produce a python dictionary!' % worker_name
+            return None
 
         # Store the results and return
         self._store_work_results(work_results, collection, md5)
@@ -425,91 +577,6 @@ class WorkBench(object):
         submatch = [d[_k][k] for _k in d if k in d[_k]]
         return submatch[0] if submatch else None
 
-    def help(self):
-        """ Returns help commands """
-
-        help_str =  '\nWelcome to Workbench: Here\'s a list of help commands:'
-        help_str += '\n\t - Run workbench.help_basic() for beginner help'
-        help_str += '\n\t - Run workbench.help_commands() for command help'
-        help_str += '\n\t - Run workbench.help_workers() for a list of workers'
-        help_str += '\n\t - Run workbench.help_advanced() for advanced help'
-        help_str += '\n\nSee http://github.com/SuperCowPowers/workbench for more information'
-        return help_str
-
-    def help_basic(self):
-        """ Returns basic help commands """
-        help_str =  '\nWorkbench: Getting started...'
-        help_str += '\n\t - 1) $ print workbench.help_commands() for a list of commands'
-        help_str += '\n\t - 2) $ print workbench.help_command(\'store_sample\') for into on a specific command'
-        help_str += '\n\t - 3) $ print workbench.help_workers() for a list a workers'
-        help_str += '\n\t - 4) $ print workbench.help_worker(\'meta\') for info on a specific worker'
-        help_str += '\n\t - 5) $ my_md5 = workbench.store_sample(...)'
-        help_str += '\n\t - 6) $ output = workbench.work_request(\'meta\', my_md5)'
-        return help_str
-
-    def help_commands(self):
-        """ Returns a big string of Workbench commands and signatures """
-        help_string = 'Workbench Commands:'
-        for name, meth in inspect.getmembers(self, predicate=inspect.ismethod):
-            if not name.startswith('_'):
-                help_string += '\n\t%s%s' % (name,funcsigs.signature(meth))
-        return help_string
-
-    def help_command(self, command):
-        """ Returns a specific Workbench command and docstring """
-        for name, meth in inspect.getmembers(self, predicate=inspect.ismethod):
-            if name == command:
-                return '\n Command: %s%s \n%s' % (name, funcsigs.signature(meth), meth.__doc__)
-        return '%s command not found.. misspelled?' % command
-
-    def list_all_commands(self):
-        """ Returns a list of all the Workbench commands"""
-        commands = [name for name, _ in inspect.getmembers(self, predicate=inspect.ismethod) if not name.startswith('_')]
-        commands.append('batch_work_request') # I think the zerorpc decorator messes up inspect
-        return commands
-
-    def help_workers(self):
-        """ Returns a big string of the loaded Workbench workers and their dependencies """
-        help_string = 'Workbench Workers:'
-        for name, plugin in sorted(self.plugin_meta.iteritems()):
-            help_string += '\n\t%s %s' % (name, str(plugin['class'].dependencies))
-        return help_string
-
-    def help_worker(self, worker):
-        """ Returns a specific Workbench worker and docstring """
-        try:
-            plugin = self.plugin_meta[worker]
-            return '\n Worker: %s %s\n\t%s' % (worker, str(plugin['class'].dependencies), plugin['class'].__doc__)
-        except KeyError:
-            return '%s worker not found.. misspelled?' % worker
-
-    def help_advanced(self):
-        """ Returns advanced help commands """
-        help_str =  '\nWoo! Advanced... <fixme: add documentation for advanced> :)'
-        help_str += '\n\nSee http://github.com/SuperCowPowers/workbench for more information'
-        return help_str
-
-    def list_all_workers(self):
-        """ List all the currently loaded workers """
-        return self.plugin_meta.keys()
-
-    def test_worker(self, worker):
-        """ Run the test for a specific worker """
-
-        # First find the plugin
-        try:
-            plugin = self.plugin_meta[worker]
-        except KeyError:
-            return '%s worker not found.. misspelled?' % worker
-
-        # Now try to run the test
-        try:
-            plugin['test']()
-            return True
-        except (AttributeError, KeyError) as error:
-            print 'Failure for plugin: %s' % (worker)
-            print 'Error: %s' % error
-            return False
 
 def run():
     """ Run the workbench server """
@@ -531,15 +598,16 @@ def run():
     # Spin up Workbench ZeroRPC
     try:
         store_args = {'uri': datastore_uri, 'database': database, 'worker_cap':worker_cap, 'samples_cap':samples_cap}
+        print '<<< Workbench Server at %s >>>' % ('tcp://0.0.0.0:4242')
         workbench = zerorpc.Server(WorkBench(store_args=store_args), name='workbench', heartbeat=60)
         workbench.bind('tcp://0.0.0.0:4242')
-        print 'ZeroRPC %s' % ('tcp://0.0.0.0:4242')
+        print '\nWorkbench is ready and feeling super duper!'
         gevent_signal(signal.SIGTERM, workbench.stop)
         gevent_signal(signal.SIGINT, workbench.stop)
         gevent_signal(signal.SIGKILL, workbench.stop)
         workbench.run()
-        print '\nWorkbench Server Shutting Down...'
-        exit(0)        
+        print '\nWorkbench Server Shutting Down... and dreaming of sheep...'
+
     except zmq.error.ZMQError:
         print '\nInfo: Could not start Workbench server (no worries, probably already running...)\n'
 

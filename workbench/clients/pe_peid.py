@@ -17,21 +17,21 @@ def run():
 
     # Test out PEFile -> peid
     data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),'../data/pe/bad')
-    file_list = [os.path.join(data_path, child) for child in os.listdir(data_path)][:10]
+    file_list = [os.path.join(data_path, child) for child in os.listdir(data_path)][:2]
     data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),'../data/pe/good')
-    file_list += [os.path.join(data_path, child) for child in os.listdir(data_path)][:10]
+    file_list += [os.path.join(data_path, child) for child in os.listdir(data_path)][:2]
     for filename in file_list:
 
         # Skip OS generated files
         if '.DS_Store' in filename: continue
 
         with open(filename,'rb') as f:
-            md5 = workbench.store_sample(filename, f.read(), 'pe')
+            base_name = os.path.basename(filename)
+            md5 = workbench.store_sample(base_name, f.read(), 'exe')
             results = workbench.work_request('pe_peid', md5)
             pprint.pprint(results)
 
-import pytest
-@pytest.mark.xfail
+
 def test():
     """Executes pe_peid test."""
     run()
