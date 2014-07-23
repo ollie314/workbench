@@ -73,8 +73,17 @@ class PluginManager(object):
             event: The modification event.
         """
         for plugin in file_list:
-            print 'Plugin was deleted: %s' % plugin
-            print 'Note: plugin still in memory, restart Workbench to remove...'
+            self.remove_plugin(plugin)
+
+    def remove_plugin(self, f):
+        """Remvoing a deleted plugin.
+
+        Args:
+            f: the filepath for the plugin.
+        """
+        if f.endswith('.py'):
+                print '\t- %s %sREMOVED' % (plugin_name, Fore.RED)
+                print '\t\tNote: still in memory, restart Workbench to remove...%s' % (Fore.YELLOW, Fore.RESET)
 
     def add_plugin(self, f):
         """Adding and verifying plugin.
