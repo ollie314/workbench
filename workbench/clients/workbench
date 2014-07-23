@@ -58,7 +58,6 @@ class WorkbenchCLI(object):
 
         # Create a user session
         self.session = Session()
-        # {'filename': '-', 'md5': '-', 'short_md5': '-', 'server': 'localhost'}
 
         # We have a namespace dictionariy for our Interactive Shell
         self.namespace = self.make_namespace()
@@ -128,6 +127,7 @@ class WorkbenchCLI(object):
                 self.session.filename = basename
                 self.session.md5 = md5
                 self.session.short_md5 = md5[:6]
+                self.ipshell.push({'md5': self.session.md5})
                 self.ipshell.push({'short_md5': self.session.short_md5})
 
     def work_request(self, worker, md5=None):

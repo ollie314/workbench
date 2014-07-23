@@ -182,6 +182,13 @@ class DataStore(object):
                     data[k] = [self.clean_for_storage(item) for item in data[k]]
         return data
 
+    def get_full_md5(self, partial_md5):
+        """Support partial/short md5s, return the full md5 with this method"""
+        print 'Warning: Performing slow md5 search...'
+        starts_with = '%s.*' % md5
+        sample_info = self.database[self.sample_collection].find_one({'md5': {'$regex' : starts_with}},{'md5':1})
+        return sample_info['md5']
+
     def get_sample(self, md5):
         """Get the sample from the data store.
 
@@ -198,6 +205,12 @@ class DataStore(object):
             RuntimeError: Either Sample is not found or the gridfs file is missing.
 
         """
+
+        # Support 'short' md5s but don't waste performance if the full md5 is provided
+        if len(md5) < 32:
+            md5 = get_full_md5(md5)
+
+        # Grab the sample
         sample_info = self.database[self.sample_collection].find_one({'md5': md5})
         if not sample_info:
             raise RuntimeError('Sample not found: %s ' % (md5))
