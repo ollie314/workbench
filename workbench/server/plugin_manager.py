@@ -22,14 +22,24 @@ class PluginManager(object):
             plugin_dir: The dir where plugin resides.
         """
 
-        # Set the callback
+        # Set the callback, the plugin directory and load the plugins
         self.plugin_callback = plugin_callback
+        self.plugin_dir = plugin_dir
+        self.load_all_plugins()
 
-        # First go through the existing python files in the plugin directory
-        self.plugin_path = os.path.realpath(plugin_dir)
-        sys.path.append(plugin_dir)
+        # Now setup dynamic monitoring of the plugins directory
+        self.watcher = dir_watcher.DirWatcher(self.plugin_path)
+        self.watcher.register_callbacks(self.on_created, self.on_modified, self.on_deleted)
+        self.watcher.start_monitoring()
+
+    def load_all_plugins(self):
+        """Load all the plugins in the plugin directory"""
+
+        # Fo through the existing python files in the plugin directory
+        self.plugin_path = os.path.realpath(self.plugin_dir)
+        sys.path.append(self.plugin_dir)
         print '<<< Plugin Manager >>>'
-        for f in [os.path.join(plugin_dir, child) for child in os.listdir(plugin_dir)]:
+        for f in [os.path.join(self.plugin_dir, child) for child in os.listdir(self.plugin_dir)]:
 
             # Skip certain files
             if '.DS_Store' in f or '__init__.py' in f: 
@@ -37,11 +47,6 @@ class PluginManager(object):
 
             # Add the plugin
             self.add_plugin(f)
-
-        # Now setup dynamic monitoring of the plugins directory
-        self.watcher = dir_watcher.DirWatcher(self.plugin_path)
-        self.watcher.register_callbacks(self.on_created, self.on_modified, self.on_deleted)
-        self.watcher.start_monitoring()
 
     def on_created(self, file_list):
         """Watcher callback
