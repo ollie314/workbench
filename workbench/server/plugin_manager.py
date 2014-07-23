@@ -66,7 +66,7 @@ class PluginManager(object):
         for plugin in file_list:
             self.add_plugin(plugin)
 
-    def on_deleted(self, event):
+    def on_deleted(self, file_list):
         """Watcher callback.
 
         Args:
@@ -74,6 +74,7 @@ class PluginManager(object):
         """
         for plugin in file_list:
             print 'Plugin was deleted: %s' % plugin
+            print 'Note: plugin still in memory, restart Workbench to remove...'
 
     def add_plugin(self, f):
         """Adding and verifying plugin.
