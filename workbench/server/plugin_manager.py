@@ -84,7 +84,7 @@ class PluginManager(object):
         if f.endswith('.py'):
             plugin_name = os.path.splitext(os.path.basename(f))[0]
             print '\t- %s %sREMOVED' % (plugin_name, Fore.RED)
-            print '\t\tNote: still in memory, restart Workbench to remove...%s' % (Fore.YELLOW, Fore.RESET)
+            print '\t\t%sNote: still in memory, restart Workbench to remove...%s' % (Fore.YELLOW, Fore.RESET)
 
     def add_plugin(self, f):
         """Adding and verifying plugin.
