@@ -465,10 +465,10 @@ class WorkBench(object):
         """ Help for Workbench Basics """
         help =  '%sWorkbench: Getting started...' % (Fore.YELLOW)
         help += '\n%sLoad in a sample:'  % (Fore.GREEN)
-        help += '\n\t%s$ store_sample /path/to/file' % (Fore.BLUE)
+        help += '\n\t%s$ load_sample /path/to/file' % (Fore.BLUE)
         help += '\n\n%sNotice the prompt now shows the md5 of the sample...'% (Fore.YELLOW)
         help += '\n%sRun workers on the sample:'  % (Fore.GREEN)
-        help += '\n\t%s$ workbench.work_request(\'meta\', md5)%s' % (Fore.BLUE, Fore.RESET)
+        help += '\n\t%s$ meta %s' % (Fore.BLUE, Fore.RESET)
         return help
 
     def _help_commands(self):
