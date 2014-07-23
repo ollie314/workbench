@@ -38,8 +38,8 @@ class Session(object):
     """Store information specific to the user session"""
     def __init__(self):
         """Initialization of Session object"""
-        self.filename = '-'
-        self.md5 = '-'
+        self.filename = None
+        self.md5 = None
         self.short_md5 = '-'
         self.server = 'localhost'
 
@@ -132,11 +132,15 @@ class WorkbenchCLI(object):
 
     def work_request(self, worker, md5=None):
         """Wrapper for a work_request to workbench"""
+
+        # I'm sure there's a better way to do this
         if not md5 and not self.session.md5:
             return 'Must call worker with an md5 argument...'
-    
-        # Set the md5 to the session md5
-        md5 = self.session.md5
+        elif not md5:
+            md5 = self.session.md5 
+
+        # Temp debug
+        print 'Executing %s %s' % (worker, md5)
 
         # Make the work_request with worker and md5 args
         return self.workbench.work_request(worker, md5)
@@ -149,7 +153,7 @@ class WorkbenchCLI(object):
         # First add all the workers
         commands = {}
         for worker in self.workbench.list_all_workers():
-            commands[worker] = lambda *args: self.work_request(worker, *args)
+            commands[worker] = lambda md5=None, worker=worker: self.work_request(worker, md5)
 
         # Now the general commands which are often overloads
         # for some of the workbench commands
@@ -181,7 +185,7 @@ class WorkbenchCLI(object):
         cfg.PromptManager.in_template = (
             '{color.Purple}'
             '{short_md5}'
-            '{color.LightGray} Workbench{color.Green}[\#]> ')
+            '{color.Blue} Workbench{color.Green}[\#]> ')
         cfg.PromptManager.out_template = ''
 
         # Create the IPython shell
