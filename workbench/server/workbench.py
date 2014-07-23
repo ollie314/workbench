@@ -19,6 +19,7 @@ import inspect
 import funcsigs
 import ConfigParser
 import magic
+from colorama import Fore, Style
 
 # Workbench server imports
 try:
@@ -306,6 +307,9 @@ class WorkBench(object):
         """
         self.data_store.clear_db()
 
+        # Have the plugin manager reload all the plugins
+        self.plugin_manager.load_all_plugins()
+
         # Store information about commands and workbench
         self._store_information()        
 
@@ -449,23 +453,22 @@ class WorkBench(object):
     # Fixme: These are internal methods that basically just provide help text
     def _help_workbench(self):
         """ Help on Workbench """
-        help = 'Welcome to Workbench Help:'
-        help += '\n\t- workbench.help(topic) -- where topic can be a help, command or worker'
-        help += '\n\t- workbench.help(\'basic\') -- for getting started help'
-        help += '\n\t- workbench.help(\'commands\') -- for help on workbench commands'
-        help += '\n\t- workbench.help(\'workers\') -- for help on available workers'
-        help += '\n\nSee http://github.com/SuperCowPowers/workbench for more information\n'
+        help = '%sWelcome to Workbench Help:%s' % (Fore.YELLOW, Fore.RESET)
+        help += '\n\t%s- workbench.help(topic) %s where topic can be a help, command or worker' % (Fore.GREEN, Fore.BLUE)
+        help += '\n\t%s- workbench.help(\'basic\') %s for getting started help' % (Fore.GREEN, Fore.BLUE)
+        help += '\n\t%s- workbench.help(\'commands\') %s for help on workbench commands' % (Fore.GREEN, Fore.BLUE)
+        help += '\n\t%s- workbench.help(\'workers\') %s for help on available workers' % (Fore.GREEN, Fore.BLUE)
+        help += '\n\n%sSee http://github.com/SuperCowPowers/workbench for more information\n%s' % (Fore.YELLOW, Fore.RESET)
         return help
 
     def _help_basic(self):
         """ Help for Workbench Basics """
-        help =  'Workbench: Getting started...'
-        help += '\n\t - 1) $ workbench.help(\'commands\') -- for help on workbench commands'
-        help += '\n\t - 2) $ workbench.help(\'store_sample\') -- for help on storing a new sample'
-        help += '\n\t - 3) $ workbench.help(\'workers\') -- for help on available workers'
-        help += '\n\t - 4) $ workbench.help(\'meta\') -- for help on the meta worker'
-        help += '\n\t - 5) $ workbench.store_sample(\'evil.exe\', raw_bytes, \'exe\')'
-        help += '\n\t - 6) $ workbench.work_request(\'meta\', md5)'
+        help =  '%sWorkbench: Getting started...' % (Fore.YELLOW)
+        help += '\n%sLoad in a sample:'  % (Fore.GREEN)
+        help += '\n\t%s$ store_sample /path/to/file' % (Fore.BLUE)
+        help += '\n\n%sNotice the prompt now shows the md5 of the sample...'% (Fore.YELLOW)
+        help += '\n%sRun workers on the sample:'  % (Fore.GREEN)
+        help += '\n\t%s$ workbench.work_request(\'meta\', md5)%s' % (Fore.BLUE, Fore.RESET)
         return help
 
     def _help_commands(self):
@@ -479,7 +482,7 @@ class WorkBench(object):
 
     def _help_workers(self):
         """ Help on all the available workers """
-        help =  'Workbench Commands:'
+        help =  'Workbench Workers:'
         for worker in self.list_all_workers():
             full_help = self.work_request('help_cli', worker)['help_cli']['help']
             compact_help = full_help.split('\n')[:4]
