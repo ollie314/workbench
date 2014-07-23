@@ -10,6 +10,14 @@ import workbench.clients.workbench_client as workbench_client
 import IPython
 import functools
 
+
+class my_transformer(IPython.core.prefilter.PrefilterTransformer):
+    def transform(self, line, continue_prompt):
+        if line.startswith('help'):
+            return ','+line
+        else:
+            return line
+
 # These little helpers get around IPython wanting to take the
 # __repr__ of string output instead of __str__.
 class repr_to_str(str):
@@ -133,8 +141,14 @@ class WorkbenchCLI(object):
             '{color.LightGray} Workbench{color.Green}[\#]> ')
         cfg.PromptManager.out_template = ''
 
+        # Create the IPython shell
         ipshell = IPython.terminal.embed.InteractiveShellEmbed(
             config=cfg, banner1=self.workbench.help('workbench'), exit_msg='\nWorkbench has SuperCowPowers...')
+
+        # Register our transformer
+        transformer = my_transformer(ipshell, ipshell.prefilter_manager) 
+
+        # Start up the shell with our namespace
         ipshell(local_ns=self.namespace)
 
 

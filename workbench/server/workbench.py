@@ -472,7 +472,18 @@ class WorkBench(object):
         """ Help on all the available commands """
         help =  'Workbench Commands:'
         for command in self.list_all_commands():
-            help += '\n\t%s' % self.work_request('help_cli', command)
+            full_help = self.work_request('help_cli', command)['help_cli']['help']
+            compact_help = full_help.split('\n')[:3]
+            help += '\n\t%s' % '\n'.join(compact_help)
+        return help
+
+    def _help_workers(self):
+        """ Help on all the available workers """
+        help =  'Workbench Commands:'
+        for worker in self.list_all_workers():
+            full_help = self.work_request('help_cli', worker)['help_cli']['help']
+            compact_help = full_help.split('\n')[:4]
+            help += '\n\t%s' % '\n'.join(compact_help)
         return help
 
 
@@ -553,6 +564,7 @@ class WorkBench(object):
         self.store_info({'help': self._help_workbench()}, 'workbench', type_tag='help')
         self.store_info({'help': self._help_basic()}, 'basic', type_tag='help')
         self.store_info({'help': self._help_commands()}, 'commands', type_tag='help')
+        self.store_info({'help': self._help_workers()}, 'workers', type_tag='help')
 
     def _new_plugin(self, plugin):
         """ Internal: This method handles the mechanics around new plugins. """
