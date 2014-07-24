@@ -166,7 +166,7 @@ class WorkbenchShell(object):
         # Start up the shell with our namespace
         self.ipshell(local_ns=self.namespace)
 
-def test():
+def not_t():
     """Test the Workbench Interactive Shell"""
     work_shell = WorkbenchShell()
     try:
@@ -175,4 +175,4 @@ def test():
         print 'Expected Fail... have a nice day...'
  
 if __name__ == '__main__':
-    test()
+    not_t()
