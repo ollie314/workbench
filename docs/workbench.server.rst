@@ -27,14 +27,6 @@ workbench.server.els_indexer module
     :undoc-members:
     :show-inheritance:
 
-workbench.server.help_system module
------------------------------------
-
-.. automodule:: workbench.server.help_system
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 workbench.server.neo_db module
 ------------------------------
 
