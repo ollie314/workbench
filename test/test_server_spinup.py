@@ -9,5 +9,5 @@ class TestServerSpinup(object):
             fixture a workbench server will spin up '''
 
         print '\nStarting up the Workbench server...'
-        # print workbench_conn
+        print str(workbench_conn)
         return True
