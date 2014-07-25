@@ -35,10 +35,6 @@ class AutoQuoteTransformer(IPython.core.prefilter.PrefilterTransformer):
     def transform(self, line, continue_prompt):
         """IPython Transformer for commands to use 'auto-quotes'"""
 
-        # First get all the namespace tokens from the IPython shell name spaces
-        # ns_tokens = set([token for nspace in self.shell.all_ns_refs for token in nspace])
-
-
         # Check the first token in line against the workbench command set
         token = line.split()[0]
         if token in self.command_set:
@@ -46,46 +42,6 @@ class AutoQuoteTransformer(IPython.core.prefilter.PrefilterTransformer):
 
         # Not a workbench command so don't try to auto-quote it
         return line
-
-        '''
-           # If the line already has quotes skip it
-           if '"' in line:
-               return line
-
-           # First get all the namespace tokens from the IPython shell name spaces
-           ns_tokens = set([token for nspace in self.shell.all_ns_refs for token in nspace])
-           for item in ['=','print','exit']:
-               ns_tokens.add(item)
-
-           # Fixme: this logic definitely needs to be reviewed.
-
-           # Anything before the equal is/will become part of the
-           # namespace so add it before it gets auto-quoted :)
-           equal_split_list = line.split('=')
-           pre_equal = equal_split_list[0].strip()
-           ns_tokens.add(pre_equal)
-
-           # Do auto-quotes
-           new_line = line
-           for token in new_line.split():
-               if token not in ns_tokens:
-                   new_line = new_line.replace(token, '"'+token+'"')
-
-           # Show the command transformation
-           if (new_line != line):
-               self.shell.auto_rewrite_input(new_line)
-           return new_line
-           '''
-
-        '''
-
-           if line.startswith('help ') and not any([skip in line for skip in skip_it]):
-               return ','+line
-           elif line.startswith('load_sample '):
-               return ','+line
-           else:
-               return line
-           '''
 
 class WorkbenchShell(object):
     """Workbench CLI using IPython Interactive Shell"""
@@ -104,7 +60,7 @@ class WorkbenchShell(object):
         self.session = self.Session()
 
         # We have a command_set for our Interactive Shell
-        self.command_dict = self.generate_command_dict()
+        self.command_dict = self._generate_command_dict()
         self.command_set = set(self.command_dict.keys())
 
         # Our Interactive IPython shell
@@ -180,7 +136,7 @@ class WorkbenchShell(object):
         # Make the work_request with worker and md5 args
         return self.workbench[command](md5)
 
-    def generate_command_dict(self):
+    def _generate_command_dict(self):
         """Create a customized namespace for Workbench with a bunch of shortcuts
             and helper/alias functions that will make using the shell MUCH easier.
         """
@@ -199,8 +155,7 @@ class WorkbenchShell(object):
         general = {
             'workbench': self.workbench,
             'help': repr_to_str_decorator(self.workbench.help),
-            'load_sample': self.load_sample,
-            'short_md5': self.session.short_md5
+            'load_sample': self.load_sample
         }
         commands.update(general)
 
