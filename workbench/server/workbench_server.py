@@ -492,7 +492,7 @@ class WorkBench(object):
         help += '\n\t%s$ load_sample /path/to/file' % (Fore.BLUE)
         help += '\n\n%sNotice the prompt now shows the md5 of the sample...'% (Fore.YELLOW)
         help += '\n%sRun workers on the sample:'  % (Fore.GREEN)
-        help += '\n\t%s$ meta %s' % (Fore.BLUE, Fore.RESET)
+        help += '\n\t%s$ meta or view or whatever... %s' % (Fore.BLUE, Fore.RESET)
         return help
 
     def _help_commands(self):
