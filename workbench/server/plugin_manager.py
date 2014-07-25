@@ -8,6 +8,7 @@ import os, sys
 from datetime import datetime
 import dir_watcher
 import inspect
+import colorama
 from colorama import Fore
 
 class PluginManager(object):
@@ -198,12 +199,12 @@ def test():
 
     # This test actually does more than it appears. The workers directory
     # will get scanned and stuff will get loaded into workbench.
-    def new_plugin(plugin):
+    def new_plugin(plugin, mod_time):
         """new plugin callback """
-        print '%s' % (plugin)
+        print '%s %s' % (plugin, mod_time)
 
     # Create Plugin Manager
-    plugin_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)),'../workers')
+    plugin_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)),'workers')
     PluginManager(new_plugin, plugin_dir=plugin_dir)
 
 if __name__ == "__main__":
