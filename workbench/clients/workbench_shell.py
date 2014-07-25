@@ -5,9 +5,16 @@
 import os
 import hashlib
 import zerorpc
-import workbench.clients.workbench_client as workbench_client
 import IPython
 import functools
+
+try:
+    from . import workbench_client
+
+# Okay this happens when you're running workbench in a debugger so having
+# this is super handy and we'll keep it even though it hurts coverage score.
+except ValueError:
+    import workbench_client
 
 # These little helpers get around IPython wanting to take the
 # __repr__ of string output instead of __str__.
@@ -115,26 +122,17 @@ class WorkbenchShell(object):
         elif not md5:
             md5 = self.session.md5
 
-        # Temp debug
-        print 'Executing %s %s' % (worker, md5)
-
         # Make the work_request with worker and md5 args
         return self.workbench.work_request(worker, md5)
 
-    def workbench_command(self, command, md5=None):
+    def workbench_command(self, command, *args):
         """Wrapper for a command to workbench"""
 
-        # I'm sure there's a better way to do this
-        if not md5 and not self.session.md5:
-            return 'Must call worker with an md5 argument...'
-        elif not md5:
-            md5 = self.session.md5
-
         # Temp debug
-        print 'Executing %s %s' % (command, md5)
+        print 'Executing %s %s' % (command, args)
 
-        # Make the work_request with worker and md5 args
-        return self.workbench[command](md5)
+        # Run the workbench command with args
+        return self.workbench[command](*args)
 
     def _generate_command_dict(self):
         """Create a customized namespace for Workbench with a bunch of shortcuts
@@ -148,14 +146,15 @@ class WorkbenchShell(object):
 
         # Next add all the commands
         for command in self.workbench.list_all_commands():
-            commands[command] = lambda md5=None, command=command: self.workbench_command(command, md5)
+            commands[command] = lambda args: self.workbench.command(args)
 
         # Now the general commands which are often overloads
         # for some of the workbench commands
         general = {
             'workbench': self.workbench,
             'help': repr_to_str_decorator(self.workbench.help),
-            'load_sample': self.load_sample
+            'load_sample': self.load_sample,
+            'short_md5': self.session.short_md5
         }
         commands.update(general)
 
