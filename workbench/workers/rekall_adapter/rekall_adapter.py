@@ -7,19 +7,18 @@
 
 import os
 import logging
-from rekall import plugins
 from rekall import session
 from rekall.plugins.addrspaces import standard
 from rekall.ui.renderer import BaseRenderer
 from rekall.ui.renderer import Formatter
 import StringIO
-import json
 import datetime
 import pprint
-import msgpack
 import pytz
 import gevent
+
 def gsleep():
+    ''' Convenience method for gevent.sleep '''
     print '*** Gevent Sleep ***'
     gevent.sleep(0)
 
@@ -38,9 +37,11 @@ class RekallAdapter(object):
         gsleep()
 
     def get_session(self):
+        ''' Return the Rekall session object '''
         return self.session
 
     def get_renderer(self):
+        ''' Return the Rekall renderer object '''
         return self.renderer
 
 
@@ -213,6 +214,8 @@ class WorkbenchRenderer(BaseRenderer):
 
 
 # Unit test: Create the class, the proper input and run the execute() method for a test
+import pytest
+@pytest.mark.rekall
 def test():
     """rekall_adapter.py: Test."""
 

@@ -48,7 +48,6 @@ def test():
     worker = ViewMemory()
     output = worker.execute(input_data)
     print '\n<<< Unit Test >>>'
-    import pprint
     pprint.pprint(output)
     assert 'Error' not in output
 

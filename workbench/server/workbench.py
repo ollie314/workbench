@@ -1,6 +1,9 @@
 
 """Workbench: Open Source Security Framework """
 
+# Okay this monkey patch call needs to be first
+# Note: The thread=False parameters appears to be needed
+#       for MongoDB, if you know a better way please do PR :)
 from gevent import monkey; monkey.patch_all(thread=False) # Monkey!
 from gevent import signal as gevent_signal
 import signal
@@ -16,6 +19,7 @@ import inspect
 import funcsigs
 import ConfigParser
 import magic
+from colorama import Fore, Style
 
 # Workbench server imports
 try:
@@ -23,7 +27,6 @@ try:
     from . import els_indexer
     from . import neo_db
     from . import plugin_manager
-    from . import help_system
     from bro import bro_log_reader
 
 # Okay this happens when you're running workbench in a debugger so having
@@ -33,12 +36,11 @@ except ValueError:
     import els_indexer
     import neo_db
     import plugin_manager
-    import help_system
     from bro import bro_log_reader
 
 
 class WorkBench(object):
-    """Workbench: Open Source Security Framework."""
+    """ Workbench: Open Source Security Framework. """
 
     def __init__(self, store_args=None, els_hosts=None, neo_uri=None):
         """Initialize the Framework.
@@ -50,9 +52,10 @@ class WorkBench(object):
         """
         # Announce Version
         try:
-            print '<<< Workbench Version %s >>>' % sys.modules['workbench'].__version__
+            self.version = sys.modules['workbench'].__version__
         except (AttributeError, KeyError):
-            print '<<< Workbench Version %s >>>' % 'DEBUGGING'
+            self.version = 'unknown'
+        print '<<< Workbench Version %s >>>' % self.version
 
         # Open DataStore
         self.data_store = data_store.DataStore(**store_args)
@@ -76,8 +79,8 @@ class WorkBench(object):
         plugin_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)),'../workers')
         self.plugin_manager = plugin_manager.PluginManager(self._new_plugin, plugin_dir=plugin_dir)
 
-        # Get Help System
-        self.help_system = help_system.HelpSystem(self)
+        # Store information about commands and workbench
+        self._store_information()
 
 
     #######################
@@ -304,6 +307,12 @@ class WorkBench(object):
         """
         self.data_store.clear_db()
 
+        # Have the plugin manager reload all the plugins
+        self.plugin_manager.load_all_plugins()
+
+        # Store information about commands and workbench
+        self._store_information()        
+
 
     #######################
     # Work Request Methods
@@ -434,38 +443,51 @@ class WorkBench(object):
 
     ##################
     # Help
-    ##################
-    def help(self, cli=False):
-        """ Returns help commands """
-        return self.help_system.help(cli)
+    ##################        
+    def help(self, topic=None):
+        """ Returns the formatted, colored help """
+        if not topic:
+            topic = 'workbench'
+        return self.work_request('help_cli', topic)['help_cli']['help']
 
-    def help_basic(self, cli=False):
-        """ Returns basic help commands """
-        return self.help_system.help_basic(cli)
+    # Fixme: These are internal methods that basically just provide help text
+    def _help_workbench(self):
+        """ Help on Workbench """
+        help = '%sWelcome to Workbench Help:%s' % (Fore.YELLOW, Fore.RESET)
+        help += '\n\t%s- workbench.help(topic) %s where topic can be a help, command or worker' % (Fore.GREEN, Fore.BLUE)
+        help += '\n\t%s- workbench.help(\'basic\') %s for getting started help' % (Fore.GREEN, Fore.BLUE)
+        help += '\n\t%s- workbench.help(\'commands\') %s for help on workbench commands' % (Fore.GREEN, Fore.BLUE)
+        help += '\n\t%s- workbench.help(\'workers\') %s for help on available workers' % (Fore.GREEN, Fore.BLUE)
+        help += '\n\n%sSee http://github.com/SuperCowPowers/workbench for more information\n%s' % (Fore.YELLOW, Fore.RESET)
+        return help
 
-    def help_commands(self, cli=False):
-        """ Returns a big string of Workbench commands and signatures """
-        return self.help_system.help_commands(cli)
+    def _help_basic(self):
+        """ Help for Workbench Basics """
+        help =  '%sWorkbench: Getting started...' % (Fore.YELLOW)
+        help += '\n%sLoad in a sample:'  % (Fore.GREEN)
+        help += '\n\t%s$ load_sample /path/to/file' % (Fore.BLUE)
+        help += '\n\n%sNotice the prompt now shows the md5 of the sample...'% (Fore.YELLOW)
+        help += '\n%sRun workers on the sample:'  % (Fore.GREEN)
+        help += '\n\t%s$ meta %s' % (Fore.BLUE, Fore.RESET)
+        return help
 
-    def help_command(self, command, cli=False):
-        """ Returns a specific Workbench command and docstring """
-        return self.help_system.help_command(command,cli)
+    def _help_commands(self):
+        """ Help on all the available commands """
+        help =  'Workbench Commands:'
+        for command in self.list_all_commands():
+            full_help = self.work_request('help_cli', command)['help_cli']['help']
+            compact_help = full_help.split('\n')[:3]
+            help += '\n\t%s' % '\n'.join(compact_help)
+        return help
 
-    def help_workers(self, cli=False):
-        """ Returns a big string of the loaded Workbench workers and their dependencies """
-        return self.help_system.help_workers(cli)
-
-    def help_worker(self, worker, cli=False):
-        """ Returns a specific Workbench worker and docstring """
-        return self.help_system.help_worker(worker, cli)
-
-    def help_advanced(self, cli=False):
-        """ Returns advanced help commands """
-        return self.help_system.help_advanced(cli)
-
-    def help_everything(self, cli=False):
-        """ Returns advanced help commands """
-        return self.help_system.help_everything(cli)
+    def _help_workers(self):
+        """ Help on all the available workers """
+        help =  'Workbench Workers:'
+        for worker in self.list_all_workers():
+            full_help = self.work_request('help_cli', worker)['help_cli']['help']
+            compact_help = full_help.split('\n')[:4]
+            help += '\n\t%s' % '\n'.join(compact_help)
+        return help
 
 
     ##################
@@ -474,18 +496,36 @@ class WorkBench(object):
     def list_all_commands(self):
         """ Returns a list of all the Workbench commands"""
         commands = [name for name, _ in inspect.getmembers(self, predicate=inspect.ismethod) if not name.startswith('_')]
-        commands.append('batch_work_request') # I think the zerorpc decorator messes up inspect
+        # commands.append('batch_work_request') # I think the zerorpc decorator messes up inspect
         return commands
 
     def list_all_workers(self):
         """ List all the currently loaded workers """
         return self.plugin_meta.keys()
 
-    def worker_info(self, worker_name):
-        """ Get the information about this worker """
-        plugin = self.plugin_meta[worker_name]
-        return {'dependencies': plugin['class'].dependencies, 'doc': plugin['class'].__doc__}
+    def info(self, component):
+        """ Get the information about this component """
 
+        # Grab it, clean it and ship it
+        work_results = self._get_work_results('info', component)
+        return self.data_store.clean_for_serialization(work_results)
+
+    def store_info(self, info_dict, component, type_tag):
+        """ Store information about a component. The component could be a
+            worker or a commands or a class, or whatever you want, the
+            only thing to be aware of is name collisions. """
+
+        # Enforce dictionary input
+        if not isinstance(info_dict, dict):
+            print 'Critical: info_dict must be a python dictionary, got %s' % type(info_dict)
+            return
+
+        # Ensure values are not functions/methods/classes
+        info_storage = {key:value for key, value in info_dict.iteritems() if not hasattr(value, '__call__')}
+
+        # Place the type_tag on it and store it
+        info_storage['type_tag'] = type_tag
+        self._store_work_results(info_storage, 'info', component)
 
     ##################
     # Testing
@@ -511,10 +551,31 @@ class WorkBench(object):
     ####################
     # Internal Methods
     ####################
-    def _new_plugin(self, plugin, mod_time):
+    def _store_information(self):
+        """ Store infomation about Workbench and its commands """
+        
+        print '<<< Generating Information Storage >>>'
+
+        """ Stores information on Workbench commands and signatures """
+        for name, meth in inspect.getmembers(self, predicate=inspect.ismethod):
+            if not name.startswith('_'):
+                info = {'command': name, 'sig': str(funcsigs.signature(meth)), 'docstring': meth.__doc__}
+                self.store_info(info, name, type_tag='command')
+
+        """ Stores help text into the workbench information system """
+        self.store_info({'help': '<<< Workbench Version %s >>>' % self.version}, 'version', type_tag='help')
+        self.store_info({'help': self._help_workbench()}, 'workbench', type_tag='help')
+        self.store_info({'help': self._help_basic()}, 'basic', type_tag='help')
+        self.store_info({'help': self._help_commands()}, 'commands', type_tag='help')
+        self.store_info({'help': self._help_workers()}, 'workers', type_tag='help')
+
+    def _new_plugin(self, plugin):
         """ Internal: This method handles the mechanics around new plugins. """
-        print '\t- %s: loaded...' % (plugin['name'])
-        plugin['time_stamp'] = mod_time # datetime.datetime.utcnow()
+
+        # First store the plugin info into our data store
+        self.store_info(plugin, plugin['name'], type_tag='worker')
+
+        # Place it into our active plugin list
         self.plugin_meta[plugin['name']] = plugin
 
     def _store_work_results(self, results, collection, md5):
@@ -533,24 +594,27 @@ class WorkBench(object):
                passed down the pipeline until htting the requested worker. """
 
         # Looking for the sample or sample_set?
-        if (worker_name == 'sample'):
+        if worker_name == 'sample':
             # If we have a sample set with this md5, return it
             if self.get_sample_set(md5):
                 return self.get_sample_set(md5)
             # Return the sample (might raise a RuntimeError)
             return self.get_sample(md5)
 
+        # Looking for info?
+        if worker_name == 'info':
+            return self._get_work_results('info', md5)
+
         # Do I actually have this plugin? (might have failed, etc)
         if (worker_name not in self.plugin_meta):
             print 'Request for non-existing or failed plugin: %s' % (worker_name)
             return {}
 
-        # If the results exist and the time_stamp is newer than the plugin's, I'm done
+        # If the results exist and the mod_time is newer than the plugin's, I'm done
         collection = self.plugin_meta[worker_name]['name']
         work_results = self._get_work_results(collection, md5)
         if work_results:
-            if self.plugin_meta[worker_name]['time_stamp'] < work_results[collection]['__time_stamp']:
-                print 'Returning cached work results for plugin: %s' % (worker_name)
+            if self.plugin_meta[worker_name]['mod_time'] < work_results[collection]['__time_stamp']:
                 return work_results
             else:
                 print 'Updating work results for new plugin: %s' % (worker_name)
