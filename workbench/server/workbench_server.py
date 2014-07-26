@@ -638,29 +638,30 @@ class WorkBench(object):
 
         # If the results exist and the mod_time is newer than the plugin's, I'm done
         collection = self.plugin_meta[worker_name]['name']
-        work_results = self._get_work_results(collection, md5)
-        if work_results:
+        try:
+            work_results = self._get_work_results(collection, md5)
             if self.plugin_meta[worker_name]['mod_time'] < work_results[collection]['__time_stamp']:
                 return work_results
             else:
-                print 'Updating work results for new plugin: %s' % (worker_name)
+                print '%s plugin newer than data' % (worker_name) 
 
-        # Okay either need to generate (or re-generate) the work results
-        dependencies = self.plugin_meta[worker_name]['dependencies']
-        dependant_results = {}
-        for dependency in dependencies:
-            dependant_results.update(self._recursive_work_resolver(dependency, md5))
-        print 'New work for plugin: %s' % (worker_name)
-        work_results = self.plugin_meta[worker_name]['class']().execute(dependant_results)
+        except WorkBench.DataNotFound:
+            # Okay either need to generate (or re-generate) the work results
+            dependencies = self.plugin_meta[worker_name]['dependencies']
+            dependant_results = {}
+            for dependency in dependencies:
+                dependant_results.update(self._recursive_work_resolver(dependency, md5))
+            print 'New work for plugin: %s' % (worker_name)
+            work_results = self.plugin_meta[worker_name]['class']().execute(dependant_results)
 
-        # Enforce dictionary output
-        if not isinstance(work_results, dict):
-            print 'Critical: Plugin %s MUST produce a python dictionary!' % worker_name
-            return None
+            # Enforce dictionary output
+            if not isinstance(work_results, dict):
+                print 'Critical: Plugin %s MUST produce a python dictionary!' % worker_name
+                return None
 
-        # Store the results and return
-        self._store_work_results(work_results, collection, md5)
-        return self._get_work_results(collection, md5)
+            # Store the results and return
+            self._store_work_results(work_results, collection, md5)
+            return self._get_work_results(collection, md5)
 
     def _find_element(self,d,k):
         if k in d: return d[k]
