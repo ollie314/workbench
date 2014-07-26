@@ -29,7 +29,7 @@ def run():
             results = workbench.work_request('view_log_meta', md5)
             print 'Filename: %s\n' % (base_name)
             pprint.pprint(results)
-            stream_log = workbench.stream_sample(md5, 20)
+            stream_log = workbench.stream_sample(md5, {'max_rows':20})
             for row in stream_log:
                 print row
 

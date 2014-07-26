@@ -32,7 +32,7 @@ def run():
             # Just grab the http log
             if 'http_log' in results['pcap_bro']:
                 log_md5 = results['pcap_bro']['http_log']
-                http_data = workbench.stream_sample(log_md5, None)  # None Means all data
+                http_data = workbench.stream_sample(log_md5)  # None Means all data
                 urls = set( row['host'] for row in http_data)
                 print '<<< %s >>>' % filename
                 pprint.pprint(list(urls))

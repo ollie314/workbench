@@ -43,24 +43,24 @@ class PcapGraph(object):
         bro_logs = input_data['pcap_bro']
 
         # DNS log
-        stream = self.workbench.stream_sample(bro_logs['dns_log'], None)
+        stream = self.workbench.stream_sample(bro_logs['dns_log'])
         self.dns_log_graph(stream)
 
         # Weird log
         if 'weird_log' in bro_logs:
-            stream = self.workbench.stream_sample(bro_logs['weird_log'], None)
+            stream = self.workbench.stream_sample(bro_logs['weird_log'])
             self.weird_log_graph(stream)
 
         # HTTP log
-        stream = self.workbench.stream_sample(bro_logs['http_log'], None)
+        stream = self.workbench.stream_sample(bro_logs['http_log'])
         self.http_log_graph(stream)
 
         # Files log
-        stream = self.workbench.stream_sample(bro_logs['files_log'], None)
+        stream = self.workbench.stream_sample(bro_logs['files_log'])
         self.files_log_graph(stream)
 
         # Conn log
-        stream = self.workbench.stream_sample(bro_logs['conn_log'], None)
+        stream = self.workbench.stream_sample(bro_logs['conn_log'])
         self.conn_log_graph(stream)
 
         return {'output':'go to http://localhost:7474/browser and execute this query "match (s:origin), (t:file), p=allShortestPaths((s)--(t)) return p"'}

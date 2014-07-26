@@ -621,10 +621,11 @@ class WorkBench(object):
         # Looking for the sample or sample_set?
         if worker_name == 'sample':
             # If we have a sample set with this md5, return it
-            if self.get_sample_set(md5):
+            try:
                 return self.get_sample_set(md5)
-            # Return the sample (might raise a RuntimeError)
-            return self.get_sample(md5)
+            except WorkBench.DataNotFound:
+                # Return the sample (might raise a DataNotFound)
+                return self.get_sample(md5)
 
         # Looking for info?
         if worker_name == 'info':
