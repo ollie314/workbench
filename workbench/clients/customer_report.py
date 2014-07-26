@@ -16,7 +16,8 @@ def run():
     workbench.connect('tcp://'+args['server']+':'+args['port'])
 
     results = workbench.batch_work_request('view_customer')
-    pprint.pprint(list(results))
+    for customer in results:
+        pprint.pprint(customer)
 
 def test():
     """Executes test for customer_report."""
