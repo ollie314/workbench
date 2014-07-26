@@ -10,7 +10,11 @@
     <title>PCAP Report</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="../data/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <style type="text/css">
+    html,
+    body { height:100% }
+    </style>
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -23,15 +27,26 @@
 
     <div class="container">
       <div class="header">
-        <ul class="nav nav-pills pull-right">
-          <li class="active"><a href="#">Home</a></li>
-          <li><a href="#">About</a></li>
-          <li><a href="#">Contact</a></li>
-        </ul>
-        <h3 class="text-muted">Project name</h3>
+        
       </div>
 
-    
+       <div class="jumbotron">
+        <h3 class="text-muted text-center">WorkBench - A medium-data framework for security research and development teams.</h3>
+        <h1 class='text-center'>PCAP report</h1>
+      </div>
+      <div class="col-lg-3">
+          <ul class="nav nav-pills nav-stacked">
+            {% for result in results %}
+              <li {% if loop.first %}class="active"{% endif %}><a href="#{{result[0]}}" data-toggle="tab">{{result[0]}}</a></li>
+            {% endfor %}
+          </ul>
+      </div>
+      <div class="col-lg-9 tab-content">
+        {% for result in results %}
+          <div id="{{result[0]}}"  class="tab-pane {% if loop.first %}active{% endif %}">{{result[1]}}</div>
+        {% endfor %}
+      </div>
+      
       <div class="footer">
         <p>&copy; Company 2014</p>
       </div>
