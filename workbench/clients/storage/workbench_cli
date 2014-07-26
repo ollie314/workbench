@@ -7,7 +7,7 @@ import pprint
 import hashlib
 import zerorpc
 import tabulate
-import workbench.clients.workbench_client as workbench_client
+import workbench.clients.client_helper as client_helper
 
 def try_get_tables(data):
     ''' Try to determine if this data has table keys '''
@@ -70,7 +70,7 @@ def run():
     print '<<< Workbench Version %s >>>' % sys.modules['workbench'].__version__
 
     # Grab arguments
-    args = workbench_client.grab_server_args()
+    args = client_helper.grab_server_args()
 
     # Start up workbench connection
     workbench = zerorpc.Client(timeout=300, heartbeat=60)

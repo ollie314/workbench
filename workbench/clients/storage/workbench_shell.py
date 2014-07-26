@@ -5,7 +5,7 @@
 import os
 import hashlib
 import zerorpc
-import workbench.clients.workbench_client as workbench_client
+import workbench.clients.client_helper as client_helper
 import IPython
 import functools
 
@@ -94,7 +94,7 @@ class WorkbenchShell(object):
         ''' Workbench CLI Initialization '''
 
         # Grab server arguments
-        server_info = workbench_client.grab_server_args()
+        server_info = client_helper.grab_server_args()
 
         # Spin up workbench server
         self.workbench = zerorpc.Client(timeout=300, heartbeat=60)

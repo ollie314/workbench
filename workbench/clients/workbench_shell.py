@@ -7,14 +7,15 @@ import hashlib
 import zerorpc
 import IPython
 import functools
+from colorama import Fore
 
 try:
-    from . import workbench_client
+    from . import client_helper
 
 # Okay this happens when you're running workbench in a debugger so having
 # this is super handy and we'll keep it even though it hurts coverage score.
 except ValueError:
-    import workbench_client
+    import client_helper
 
 # These little helpers get around IPython wanting to take the
 # __repr__ of string output instead of __str__.
@@ -57,7 +58,7 @@ class WorkbenchShell(object):
         ''' Workbench CLI Initialization '''
 
         # Grab server arguments
-        server_info = workbench_client.grab_server_args()
+        server_info = client_helper.grab_server_args()
 
         # Spin up workbench server
         self.workbench = zerorpc.Client(timeout=300, heartbeat=60)
@@ -123,7 +124,10 @@ class WorkbenchShell(object):
             md5 = self.session.md5
 
         # Make the work_request with worker and md5 args
-        return self.workbench.work_request(worker, md5)
+        try:
+            return self.workbench.work_request(worker, md5)
+        except zerorpc.exceptions.RemoteError as e:
+            return repr_to_str_decorator(self._data_not_found)(e)
 
     def workbench_command(self, command, *args):
         """Wrapper for a command to workbench"""
@@ -132,7 +136,13 @@ class WorkbenchShell(object):
         print 'Executing %s %s' % (command, args)
 
         # Run the workbench command with args
-        return self.workbench[command](*args)
+        try:
+            return self.workbench[command](*args)
+        except zerorpc.exceptions.RemoteError as e:
+            return repr_to_str_decorator(self._data_not_found)(e)
+
+    def _data_not_found(self, e):
+        return '%s%s%s' % (Fore.RED, e.msg, Fore.RESET)
 
     def _generate_command_dict(self):
         """Create a customized namespace for Workbench with a bunch of shortcuts
@@ -146,7 +156,8 @@ class WorkbenchShell(object):
 
         # Next add all the commands
         for command in self.workbench.list_all_commands():
-            commands[command] = lambda args: self.workbench.command(args)
+            # Fixme: is there a better way to get the lambda function from ZeroRPC
+            commands[command] = self.workbench.__getattr__(command)
 
         # Now the general commands which are often overloads
         # for some of the workbench commands

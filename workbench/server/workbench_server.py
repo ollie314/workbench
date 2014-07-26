@@ -46,7 +46,7 @@ class WorkBench(object):
     class DataNotFound(Exception):
         @staticmethod
         def message():
-            return 'Obi-Wan: waves hand... "This isn\'t the data you\'re looking for..."'
+            return "Obi-Wan waves his hand... this isn't the data you're looking for..."
 
     def __init__(self, store_args=None, els_hosts=None, neo_uri=None):
         """Initialize the Framework.
@@ -116,10 +116,12 @@ class WorkBench(object):
             Returns:
                 A dictionary of meta data about the sample which includes
                 a ['raw_bytes'] key that contains the raw bytes.
+            Raises:
+                Workbench.DataNotFound if the sample is not found.
         """
         sample = self.data_store.get_sample(md5)
         if not sample:
-            raise WorkBench.DataNotFound({'md5': md5})
+            raise WorkBench.DataNotFound(md5 + ': Data/Sample not found...')
         return {'sample': sample}
 
     def get_sample_window(self, type_tag, size):
@@ -167,7 +169,7 @@ class WorkBench(object):
         max_rows = kwargs.get('max_rows', None)      
 
         # Grab the sample and it's raw bytes
-        sample = self.data_store.get_sample(md5)
+        sample = self.get_sample(md5)
         raw_bytes = sample['raw_bytes']
 
         # Figure out the type of file to be streamed
@@ -608,7 +610,7 @@ class WorkBench(object):
         """ Internal: Method for fetching work results."""
         results = self.data_store.get_work_results(collection, md5)
         if not results:
-            raise WorkBench.DataNotFound({'md5': md5})
+            raise WorkBench.DataNotFound(md5 + ': Data/Sample not found...')
         return {collection: results}
 
 

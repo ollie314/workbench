@@ -3,7 +3,7 @@
 import zerorpc
 import os
 import pprint
-import workbench_client
+import client_helper
 
 # We're not using this but it might be handy to someone
 '''
@@ -19,7 +19,7 @@ def run():
     """This client pushes a file into Workbench."""
     
     # Grab server args
-    args = workbench_client.grab_server_args()
+    args = client_helper.grab_server_args()
 
     # Start up workbench connection
     workbench = zerorpc.Client(timeout=300, heartbeat=60)

@@ -7,8 +7,6 @@ import datetime
 import bson
 import time
 
-
-
 class DataStore(object):
     """DataStore for Workbench. 
 
@@ -187,7 +185,7 @@ class DataStore(object):
         print 'Warning: Performing slow md5 search...'
         starts_with = '%s.*' % partial_md5
         sample_info = self.database[self.sample_collection].find_one({'md5': {'$regex' : starts_with}},{'md5':1})
-        return sample_info['md5']
+        return sample_info['md5'] if sample_info else None
 
     def get_sample(self, md5):
         """Get the sample from the data store.
@@ -199,11 +197,7 @@ class DataStore(object):
             md5: The md5 digest of the sample to be fetched from datastore.
 
         Returns:
-            The sample dictionary.
-
-        Raises:
-            RuntimeError: Either Sample is not found or the gridfs file is missing.
-
+            The sample dictionary or None
         """
 
         # Support 'short' md5s but don't waste performance if the full md5 is provided
@@ -213,7 +207,7 @@ class DataStore(object):
         # Grab the sample
         sample_info = self.database[self.sample_collection].find_one({'md5': md5})
         if not sample_info:
-            raise RuntimeError('Sample not found: %s ' % (md5))
+            return None
 
         # Get the raw bytes from GridFS (note: this could fail)
         try:
@@ -224,7 +218,7 @@ class DataStore(object):
         except gridfs.errors.CorruptGridFile:
             # If we don't have the gridfs files, delete the entry from samples
             self.database[self.sample_collection].update({'md5': md5}, {'md5': None})
-            raise RuntimeError('Sample not found: %s ' % (md5))
+            return None
 
     def get_sample_window(self, type_tag, size=10):
         """Get a window of samples not to exceed size (in MB).
