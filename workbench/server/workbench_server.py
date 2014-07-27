@@ -60,7 +60,7 @@ class WorkBench(object):
         try:
             self.version = sys.modules['workbench'].__version__
         except (AttributeError, KeyError):
-            self.version = 'unknown'
+            self.version = '<Develop>'
         print '<<< Workbench Version %s >>>' % self.version
 
         # Open DataStore
@@ -528,7 +528,7 @@ class WorkBench(object):
         """ List all the currently loaded workers """
         return self.plugin_meta.keys()
 
-    def info(self, component):
+    def get_info(self, component):
         """ Get the information about this component """
 
         # Grab it, clean it and ship it
@@ -613,12 +613,24 @@ class WorkBench(object):
             raise WorkBench.DataNotFound(md5 + ': Data/Sample not found...')
         return {collection: results}
 
+    def _work_chain_mod_time(self, worker_name):
+        """ Internal: We compute a modification time of a work chain.
+            Returns:
+                The newest modification time of any worker in the work chain. 
+        """
+        my_mod_time = self._get_work_results('info', worker_name)['info']['mod_time']
+        dependencies = self.plugin_meta[worker_name]['dependencies']
+        if not dependencies:
+            return my_mod_time
+        else:
+            depend_mod_times = [my_mod_time]
+            for depend in dependencies:
+                depend_mod_times.append(self._work_chain_mod_time(depend))
+            return max(depend_mod_times)
 
-    # So the trick here is that since each worker just stores it's input dependencies
-    # we can resursively backtrack and all the needed work gets done.
     def _recursive_work_resolver(self, worker_name, md5):
-        """ Internal: Input dependencies are resursively backtracked, invoked and then
-               passed down the pipeline until htting the requested worker. """
+        """ Internal: Input dependencies are recursively backtracked, invoked and then
+               passed down the pipeline until getting to the requested worker. """
 
         # Looking for the sample or sample_set?
         if worker_name == 'sample':
@@ -638,14 +650,15 @@ class WorkBench(object):
             print 'Request for non-existing or failed plugin: %s' % (worker_name)
             return {}
 
-        # If the results exist and the mod_time is newer than the plugin's, I'm done
+        # If the results exist and the time_stamp is newer than the entire work_chain, I'm done
         collection = self.plugin_meta[worker_name]['name']
         try:
             work_results = self._get_work_results(collection, md5)
-            if self.plugin_meta[worker_name]['mod_time'] < work_results[collection]['__time_stamp']:
+            work_chain_mod_time = self._work_chain_mod_time(worker_name)
+            if work_chain_mod_time < work_results[collection]['__time_stamp']:
                 return work_results
             else:
-                print '%s plugin newer than data' % (worker_name) 
+                print '%s work_chain newer than data' % (worker_name) 
 
         except WorkBench.DataNotFound:
             # Okay either need to generate (or re-generate) the work results
