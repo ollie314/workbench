@@ -7,7 +7,7 @@ import workbench_client
 import flask
 
 STATIC_DIR = os.path.join(os.path.dirname(
-    os.path.abspath(__file__)), '../data/')
+    os.path.abspath(__file__)), 'static/')
 
 APP = flask.Flask(__name__, template_folder=STATIC_DIR,
                   static_folder=STATIC_DIR, static_url_path='')
