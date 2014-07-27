@@ -12,7 +12,6 @@ STATIC_DIR = os.path.join(os.path.dirname(
 APP = flask.Flask(__name__, template_folder=STATIC_DIR,
                   static_folder=STATIC_DIR, static_url_path='')
 
-@APP.route('/')
 def run():
     """This client pulls PCAP 'views' (view summarize what's in a sample)."""
     
@@ -40,6 +39,7 @@ def run():
 
     return results
 
+@APP.route('/')
 def flask_app():
     '''Return redered template for the flask app'''
     results = run()
@@ -50,5 +50,5 @@ def test():
     run()
 
 if __name__ == '__main__':
-    APP.flask_app(host='0.0.0.0', debug=True)
+    APP.run(host='0.0.0.0', debug=True)
 

@@ -26,34 +26,39 @@
   <body>
 
     <div class="container">
-      <div class="header">
-        
-      </div>
-
+      <div class="row">
        <div class="jumbotron">
         <h3 class="text-muted text-center">WorkBench - A medium-data framework for security research and development teams.</h3>
         <h1 class='text-center'>PCAP report</h1>
       </div>
+    </div>
+    <div class="row">
       <div class="col-lg-3">
-          <ul class="nav nav-pills nav-stacked">
+          <h4>Filename</h4>
+          <ul class="nav nav-pills nav-stacked" role="tablist">
             {% for result in results %}
-              <li {% if loop.first %}class="active"{% endif %}><a href="#{{result[0]}}" data-toggle="tab">{{result[0]}}</a></li>
+              <li {% if loop.first %}class="active"{% endif %}><a role="tab" href="#{{result[0]|replace('.','')}}" data-toggle="pill">{{result[0]}}</a></li>
             {% endfor %}
           </ul>
       </div>
       <div class="col-lg-9 tab-content">
-        {% for result in results %}
-          <div id="{{result[0]}}"  class="tab-pane {% if loop.first %}active{% endif %}">{{result[1]}}</div>
+        <h4>Report data</h4>
+        {% for result in results %}   
+          <div id="{{result[0]|replace('.','')}}"  class="tab-pane {% if loop.first %}active{% endif %}"><pre>{{result[1]|pprint}}</pre></div>
         {% endfor %}
       </div>
+    </div>
       
+    <div class="row">
       <div class="footer">
         <p>&copy; Company 2014</p>
       </div>
+    </div>
 
     </div> <!-- /container -->
 
-
+    <script type="text/javascript" src="/js/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="/js/bootstrap.min.js"></script>
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
