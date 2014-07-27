@@ -12,14 +12,12 @@ from colorama import Fore
 import re
 
 try:
-    from ...clients import client_helper
+    from . import client_helper
 
 # Okay this happens when you're running in a debugger so having this is
 # super handy and we'll keep it even though it hurts coverage score.
 except ValueError:
-    import sys
-    sys.path.append("../..")    
-    from clients import client_helper
+    import client_helper
 
 # These little helpers get around IPython wanting to take the
 # __repr__ of string output instead of __str__.
