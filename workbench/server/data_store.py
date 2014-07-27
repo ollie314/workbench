@@ -67,7 +67,6 @@ class DataStore(object):
 
         # Check if sample already exists
         if self.has_sample(sample_info['md5']):
-            print 'Sample %s: already exists in DataStore' % (sample_info['md5'])
             return sample_info['md5']
 
         # Run the periodic operations
