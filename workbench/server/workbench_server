@@ -3,7 +3,7 @@
 
 
 try:
-    from . import workbench_server as server
+    import workbench.server.workbench_server as server
 
 # Okay this happens when you're running workbench in a debugger so having
 # this is super handy and we'll keep it even though it hurts coverage score.

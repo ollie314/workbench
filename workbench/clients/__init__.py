@@ -1,1 +1,1 @@
-''' Workbench Clients. '''
+''' Workbench Clients '''
