@@ -42,7 +42,7 @@ class PluginManager(object):
         for f in [os.path.join(self.plugin_dir, child) for child in os.listdir(self.plugin_dir)]:
 
             # Skip certain files
-            if f == '.DS_Store' or f =='__init__.py': 
+            if '.DS_Store' in f or '__init__.py' in f: 
                 continue
 
             # Add the plugin
