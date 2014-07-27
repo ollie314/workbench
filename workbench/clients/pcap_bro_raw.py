@@ -2,13 +2,13 @@
 
 import zerorpc
 import os
-import workbench_client
+import client_helper
 
 def run():
     """This client gets the raw bro logs from PCAP files."""
     
     # Grab server args
-    args = workbench_client.grab_server_args()
+    args = client_helper.grab_server_args()
 
     # Start up workbench connection
     workbench = zerorpc.Client(timeout=300, heartbeat=60)

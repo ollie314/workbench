@@ -3,7 +3,7 @@
 import zerorpc
 import os
 import pprint
-import workbench_client
+import client_helper
 import flask
 
 STATIC_DIR = os.path.join(os.path.dirname(
@@ -16,7 +16,7 @@ def run():
     """This client pulls PCAP 'views' (view summarize what's in a sample)."""
     
     # Grab grab_server_argsrver args
-    args = workbench_client.grab_server_args()
+    args = client_helper.grab_server_args()
 
     # Start up workbench connection
     workbench = zerorpc.Client(timeout=300, heartbeat=60)

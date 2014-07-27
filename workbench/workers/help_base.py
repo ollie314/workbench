@@ -1,7 +1,7 @@
 
-''' Help worker '''
+''' HelpBase worker '''
 
-class Help(object):
+class HelpBase(object):
     ''' This worker computes help for any 'info' object '''
     dependencies = ['info']
 
@@ -33,18 +33,18 @@ def test():
     workbench.connect("tcp://127.0.0.1:4242")
 
     # Generate input for the worker
-    input_data = workbench.info('meta')
+    input_data = workbench.get_info('meta')
 
     # Execute the worker (unit test)
-    worker = Help()
+    worker = HelpBase()
     output = worker.execute(input_data)
     print '\n<<< Unit Test >>>'
     print output
 
     # Execute the worker (server test)
-    output = workbench.work_request('help', 'meta')
+    output = workbench.work_request('help_base', 'meta')
     print '\n<<< Server Test >>>'
-    print output['help']
+    print output['help_base']
 
 if __name__ == "__main__":
     test()

@@ -3,13 +3,13 @@
 import zerorpc
 import os
 import pprint
-import workbench_client
+import client_helper
 
 def run():
     """This client shows workbench extacting files from a zip file."""
     
     # Grab server args
-    args = workbench_client.grab_server_args()
+    args = client_helper.grab_server_args()
 
     # Start up workbench connection
     workbench = zerorpc.Client(timeout=300, heartbeat=60)
@@ -34,7 +34,7 @@ def run():
                 pprint.pprint(workbench.work_request('meta', child_md5))
 
 def test():
-    """Executes simple_workbench_client test."""
+    """Executes simple_client_helper test."""
     run()
 
 if __name__ == '__main__':

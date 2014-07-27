@@ -11,3 +11,4 @@ exclude_lines =
     except KeyError
     except RuntimeError
     except SystemExit
+omit = workbench/clients/workbench_shell.py

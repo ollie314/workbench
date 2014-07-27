@@ -124,7 +124,7 @@ class BroLogReader(object):
         if (self.convert_datetimes):
             try:
                 date_time = datetime.datetime.fromtimestamp(float(value))
-                if datetime.datetime(1971, 1, 1) > date_time:
+                if datetime.datetime(1970, 1, 1) > date_time:
                     raise ValueError
                 else:
                     return date_time

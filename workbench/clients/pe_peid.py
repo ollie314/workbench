@@ -3,13 +3,13 @@
 import zerorpc
 import os
 import pprint
-import workbench_client
+import client_helper
 
 def run():
     """This client looks for PEid signatures in PE Files."""
     
     # Grab server args
-    args = workbench_client.grab_server_args()
+    args = client_helper.grab_server_args()
 
     # Start up workbench connection
     workbench = zerorpc.Client(timeout=300, heartbeat=60)

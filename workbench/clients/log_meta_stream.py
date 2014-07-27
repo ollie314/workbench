@@ -3,13 +3,13 @@
 import zerorpc
 import os
 import pprint
-import workbench_client
+import client_helper
 
 def run():
     """This client gets metadata about log files."""
     
     # Grab server args
-    args = workbench_client.grab_server_args()
+    args = client_helper.grab_server_args()
     
     # Start up workbench connection
     workbench = zerorpc.Client(timeout=300, heartbeat=60)
@@ -29,7 +29,7 @@ def run():
             results = workbench.work_request('view_log_meta', md5)
             print 'Filename: %s\n' % (base_name)
             pprint.pprint(results)
-            stream_log = workbench.stream_sample(md5, 20)
+            stream_log = workbench.stream_sample(md5, {'max_rows':20})
             for row in stream_log:
                 print row
 
