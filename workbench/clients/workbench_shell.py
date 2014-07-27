@@ -6,7 +6,6 @@ import os
 import hashlib
 import zerorpc
 import IPython
-import pandas as pd
 import functools
 from colorama import Fore
 import re
