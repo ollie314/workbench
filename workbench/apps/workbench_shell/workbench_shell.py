@@ -6,6 +6,7 @@ import os
 import hashlib
 import zerorpc
 import IPython
+import pandas as pd
 import functools
 from colorama import Fore
 import re
@@ -47,15 +48,17 @@ class AutoQuoteTransformer(IPython.core.prefilter.PrefilterTransformer):
         """IPython Transformer for commands to use 'auto-quotes'"""
 
         # Very conservative logic here
+        # - Need to have more than one token
         # - First token in line must be in the workbench command set
         # - No other otkens can be in any of the shell namespaces
         import re
-        _token_list = re.split(' |;|,|(|)|\'|"', line)
-        first_token = _token_list[0]
-        tokens = set(_token_list)
-        if first_token in self.command_set:
-            ns_tokens = set([token for nspace in self.shell.all_ns_refs for token in nspace])
-            if len(tokens.intersection(ns_tokens))==1:
+        token_list = re.split(' |;|,|(|)|\'|"', line)
+        num_tokens = len(token_list)
+        first_token = token_list[0]
+        token_set = set(token_list)
+        if num_tokens > 1 and first_token in self.command_set:
+            ns_token_set = set([token for nspace in self.shell.all_ns_refs for token in nspace])
+            if len(token_set.intersection(ns_token_set))==1:
                 return ','+line
 
         # Doesn't match criteria so don't try to auto-quote it
@@ -194,13 +197,13 @@ class WorkbenchShell(object):
         cfg.InteractiveShellEmbed.autocall = 2
         cfg.InteractiveShellEmbed.colors = 'Linux'
         cfg.InteractiveShellEmbed.color_info = True
-        cfg.InteractiveShellEmbed.autoindent = False
+        cfg.InteractiveShellEmbed.autoindent = True
         cfg.InteractiveShellEmbed.deep_reload = True
         cfg.PromptManager.in_template = (
             r'{color.Purple}'
             r'{short_md5}'
             r'{color.Blue} Workbench{color.Green}[\#]> ')
-        cfg.PromptManager.out_template = ''
+        #cfg.PromptManager.out_template = ''
 
         # Create the IPython shell
         self.ipshell = IPython.terminal.embed.InteractiveShellEmbed(
