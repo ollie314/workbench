@@ -9,6 +9,11 @@ import IPython
 import functools
 from colorama import Fore
 import re
+try:
+    import pandas as pd
+except ImportError:
+    print '\n%sNotice: pandas not found...' % Fore.YELLOW
+    print '\t%sWe recommend installing pandas: %s$ pip install pandas%s' % (Fore.BLUE, Fore.RED, Fore.RESET)
 
 try:
     from . import client_helper
