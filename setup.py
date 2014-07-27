@@ -34,7 +34,7 @@ setup(
     scripts=['workbench/server/workbench_server', 'workbench/clients/workbench'],
     tests_require=['tox'],
     install_requires=['cython', 'colorama', 'distorm3>=0', 'elasticsearch',
-                      'funcsigs', 'filemagic', 'ipython', 'mock', 'pandas', 'pefile',
+                      'funcsigs', 'filemagic', 'ipython', 'mock', 'pefile',
                       'py2neo', 'pymongo', 'pytest', 'rekall==1.0rc11', 'requests',
                       'ssdeep==2.9-0.3', 'urllib3', 'yara', 'zerorpc'],
     license='MIT',
