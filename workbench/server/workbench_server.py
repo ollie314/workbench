@@ -169,7 +169,7 @@ class WorkBench(object):
         max_rows = kwargs.get('max_rows', None)      
 
         # Grab the sample and it's raw bytes
-        sample = self.get_sample(md5)
+        sample = self.get_sample(md5)['sample']
         raw_bytes = sample['raw_bytes']
 
         # Figure out the type of file to be streamed

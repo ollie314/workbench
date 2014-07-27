@@ -261,11 +261,8 @@ class DataStore(object):
 
         # The easiest thing is to simply get the sample and if that
         # succeeds than return True, else return False
-        try:
-            self.get_sample(md5)
-            return True
-        except RuntimeError:
-            return False
+        sample = self.get_sample(md5)
+        return True if sample else False
 
     def list_samples(self, predicate={}):
         """List all samples that meet the predicate or all if predicate is not specified.
