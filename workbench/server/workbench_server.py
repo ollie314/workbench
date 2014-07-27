@@ -20,6 +20,7 @@ import funcsigs
 import ConfigParser
 import magic
 from colorama import Fore, Style
+import datetime
 
 # Workbench server imports
 try:
@@ -119,9 +120,10 @@ class WorkBench(object):
             Raises:
                 Workbench.DataNotFound if the sample is not found.
         """
+        # First we try a sample, if we can't find one we try getting a sample_set.
         sample = self.data_store.get_sample(md5)
         if not sample:
-            raise WorkBench.DataNotFound(md5 + ': Data/Sample not found...')
+            return self.get_sample_set(md5)
         return {'sample': sample}
 
     def get_sample_window(self, type_tag, size):
@@ -618,6 +620,11 @@ class WorkBench(object):
             Returns:
                 The newest modification time of any worker in the work chain. 
         """
+
+        # Bottom out on sample or sample_set
+        if worker_name=='sample':
+            return datetime.datetime(1970, 1, 1)
+
         my_mod_time = self._get_work_results('info', worker_name)['info']['mod_time']
         dependencies = self.plugin_meta[worker_name]['dependencies']
         if not dependencies:
@@ -632,14 +639,9 @@ class WorkBench(object):
         """ Internal: Input dependencies are recursively backtracked, invoked and then
                passed down the pipeline until getting to the requested worker. """
 
-        # Looking for the sample or sample_set?
+        # Looking for the sample?
         if worker_name == 'sample':
-            # If we have a sample set with this md5, return it
-            try:
-                return self.get_sample_set(md5)
-            except WorkBench.DataNotFound:
-                # Return the sample (might raise a DataNotFound)
-                return self.get_sample(md5)
+            return self.get_sample(md5)
 
         # Looking for info?
         if worker_name == 'info':
@@ -658,25 +660,26 @@ class WorkBench(object):
             if work_chain_mod_time < work_results[collection]['__time_stamp']:
                 return work_results
             else:
-                print '%s work_chain newer than data' % (worker_name) 
-
+                print 'Notice: %s work_chain is newer than data' % (worker_name)
         except WorkBench.DataNotFound:
-            # Okay either need to generate (or re-generate) the work results
-            dependencies = self.plugin_meta[worker_name]['dependencies']
-            dependant_results = {}
-            for dependency in dependencies:
-                dependant_results.update(self._recursive_work_resolver(dependency, md5))
-            print 'New work for plugin: %s' % (worker_name)
-            work_results = self.plugin_meta[worker_name]['class']().execute(dependant_results)
+            print 'Notice: %s data not found generating' % (worker_name)
 
-            # Enforce dictionary output
-            if not isinstance(work_results, dict):
-                print 'Critical: Plugin %s MUST produce a python dictionary!' % worker_name
-                return None
+        # Okay either need to generate (or re-generate) the work results
+        dependencies = self.plugin_meta[worker_name]['dependencies']
+        dependant_results = {}
+        for dependency in dependencies:
+            dependant_results.update(self._recursive_work_resolver(dependency, md5))
+        print 'Notice: new work for plugin: %s' % (worker_name)
+        work_results = self.plugin_meta[worker_name]['class']().execute(dependant_results)
 
-            # Store the results and return
-            self._store_work_results(work_results, collection, md5)
-            return self._get_work_results(collection, md5)
+        # Enforce dictionary output
+        if not isinstance(work_results, dict):
+            print 'Critical: Plugin %s MUST produce a python dictionary!' % worker_name
+            return None
+
+        # Store the results and return
+        self._store_work_results(work_results, collection, md5)
+        return self._get_work_results(collection, md5)
 
     def _find_element(self,d,k):
         if k in d: return d[k]
