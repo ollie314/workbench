@@ -290,6 +290,10 @@ class DataStore(object):
         results['md5'] = md5
         results['__time_stamp'] = datetime.datetime.utcnow()
 
+        # If the data doesn't have a 'mod_time' field add one now
+        if 'mod_time' not in results:
+            results['mod_time'] = results['__time_stamp']
+
         # Fixme: Occasionally a capped collection will not let you update with a 
         #        larger object, if you have MongoDB 2.6 or above this shouldn't
         #        really happen, so for now just kinda punting and giving a message.
