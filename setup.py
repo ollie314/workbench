@@ -34,7 +34,7 @@ setup(
     scripts=['workbench/server/workbench_server', 'workbench/clients/workbench'],
     tests_require=['tox'],
     install_requires=['cython', 'colorama', 'distorm3>=0', 'elasticsearch',
-                      'funcsigs', 'filemagic', 'mock', 'pefile', 'py2neo',
+                      'funcsigs', 'flask', 'filemagic', 'mock', 'pefile', 'py2neo',
                       'pymongo', 'pytest>=2.5', 'pytest-cov', 'rekall==1.0rc11',
                       'requests', 'sphinx', 'sphinxcontrib-napoleon',
                       'ssdeep==2.9-0.3', 'tabulate', 'tox', 'urllib3',
