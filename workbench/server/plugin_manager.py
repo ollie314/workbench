@@ -35,14 +35,14 @@ class PluginManager(object):
     def load_all_plugins(self):
         """Load all the plugins in the plugin directory"""
 
-        # Fo through the existing python files in the plugin directory
+        # Go through the existing python files in the plugin directory
         self.plugin_path = os.path.realpath(self.plugin_dir)
         sys.path.append(self.plugin_dir)
         print '<<< Plugin Manager >>>'
         for f in [os.path.join(self.plugin_dir, child) for child in os.listdir(self.plugin_dir)]:
 
             # Skip certain files
-            if '.DS_Store' in f or '__init__.py' in f: 
+            if f == '.DS_Store' or f =='__init__.py': 
                 continue
 
             # Add the plugin
