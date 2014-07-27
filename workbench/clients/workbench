@@ -4,7 +4,7 @@
 """Workbench Interactive Shell using IPython"""
 
 try:
-    import workbench.client.workbench_shell as workbench_shell
+    import workbench.clients.workbench_shell as workbench_shell
 
 # Okay this happens when you're running workbench in a debugger so having
 # this is super handy and we'll keep it even though it hurts coverage score.
