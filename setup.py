@@ -20,7 +20,7 @@ history = open('HISTORY.rst').read().replace('.. :changelog:', '')
 
 setup(
     name='workbench',
-    version='0.2.8',
+    version='0.2.9',
     description='A medium-data framework for security research and development teams.',
     long_description=readme + '\n\n' + doclink + '\n\n' + history,
     author='The Workbench Team',
