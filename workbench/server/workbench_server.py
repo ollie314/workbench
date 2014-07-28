@@ -57,6 +57,10 @@ class WorkBench(object):
             els_hosts: The address where Elastic Search Indexer is running.
             neo_uri: The address where Neo4j is running.
         """
+
+        # Needs to be replaced by logger
+        self.VERBOSE = False
+
         # Announce Version
         try:
             self.version = sys.modules['workbench'].__version__
@@ -649,7 +653,7 @@ class WorkBench(object):
 
         # Do I actually have this plugin? (might have failed, etc)
         if (worker_name not in self.plugin_meta):
-            print 'Request for non-existing or failed plugin: %s' % (worker_name)
+            print 'Alert: Request for non-existing or failed plugin: %s' % (worker_name)
             return {}
 
         # If the results exist and the time_stamp is newer than the entire work_chain, I'm done
@@ -662,14 +666,16 @@ class WorkBench(object):
             else:
                 print 'Notice: %s work_chain is newer than data' % (worker_name)
         except WorkBench.DataNotFound:
-            print 'Notice: %s data not found generating' % (worker_name)
+            if self.VERBOSE:
+                print 'Verbose: %s data not found generating' % (worker_name)
 
         # Okay either need to generate (or re-generate) the work results
         dependencies = self.plugin_meta[worker_name]['dependencies']
         dependant_results = {}
         for dependency in dependencies:
             dependant_results.update(self._recursive_work_resolver(dependency, md5))
-        print 'Notice: new work for plugin: %s' % (worker_name)
+        if self.VERBOSE:
+            print 'Verbose: new work for plugin: %s' % (worker_name)
         work_results = self.plugin_meta[worker_name]['class']().execute(dependant_results)
 
         # Enforce dictionary output
