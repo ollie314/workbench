@@ -61,7 +61,7 @@ class MemSession(object):
         with s:
             mem_file = StringIO.StringIO(raw_bytes)
             s.physical_address_space = standard.FDAddressSpace(fhandle=mem_file, session=s)
-            profile = s.GetParameter("profile")
+            _profile = s.GetParameter("profile")
 
         # Store session handle
         self.session = s
@@ -120,7 +120,7 @@ class WorkbenchRenderer(BaseRenderer):
         self.formatter = Formatter()
         self.start()
 
-    def start(self, plugin_name=None, kwargs=None):
+    def start(self, plugin_name=None, _kwargs=None):
         """Start method: initial data structures and store some meta data."""
         self.output_data = {'sections':{}}
         self.section('Info')        
@@ -131,6 +131,7 @@ class WorkbenchRenderer(BaseRenderer):
         """Just a stub method."""
 
     def format(self, formatstring, *args):
+        """Presentation Information from the Plugin"""
 
         # Make a new section
         if self.incoming_section:
@@ -140,7 +141,8 @@ class WorkbenchRenderer(BaseRenderer):
         else:
             print 'Format called with %s' % self.formatter.format(formatstring, *args)
 
-    def section(self, name=None, **kwargs):
+    def section(self, name=None, **_kwargs):
+        """Called by the plugin when a new section is output"""
 
         # Check for weird case where an section call is made wit
         # no name and then a format call is made
@@ -153,13 +155,16 @@ class WorkbenchRenderer(BaseRenderer):
         self.output_data['sections'][self.active_section] = [] 
 
     def report_error(self, message):
+        """Report an error"""
         print 'Error Message: %s' % message
 
     def table_header(self, columns=None, **kwargs):
+        """A new table header"""
         self.active_headers = [col[0] for col in columns]
         self.header_types = [col[1] for col in columns]
 
     def table_row(self, *args, **kwargs):
+        """A new table row"""
         self.output_data['sections'][self.active_section]. \
             append(self._cast_row(self.active_headers, args, self.header_types))
 
@@ -172,6 +177,7 @@ class WorkbenchRenderer(BaseRenderer):
         print 'Calling flush on WorkbenchRenderer does nothing'
 
     def render(self, plugin):
+        """This method starts the plugin, calls render and returns the plugin output """
         self.start(plugin_name=plugin.name)
         plugin.render(self)
         return self.output_data
