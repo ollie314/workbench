@@ -44,16 +44,16 @@ class AutoQuoteTransformer(IPython.core.prefilter.PrefilterTransformer):
     """IPython Transformer for commands to use 'auto-quotes'"""
 
     def register_command_set(self, command_set):
+        """Register all the Workbench commands"""
         self.command_set = command_set
 
-    def transform(self, line, continue_prompt):
+    def transform(self, line, _continue_prompt):
         """IPython Transformer for commands to use 'auto-quotes'"""
 
         # Very conservative logic here
         # - Need to have more than one token
         # - First token in line must be in the workbench command set
         # - No other otkens can be in any of the shell namespaces
-        import re
         token_list = re.split(' |;|,|(|)|\'|"', line)
         num_tokens = len(token_list)
         first_token = token_list[0]
@@ -157,6 +157,7 @@ class WorkbenchShell(object):
             return repr_to_str_decorator(self._data_not_found)(e)
 
     def _data_not_found(self, e):
+        """Message when you get a DataNotFound exception from the server"""
         return '%s%s%s' % (Fore.RED, e.msg, Fore.RESET)
 
     def _generate_command_dict(self):
@@ -205,7 +206,7 @@ class WorkbenchShell(object):
             r'{color.Purple}'
             r'{short_md5}'
             r'{color.Blue} Workbench{color.Green}[\#]> ')
-        #cfg.PromptManager.out_template = ''
+        # cfg.PromptManager.out_template = ''
 
         # Create the IPython shell
         self.ipshell = IPython.terminal.embed.InteractiveShellEmbed(
