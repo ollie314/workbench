@@ -109,14 +109,14 @@ class WorkbenchShell(object):
     def file_chunker(self, filename, raw_bytes, type_tag):
         """Split up a large file into chunks and send to Workbench"""
         md5_list = []
-        send_bytes = 0
-        mbyte = 1024*1024
-        chunk_size = 10*mbyte
+        sent_bytes = 0
+        mb = 1024*1024
+        chunk_size = 10*mb
         total_bytes = len(raw_bytes)
         for chunk in self.chunks(raw_bytes, chunk_size):
             md5_list.append(self.workbench.store_sample(filename, chunk, type_tag))
-            send_bytes += chunk_size
-            print 'Sending %.1f MB (%.1f MB)...' % (send_bytes/mbyte, total_bytes/mbyte)
+            sent_bytes += chunk_size
+            print '\t%s- Sending %.1f MB (%.1f MB)...%s' % (Fore.YELLOW, sent_bytes/mb, total_bytes/mb, Fore.RESET)
 
         # Now we just ask Workbench to combine these
         return self.workbench.combine_samples(md5_list, filename, type_tag)
