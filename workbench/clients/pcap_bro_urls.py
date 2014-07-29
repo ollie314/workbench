@@ -3,13 +3,13 @@
 import zerorpc
 import os
 import pprint
-import workbench_client
+import client_helper
 
 def run():
     """This client gets extracts URLs from PCAP files (via Bro logs)."""
     
     # Grab server args
-    args = workbench_client.grab_server_args()
+    args = client_helper.grab_server_args()
 
     # Start up workbench connection
     workbench = zerorpc.Client(timeout=300, heartbeat=60)
@@ -32,7 +32,7 @@ def run():
             # Just grab the http log
             if 'http_log' in results['pcap_bro']:
                 log_md5 = results['pcap_bro']['http_log']
-                http_data = workbench.stream_sample(log_md5, None)  # None Means all data
+                http_data = workbench.stream_sample(log_md5)  # None Means all data
                 urls = set( row['host'] for row in http_data)
                 print '<<< %s >>>' % filename
                 pprint.pprint(list(urls))

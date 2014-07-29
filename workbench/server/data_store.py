@@ -7,8 +7,6 @@ import datetime
 import bson
 import time
 
-
-
 class DataStore(object):
     """DataStore for Workbench. 
 
@@ -69,7 +67,6 @@ class DataStore(object):
 
         # Check if sample already exists
         if self.has_sample(sample_info['md5']):
-            print 'Sample %s: already exists in DataStore' % (sample_info['md5'])
             return sample_info['md5']
 
         # Run the periodic operations
@@ -117,14 +114,23 @@ class DataStore(object):
 
             # This should return the 'oldest' record in samples
             record = self.database[self.sample_collection].find().sort('import_time',pymongo.ASCENDING).limit(1)[0]
+            self.remove_sample(record['md5'])
 
-            # Delete it
-            print 'Deleting sample: %s (%.2f MB)...' % (record['md5'], record['length']/1024.0/1024.0)
-            self.database[self.sample_collection].remove({'md5': record['md5']})
-            self.gridfs_handle.delete(record['__grid_fs'])
+    def remove_sample(self, md5):
+        """Delete a specific sample"""
 
-            # Print info
-            print 'Sample Storage: %.2f out of %.2f MB' % (self.sample_storage_size(), self.samples_cap)
+        # Grab the sample
+        record = self.database[self.sample_collection].find_one({'md5': md5})
+        if not record:
+            return
+
+        # Delete it
+        print 'Deleting sample: %s (%.2f MB)...' % (record['md5'], record['length']/1024.0/1024.0)
+        self.database[self.sample_collection].remove({'md5': record['md5']})
+        self.gridfs_handle.delete(record['__grid_fs'])
+
+        # Print info
+        print 'Sample Storage: %.2f out of %.2f MB' % (self.sample_storage_size(), self.samples_cap)
 
     def clean_for_serialization(self, data):
         """Clean data in preparation for serialization.
@@ -187,7 +193,7 @@ class DataStore(object):
         print 'Warning: Performing slow md5 search...'
         starts_with = '%s.*' % partial_md5
         sample_info = self.database[self.sample_collection].find_one({'md5': {'$regex' : starts_with}},{'md5':1})
-        return sample_info['md5']
+        return sample_info['md5'] if sample_info else None
 
     def get_sample(self, md5):
         """Get the sample from the data store.
@@ -199,11 +205,7 @@ class DataStore(object):
             md5: The md5 digest of the sample to be fetched from datastore.
 
         Returns:
-            The sample dictionary.
-
-        Raises:
-            RuntimeError: Either Sample is not found or the gridfs file is missing.
-
+            The sample dictionary or None
         """
 
         # Support 'short' md5s but don't waste performance if the full md5 is provided
@@ -213,7 +215,7 @@ class DataStore(object):
         # Grab the sample
         sample_info = self.database[self.sample_collection].find_one({'md5': md5})
         if not sample_info:
-            raise RuntimeError('Sample not found: %s ' % (md5))
+            return None
 
         # Get the raw bytes from GridFS (note: this could fail)
         try:
@@ -224,7 +226,7 @@ class DataStore(object):
         except gridfs.errors.CorruptGridFile:
             # If we don't have the gridfs files, delete the entry from samples
             self.database[self.sample_collection].update({'md5': md5}, {'md5': None})
-            raise RuntimeError('Sample not found: %s ' % (md5))
+            return None
 
     def get_sample_window(self, type_tag, size=10):
         """Get a window of samples not to exceed size (in MB).
@@ -267,11 +269,8 @@ class DataStore(object):
 
         # The easiest thing is to simply get the sample and if that
         # succeeds than return True, else return False
-        try:
-            self.get_sample(md5)
-            return True
-        except RuntimeError:
-            return False
+        sample = self.get_sample(md5)
+        return True if sample else False
 
     def list_samples(self, predicate={}):
         """List all samples that meet the predicate or all if predicate is not specified.
@@ -298,6 +297,10 @@ class DataStore(object):
         # Make sure the md5 and time stamp is on the data before storing
         results['md5'] = md5
         results['__time_stamp'] = datetime.datetime.utcnow()
+
+        # If the data doesn't have a 'mod_time' field add one now
+        if 'mod_time' not in results:
+            results['mod_time'] = results['__time_stamp']
 
         # Fixme: Occasionally a capped collection will not let you update with a 
         #        larger object, if you have MongoDB 2.6 or above this shouldn't

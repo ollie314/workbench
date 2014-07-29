@@ -2,7 +2,7 @@
 
 import zerorpc
 import os
-import workbench_client
+import client_helper
 
 def add_it(workbench, file_list, labels):
     """Add the given file_list to workbench as samples, also add them as nodes.
@@ -77,7 +77,7 @@ def run():
     """This client generates a similarity graph from features in PE Files."""
 
     # Grab server args
-    args = workbench_client.grab_server_args()
+    args = client_helper.grab_server_args()
 
     # Start up workbench connection
     workbench = zerorpc.Client(timeout=300, heartbeat=60)

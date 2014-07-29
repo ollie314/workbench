@@ -20,6 +20,7 @@ import funcsigs
 import ConfigParser
 import magic
 from colorama import Fore, Style
+import datetime
 
 # Workbench server imports
 try:
@@ -42,6 +43,12 @@ except ValueError:
 class WorkBench(object):
     """ Workbench: Open Source Security Framework. """
 
+    # Workbench DataNotFound exception class
+    class DataNotFound(Exception):
+        @staticmethod
+        def message():
+            return "Obi-Wan waves his hand... this isn't the data you're looking for..."
+
     def __init__(self, store_args=None, els_hosts=None, neo_uri=None):
         """Initialize the Framework.
 
@@ -50,11 +57,15 @@ class WorkBench(object):
             els_hosts: The address where Elastic Search Indexer is running.
             neo_uri: The address where Neo4j is running.
         """
+
+        # Needs to be replaced by logger
+        self.VERBOSE = False
+
         # Announce Version
         try:
             self.version = sys.modules['workbench'].__version__
         except (AttributeError, KeyError):
-            self.version = 'unknown'
+            self.version = '<Develop>'
         print '<<< Workbench Version %s >>>' % self.version
 
         # Open DataStore
@@ -110,8 +121,13 @@ class WorkBench(object):
             Returns:
                 A dictionary of meta data about the sample which includes
                 a ['raw_bytes'] key that contains the raw bytes.
+            Raises:
+                Workbench.DataNotFound if the sample is not found.
         """
+        # First we try a sample, if we can't find one we try getting a sample_set.
         sample = self.data_store.get_sample(md5)
+        if not sample:
+            return self.get_sample_set(md5)
         return {'sample': sample}
 
     def get_sample_window(self, type_tag, size):
@@ -136,26 +152,53 @@ class WorkBench(object):
     def list_samples(self, predicate={}):
         """List all samples that meet the predicate or all if predicate is not specified.
 
-        Args:
-            predicate: Match samples against this predicate (or all if not specified)
+            Args:
+                predicate: Match samples against this predicate (or all if not specified)
 
-        Returns:
-            List of dictionaries with matching samples {'md5':md5, 'filename': 'foo.exe', 'type_tag': 'exe'}
+            Returns:
+                List of dictionaries with matching samples {'md5':md5, 'filename': 'foo.exe', 'type_tag': 'exe'}
         """
         return self.data_store.list_samples(predicate)
 
+    def combine_samples(self, md5_list, filename, type_tag):
+        """Combine samples together. This may have various use cases the most significant 
+           involving a bunch of sample 'chunks' got uploaded and now we combine them together
+
+            Args:
+                md5_list: The list of md5s to combine, order matters!
+                filename: name of the file (used purely as meta data not for lookup)
+                type_tag: ('exe','pcap','pdf','json','swf', or ...)
+            Returns:
+                the computed md5 of the combined samples
+        """
+        total_bytes = ""
+        for md5 in md5_list:
+            total_bytes += self.get_sample(md5)['sample']['raw_bytes']
+            self.remove_sample(md5)
+
+        # Store it
+        return self.store_sample(filename, total_bytes, type_tag)
+
+    def remove_sample(self, md5):
+        """Remove the sample from the data store"""
+        self.data_store.remove_sample(md5)
+
     @zerorpc.stream
-    def stream_sample(self, md5, max_rows):
+    def stream_sample(self, md5, kwargs={}):
         """ Stream the sample by giving back a generator, typically used on 'logs'.
             Args:
                 md5: the md5 of the sample
-                max_rows: the maximum number of rows to return (None for all)
+                kwargs: a way of specifying subsets of samples (None for all)
+                    max_rows: the maximum number of rows to return
             Returns:
                 A generator that yields rows of the file/log
         """
 
+        # Get the max_rows if specified
+        max_rows = kwargs.get('max_rows', None)      
+
         # Grab the sample and it's raw bytes
-        sample = self.data_store.get_sample(md5)
+        sample = self.get_sample(md5)['sample']
         raw_bytes = sample['raw_bytes']
 
         # Figure out the type of file to be streamed
@@ -219,7 +262,7 @@ class WorkBench(object):
             Returns:
                 Nothing
         """
-        generator = self.stream_sample(md5, None)
+        generator = self.stream_sample(md5)
         for row in generator:
             self.indexer.index_data(row, index_name)
 
@@ -448,7 +491,19 @@ class WorkBench(object):
         """ Returns the formatted, colored help """
         if not topic:
             topic = 'workbench'
-        return self.work_request('help_cli', topic)['help_cli']['help']
+
+        # It's possible to ask for help on something that doesn't exist
+        # so we'll catch the exception and push back an object that
+        # indicates we didn't find what they were asking for
+        try:
+            return self.work_request('help_cli', topic)['help_cli']['help']
+        except WorkBench.DataNotFound as e:
+
+            # Okay this is a bit tricky we want to give the user a nice error
+            # message that has both the md5 of what they were looking for and
+            # a nice informative message that explains what might have happened
+            sample_md5 = e.args[0]['md5']
+            return '%s%s not found:\n\t%s' % (Fore.YELLOW, sample_md5, e.message())
 
     # Fixme: These are internal methods that basically just provide help text
     def _help_workbench(self):
@@ -468,7 +523,7 @@ class WorkBench(object):
         help += '\n\t%s$ load_sample /path/to/file' % (Fore.BLUE)
         help += '\n\n%sNotice the prompt now shows the md5 of the sample...'% (Fore.YELLOW)
         help += '\n%sRun workers on the sample:'  % (Fore.GREEN)
-        help += '\n\t%s$ meta %s' % (Fore.BLUE, Fore.RESET)
+        help += '\n\t%s$ meta or view or whatever... %s' % (Fore.BLUE, Fore.RESET)
         return help
 
     def _help_commands(self):
@@ -495,15 +550,14 @@ class WorkBench(object):
     ##################
     def list_all_commands(self):
         """ Returns a list of all the Workbench commands"""
-        commands = [name for name, _ in inspect.getmembers(self, predicate=inspect.ismethod) if not name.startswith('_')]
-        # commands.append('batch_work_request') # I think the zerorpc decorator messes up inspect
+        commands = [name for name, _ in inspect.getmembers(self, predicate=inspect.isroutine) if not name.startswith('_')]
         return commands
 
     def list_all_workers(self):
         """ List all the currently loaded workers """
         return self.plugin_meta.keys()
 
-    def info(self, component):
+    def get_info(self, component):
         """ Get the information about this component """
 
         # Grab it, clean it and ship it
@@ -556,13 +610,13 @@ class WorkBench(object):
         
         print '<<< Generating Information Storage >>>'
 
-        """ Stores information on Workbench commands and signatures """
-        for name, meth in inspect.getmembers(self, predicate=inspect.ismethod):
+        # Stores information on Workbench commands and signatures
+        for name, meth in inspect.getmembers(self, predicate=inspect.isroutine):
             if not name.startswith('_'):
                 info = {'command': name, 'sig': str(funcsigs.signature(meth)), 'docstring': meth.__doc__}
                 self.store_info(info, name, type_tag='command')
 
-        """ Stores help text into the workbench information system """
+        # Stores help text into the workbench information system
         self.store_info({'help': '<<< Workbench Version %s >>>' % self.version}, 'version', type_tag='help')
         self.store_info({'help': self._help_workbench()}, 'workbench', type_tag='help')
         self.store_info({'help': self._help_basic()}, 'basic', type_tag='help')
@@ -584,21 +638,36 @@ class WorkBench(object):
     def _get_work_results(self, collection, md5):
         """ Internal: Method for fetching work results."""
         results = self.data_store.get_work_results(collection, md5)
-        return {collection: results} if results else None
+        if not results:
+            raise WorkBench.DataNotFound(md5 + ': Data/Sample not found...')
+        return {collection: results}
 
+    def _work_chain_mod_time(self, worker_name):
+        """ Internal: We compute a modification time of a work chain.
+            Returns:
+                The newest modification time of any worker in the work chain. 
+        """
 
-    # So the trick here is that since each worker just stores it's input dependencies
-    # we can resursively backtrack and all the needed work gets done.
+        # Bottom out on sample or sample_set
+        if worker_name=='sample':
+            return datetime.datetime(1970, 1, 1)
+
+        my_mod_time = self._get_work_results('info', worker_name)['info']['mod_time']
+        dependencies = self.plugin_meta[worker_name]['dependencies']
+        if not dependencies:
+            return my_mod_time
+        else:
+            depend_mod_times = [my_mod_time]
+            for depend in dependencies:
+                depend_mod_times.append(self._work_chain_mod_time(depend))
+            return max(depend_mod_times)
+
     def _recursive_work_resolver(self, worker_name, md5):
-        """ Internal: Input dependencies are resursively backtracked, invoked and then
-               passed down the pipeline until htting the requested worker. """
+        """ Internal: Input dependencies are recursively backtracked, invoked and then
+               passed down the pipeline until getting to the requested worker. """
 
-        # Looking for the sample or sample_set?
+        # Looking for the sample?
         if worker_name == 'sample':
-            # If we have a sample set with this md5, return it
-            if self.get_sample_set(md5):
-                return self.get_sample_set(md5)
-            # Return the sample (might raise a RuntimeError)
             return self.get_sample(md5)
 
         # Looking for info?
@@ -607,24 +676,29 @@ class WorkBench(object):
 
         # Do I actually have this plugin? (might have failed, etc)
         if (worker_name not in self.plugin_meta):
-            print 'Request for non-existing or failed plugin: %s' % (worker_name)
+            print 'Alert: Request for non-existing or failed plugin: %s' % (worker_name)
             return {}
 
-        # If the results exist and the mod_time is newer than the plugin's, I'm done
+        # If the results exist and the time_stamp is newer than the entire work_chain, I'm done
         collection = self.plugin_meta[worker_name]['name']
-        work_results = self._get_work_results(collection, md5)
-        if work_results:
-            if self.plugin_meta[worker_name]['mod_time'] < work_results[collection]['__time_stamp']:
+        try:
+            work_results = self._get_work_results(collection, md5)
+            work_chain_mod_time = self._work_chain_mod_time(worker_name)
+            if work_chain_mod_time < work_results[collection]['__time_stamp']:
                 return work_results
             else:
-                print 'Updating work results for new plugin: %s' % (worker_name)
+                print 'Notice: %s work_chain is newer than data' % (worker_name)
+        except WorkBench.DataNotFound:
+            if self.VERBOSE:
+                print 'Verbose: %s data not found generating' % (worker_name)
 
         # Okay either need to generate (or re-generate) the work results
         dependencies = self.plugin_meta[worker_name]['dependencies']
         dependant_results = {}
         for dependency in dependencies:
             dependant_results.update(self._recursive_work_resolver(dependency, md5))
-        print 'New work for plugin: %s' % (worker_name)
+        if self.VERBOSE:
+            print 'Verbose: new work for plugin: %s' % (worker_name)
         work_results = self.plugin_meta[worker_name]['class']().execute(dependant_results)
 
         # Enforce dictionary output

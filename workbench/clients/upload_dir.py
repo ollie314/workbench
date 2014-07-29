@@ -2,7 +2,7 @@
 
 import zerorpc
 import os
-import workbench_client
+import client_helper
 import hashlib
 
 
@@ -10,7 +10,7 @@ def run():
     """This client pushes a big directory of different files into Workbench."""
     
     # Grab server args
-    args = workbench_client.grab_server_args()
+    args = client_helper.grab_server_args()
 
     # Start up workbench connection
     workbench = zerorpc.Client(timeout=300, heartbeat=60)

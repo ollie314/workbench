@@ -5,11 +5,11 @@ from colorama import Fore, Style
 
 class HelpCLI(object):
     ''' This worker does CLI formatting and coloring for any help object '''
-    dependencies = ['help']
+    dependencies = ['help_base']
 
     def execute(self, input_data):
         ''' Do CLI formatting and coloring based on the type_tag '''
-        input_data = input_data['help']
+        input_data = input_data['help_base']
         type_tag = input_data['type_tag']
 
         # Standard help text
@@ -46,9 +46,9 @@ def test():
     workbench.connect("tcp://127.0.0.1:4242")
 
     # Generate input for the worker
-    input_data1 = workbench.work_request('help', 'workbench')
-    input_data2 = workbench.work_request('help', 'meta')
-    input_data3 = workbench.work_request('help', 'store_sample')
+    input_data1 = workbench.work_request('help_base', 'workbench')
+    input_data2 = workbench.work_request('help_base', 'meta')
+    input_data3 = workbench.work_request('help_base', 'store_sample')
 
     # Execute the worker (unit test)
     worker = HelpCLI()

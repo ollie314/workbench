@@ -20,7 +20,7 @@ history = open('HISTORY.rst').read().replace('.. :changelog:', '')
 
 setup(
     name='workbench',
-    version='0.2.8',
+    version='0.2.9',
     description='A medium-data framework for security research and development teams.',
     long_description=readme + '\n\n' + doclink + '\n\n' + history,
     author='The Workbench Team',
@@ -34,11 +34,9 @@ setup(
     scripts=['workbench/server/workbench_server', 'workbench/clients/workbench'],
     tests_require=['tox'],
     install_requires=['cython', 'colorama', 'distorm3>=0', 'elasticsearch',
-                      'funcsigs', 'flask', 'filemagic', 'mock', 'pefile', 'py2neo',
-                      'pymongo', 'pytest>=2.5', 'pytest-cov', 'rekall==1.0rc11',
-                      'requests', 'sphinx', 'sphinxcontrib-napoleon',
-                      'ssdeep==2.9-0.3', 'tabulate', 'tox', 'urllib3',
-                      'watchdog', 'yara', 'zerorpc', 'cython'],
+                      'funcsigs', 'flask', 'filemagic', 'ipython', 'mock', 'pefile',
+                      'py2neo', 'pymongo', 'pytest', 'rekall==1.0rc11', 'requests',
+                      'ssdeep==2.9-0.3', 'urllib3', 'yara', 'zerorpc'],
     license='MIT',
     zip_safe=False,
     keywords='workbench security python',

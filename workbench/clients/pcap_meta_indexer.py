@@ -1,13 +1,13 @@
 """This client pushes PCAPs -> MetaDaa -> ELS Indexer."""
 import zerorpc
 import os
-import workbench_client
+import client_helper
 
 def run():
     """This client pushes PCAPs -> MetaDaa -> ELS Indexer."""
     
     # Grab server args
-    args = workbench_client.grab_server_args()
+    args = client_helper.grab_server_args()
 
     # Start up workbench connection
     workbench = zerorpc.Client(timeout=300, heartbeat=60)

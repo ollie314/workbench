@@ -1,7 +1,7 @@
 ''' Spin up Workbench Server (this is a singleton module)'''
 
 import multiprocessing
-import workbench.server.workbench as workbench_server
+import workbench.server.workbench_server as workbench_server
 
 print '\nStarting up the Workbench server...'
 process = multiprocessing.Process(target=workbench_server.run)

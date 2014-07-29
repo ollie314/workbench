@@ -2,7 +2,14 @@
 # -*- coding: utf-8 -*-
 
 """Workbench Interactive Shell using IPython"""
-from workbench.clients import workbench_shell
+
+try:
+    import workbench.clients.workbench_shell as workbench_shell
+
+# Okay this happens when you're running workbench in a debugger so having
+# this is super handy and we'll keep it even though it hurts coverage score.
+except ValueError:
+    import workbench_shell
 
 def run():
     work_shell = workbench_shell.WorkbenchShell()

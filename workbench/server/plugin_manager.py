@@ -8,6 +8,7 @@ import os, sys
 from datetime import datetime
 import dir_watcher
 import inspect
+import colorama
 from colorama import Fore
 
 class PluginManager(object):
@@ -34,7 +35,7 @@ class PluginManager(object):
     def load_all_plugins(self):
         """Load all the plugins in the plugin directory"""
 
-        # Fo through the existing python files in the plugin directory
+        # Go through the existing python files in the plugin directory
         self.plugin_path = os.path.realpath(self.plugin_dir)
         sys.path.append(self.plugin_dir)
         print '<<< Plugin Manager >>>'
@@ -200,7 +201,7 @@ def test():
     # will get scanned and stuff will get loaded into workbench.
     def new_plugin(plugin):
         """new plugin callback """
-        print '%s' % (plugin)
+        print '%s' % (plugin['name'])
 
     # Create Plugin Manager
     plugin_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)),'../workers')
