@@ -5,16 +5,6 @@ import os
 import pprint
 import client_helper
 
-# We're not using this but it might be handy to someone
-'''
-def md5_for_file(path, block_size=256*128):
-    md5 = hashlib.md5()
-    with open(path,'rb') as f:
-        for chunk in iter(lambda: f.read(block_size), b''):
-            md5.update(chunk)
-    return md5.hexdigest()
-'''
-
 def run():
     """This client pushes a file into Workbench."""
     
@@ -25,26 +15,18 @@ def run():
     workbench = zerorpc.Client(timeout=300, heartbeat=60)
     workbench.connect('tcp://'+args['server']+':'+args['port'])
 
-    # Upload the files into workbench
+    # Upload the file into workbench
     my_file = os.path.join(os.path.dirname(os.path.realpath(__file__)),
                            '../data/pe/bad/033d91aae8ad29ed9fbb858179271232')
     with open(my_file,'rb') as f:
 
-        # Check to see if workbench already has the file
+        # Throw file into workbench
         filename = os.path.basename(my_file)
         raw_bytes = f.read()
         md5 = workbench.store_sample(filename, raw_bytes, 'exe')
         results = workbench.work_request('view', md5)
         print 'Filename: %s' % filename
         pprint.pprint(results)
-
-    # You can also download a sample (commented out)
-    '''
-    sample = workbench.get_sample(md5)
-    raw_bytes = sample['sample']['raw_bytes']
-    with open('mysample.log','wb') as f:
-        f.write(raw_bytes)
-    '''
 
 def test():
     """Executes file_upload test."""
