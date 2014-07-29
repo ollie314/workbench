@@ -171,9 +171,9 @@ class WorkBench(object):
             Returns:
                 the computed md5 of the combined samples
         """
-        total_bytes = []
+        total_bytes = ""
         for md5 in md5_list:
-            total_bytes.append(self.get_sample(md5)['sample']['raw_bytes'])
+            total_bytes += self.get_sample(md5)['sample']['raw_bytes']
             self.remove_sample(md5)
 
         # Store it
