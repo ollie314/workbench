@@ -99,6 +99,28 @@ class WorkbenchShell(object):
             self.short_md5 = '-'
             self.server = 'localhost'
 
+    # Helper Methods
+    @staticmethod
+    def chunks(data, chunk_size):
+        """ Yield chunk_size chunks from data."""
+        for i in xrange(0, len(data), chunk_size):
+            yield data[i:i+chunk_size]
+
+    def file_chunker(self, filename, raw_bytes, type_tag):
+        """Split up a large file into chunks and send to Workbench"""
+        md5_list = []
+        send_bytes = 0
+        mbyte = 1024*1024
+        chunk_size = 10*mbyte
+        total_bytes = len(raw_bytes)
+        for chunk in self.chunks(raw_bytes, chunk_size):
+            md5_list.append(self.workbench.store_sample(filename, chunk, type_tag))
+            send_bytes += chunk_size
+            print 'Sending %.1f MB (%.1f MB)...' % (send_bytes/mbyte, total_bytes/mbyte)
+
+        # Now we just ask Workbench to combine these
+        return self.workbench.combine_samples(md5_list, filename, type_tag)
+
     def load_sample(self, file_path):
         """Load a sample (or samples) into workbench
            load_sample </path/to/file_or_dir> """
@@ -117,7 +139,7 @@ class WorkbenchShell(object):
                 if not self.workbench.has_sample(md5):
                     print 'Storing Sample...'
                     basename = os.path.basename(path)
-                    md5 = self.workbench.store_sample(basename, raw_bytes, 'unknown')
+                    md5 = self.file_chunker(basename, raw_bytes, 'unknown')
                 else:
                     print 'Sample already in Workbench...'
 
