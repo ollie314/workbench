@@ -152,13 +152,36 @@ class WorkBench(object):
     def list_samples(self, predicate={}):
         """List all samples that meet the predicate or all if predicate is not specified.
 
-        Args:
-            predicate: Match samples against this predicate (or all if not specified)
+            Args:
+                predicate: Match samples against this predicate (or all if not specified)
 
-        Returns:
-            List of dictionaries with matching samples {'md5':md5, 'filename': 'foo.exe', 'type_tag': 'exe'}
+            Returns:
+                List of dictionaries with matching samples {'md5':md5, 'filename': 'foo.exe', 'type_tag': 'exe'}
         """
         return self.data_store.list_samples(predicate)
+
+    def combine_samples(self, md5_list, filename, type_tag):
+        """Combine samples together. This may have various use cases the most significant 
+           involving a bunch of sample 'chunks' got uploaded and now we combine them together
+
+            Args:
+                md5_list: The list of md5s to combine, order matters!
+                filename: name of the file (used purely as meta data not for lookup)
+                type_tag: ('exe','pcap','pdf','json','swf', or ...)
+            Returns:
+                the computed md5 of the combined samples
+        """
+        total_bytes = []
+        for md5 in md5_list:
+            total_bytes.append(self.get_sample(md5)['sample']['raw_bytes'])
+            self.remove_sample(md5)
+
+        # Store it
+        return self.store_sample(filename, total_bytes, type_tag)
+
+    def remove_sample(self, md5):
+        """Remove the sample from the data store"""
+        self.data_store.remove_sample(md5)
 
     @zerorpc.stream
     def stream_sample(self, md5, kwargs={}):
