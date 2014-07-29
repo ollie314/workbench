@@ -9,7 +9,7 @@ import hashlib
 def chunks(data, chunk_size):
     """ Yield chunk_size chunks from data."""
     for i in xrange(0, len(data), chunk_size):
-        yield data[i:i+chunk_size] 
+        yield data[i:i+chunk_size]
 
 def run():
     """This client pushes a file into Workbench."""
@@ -28,10 +28,15 @@ def run():
 
         # We're going to upload the file in chunks to workbench 
         filename = os.path.basename(my_file)
-        raw_bytes = f.read()        
-        md5 = hashlib.md5(raw_bytes).hexdigest()
+        raw_bytes = f.read()
+        md5_list = []
         for chunk in chunks(raw_bytes, 1024*1024):
-            workbench.store_sample_chunk(filename, chunk, 'exe', md5)
+            md5_list.append(workbench.store_sample(filename, chunk, 'exe'))
+
+        # Now we just ask Workbench to combine these
+        combined_md5 = workbench.combine_samples(md5_list, filename, 'exe')
+        real_md5 = workbench.store_sample(filename, raw_bytes, 'exe')
+        assert(combined_md5 == real_md5)
 
 def test():
     """Executes file_upload test."""
