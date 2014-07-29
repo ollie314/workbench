@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """Workbench Interactive Shell using IPython"""
-import os
+import os, sys
 import hashlib
 import zerorpc
 import IPython
@@ -89,6 +89,9 @@ class WorkbenchShell(object):
         # Our Interactive IPython shell
         self.ipshell = None
 
+        # Our silly progress meter
+        self.last_percent = -1
+
     # Internal Classes
     class Session(object):
         """Store information specific to the user session"""
@@ -98,6 +101,41 @@ class WorkbenchShell(object):
             self.md5 = None
             self.short_md5 = '-'
             self.server = 'localhost'
+
+    def progress_print(self, sent, total):
+        """Progress print show the progress of the current upload with a neat progress bar
+           Credits: http://redino.net/blog/2013/07/display-a-progress-bar-in-console-using-python/
+        """
+        percent = min(int(sent*100.0/total),100)
+        if percent == self.last_percent:
+            return
+        self.last_percent = percent
+        sys.stdout.write('\r{0}[{1}{2}] {3}{4}%{5}'.format(Fore.GREEN, '#'*(percent/2), 
+            ' '*(50-percent/2), Fore.YELLOW, percent, Fore.RESET))
+        sys.stdout.flush()
+
+    # Helper Methods
+    @staticmethod
+    def chunks(data, chunk_size):
+        """ Yield chunk_size chunks from data."""
+        for i in xrange(0, len(data), chunk_size):
+            yield data[i:i+chunk_size]
+
+    def file_chunker(self, filename, raw_bytes, type_tag):
+        """Split up a large file into chunks and send to Workbench"""
+        md5_list = []
+        sent_bytes = 0
+        mb = 1024*1024
+        chunk_size = 1*mb # 1 MB
+        total_bytes = len(raw_bytes)
+        for chunk in self.chunks(raw_bytes, chunk_size):
+            md5_list.append(self.workbench.store_sample(filename, chunk, type_tag))
+            sent_bytes += chunk_size
+            self.progress_print(sent_bytes, total_bytes)
+            # print '\t%s- Sending %.1f MB (%.1f MB)...%s' % (Fore.YELLOW, sent_bytes/mb, total_bytes/mb, Fore.RESET)
+
+        # Now we just ask Workbench to combine these
+        return self.workbench.combine_samples(md5_list, filename, type_tag)
 
     def load_sample(self, file_path):
         """Load a sample (or samples) into workbench
@@ -115,11 +153,11 @@ class WorkbenchShell(object):
                 raw_bytes = my_file.read()
                 md5 = hashlib.md5(raw_bytes).hexdigest()
                 if not self.workbench.has_sample(md5):
-                    print 'Storing Sample...'
+                    print '%sStreaming Sample...%s' % (Fore.MAGENTA, Fore.RESET)
                     basename = os.path.basename(path)
-                    md5 = self.workbench.store_sample(basename, raw_bytes, 'unknown')
-                else:
-                    print 'Sample already in Workbench...'
+                    md5 = self.file_chunker(basename, raw_bytes, 'unknown')
+
+                print '\n%s%s %sLocked and Loaded...%s\n' %(Fore.MAGENTA, md5[:6], Fore.YELLOW, Fore.RESET)
 
                 # Store information about the sample into the sesssion
                 basename = os.path.basename(path)

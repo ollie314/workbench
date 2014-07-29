@@ -114,14 +114,23 @@ class DataStore(object):
 
             # This should return the 'oldest' record in samples
             record = self.database[self.sample_collection].find().sort('import_time',pymongo.ASCENDING).limit(1)[0]
+            self.remove_sample(record['md5'])
 
-            # Delete it
-            print 'Deleting sample: %s (%.2f MB)...' % (record['md5'], record['length']/1024.0/1024.0)
-            self.database[self.sample_collection].remove({'md5': record['md5']})
-            self.gridfs_handle.delete(record['__grid_fs'])
+    def remove_sample(self, md5):
+        """Delete a specific sample"""
 
-            # Print info
-            print 'Sample Storage: %.2f out of %.2f MB' % (self.sample_storage_size(), self.samples_cap)
+        # Grab the sample
+        record = self.database[self.sample_collection].find_one({'md5': md5})
+        if not record:
+            return
+
+        # Delete it
+        print 'Deleting sample: %s (%.2f MB)...' % (record['md5'], record['length']/1024.0/1024.0)
+        self.database[self.sample_collection].remove({'md5': record['md5']})
+        self.gridfs_handle.delete(record['__grid_fs'])
+
+        # Print info
+        print 'Sample Storage: %.2f out of %.2f MB' % (self.sample_storage_size(), self.samples_cap)
 
     def clean_for_serialization(self, data):
         """Clean data in preparation for serialization.
