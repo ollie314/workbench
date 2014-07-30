@@ -648,8 +648,8 @@ class WorkBench(object):
                 The newest modification time of any worker in the work chain. 
         """
 
-        # Bottom out on sample or sample_set
-        if worker_name=='sample':
+        # Bottom out on sample or info
+        if worker_name=='sample' or worker_name=='info':
             return datetime.datetime(1970, 1, 1)
 
         my_mod_time = self._get_work_results('info', worker_name)['info']['mod_time']
