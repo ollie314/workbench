@@ -11,6 +11,22 @@ Subpackages
 Submodules
 ----------
 
+workbench.workers.help_base module
+----------------------------------
+
+.. automodule:: workbench.workers.help_base
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+workbench.workers.help_cli module
+---------------------------------
+
+.. automodule:: workbench.workers.help_cli
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 workbench.workers.json_meta module
 ----------------------------------
 
