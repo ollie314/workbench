@@ -36,7 +36,7 @@ setup(
     install_requires=['cython', 'colorama', 'distorm3>=0', 'elasticsearch',
                       'funcsigs', 'flask', 'filemagic', 'ipython', 'mock', 'pefile',
                       'py2neo', 'pymongo', 'pytest', 'rekall==1.0rc11', 'requests',
-                      'ssdeep==2.9-0.3', 'urllib3', 'yara', 'zerorpc'],
+                      'ssdeep==2.9-0.3', 'urllib3', 'yara', 'zerorpc', 'cython'],
     license='MIT',
     zip_safe=False,
     keywords='workbench security python',
