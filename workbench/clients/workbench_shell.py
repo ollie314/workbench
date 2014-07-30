@@ -89,6 +89,9 @@ class WorkbenchShell(object):
         # Our Interactive IPython shell
         self.ipshell = None
 
+        # What OS/Version do we have?
+        self.beer = '\360\237\215\272' if sys.platform == 'darwin' else ' '
+
     # Internal Classes
     class Session(object):
         """Store information specific to the user session"""
@@ -152,7 +155,7 @@ class WorkbenchShell(object):
                     md5 = self.file_chunker(basename, raw_bytes, 'unknown')
 
                 print '\n%s  %s%s %sLocked and Loaded...%s\n' % \
-                      ('\360\237\215\272', Fore.MAGENTA, md5[:6], Fore.YELLOW, Fore.RESET)
+                      (self.beer, Fore.MAGENTA, md5[:6], Fore.YELLOW, Fore.RESET)
 
                 # Store information about the sample into the sesssion
                 basename = os.path.basename(path)
