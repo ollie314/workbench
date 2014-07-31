@@ -26,8 +26,11 @@
   <body>
 
     <div class="container">
+      <div class="page-header">
+        <h1>PCAP Report</h1>
+      </div>
       <div class="row">
-        <div class="col-lg-2">
+        <div class="col-lg-3">
           <ul class="nav nav-pills nav-stacked" role="tablist">
             {% for result in results %}
               <li {% if loop.first %}class="active"{% endif %}>
@@ -41,20 +44,20 @@
         <div class="col-lg-9 tab-content">
           {% for result in results %}
           <div id="{{result['filename']|replace('.','')}}" class="tab-pane {% if loop.first %}active{% endif %}">
-            <pre>
               <div>
-                {{ result['meta']|pprint }}
+                <pre>{{ result['meta']|pprint }}</pre>
               </div>
+              
               <h4>Bro Logs</h4>
               <div>
                 <ul>
                   {% for name, md5 in result['view_pcap']['bro_logs'].items() %}  
-                  <li>{{name}}   <a href="/md5/{{md5}}">{{md5}}</a></li>
+                  <li>{{name}}&nbsp;&nbsp;&nbsp;<a href="/md5/{{md5}}">{{md5}}</a></li>
                   {% endfor %}
                 </ul>
                 <br>
                 {% if result['view_pcap']['extracted_files'] %}
-                <h4>Extracted_files</h4>
+                <h4>Extracted Files</h4>
                 <br>
                 <div>
                   <ul>
@@ -65,9 +68,9 @@
                 </div>
                 {% endif %}
               </div>
-            </pre>
-          </div>
-        {% endfor %}
+              
+            </div>
+          {% endfor %}
         </div>
       </div>
       <div class="row">

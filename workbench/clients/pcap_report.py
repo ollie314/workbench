@@ -59,7 +59,7 @@ def show_md5_view(md5):
         return flask.redirect('/')
 
     md5_view = WORKBENCH.stream_sample(md5)
-    return flask.render_template('templates/md5_view.html', md5_view=list(md5_view))
+    return flask.render_template('templates/md5_view.html', md5_view=list(md5_view), md5=md5)
 
 
 
