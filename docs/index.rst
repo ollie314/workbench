@@ -3,7 +3,7 @@ Workbench
 =========
 |Build Status| |Coverage Status| |Code Health| |Fury| |PyPI|  |Project Ready| |Project InProgress| |Gitter chat|
 
-**A medium-data framework for security research and development teams.**
+**A scalable framework for security research and development teams.**
 
 Workbench focuses on simplicity, transparency, and easy on-site customization. 
 As an open source python project it provides light-weight task management, execution and pipelining for a loosely-coupled set of python classes. 

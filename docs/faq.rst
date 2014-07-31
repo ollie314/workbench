@@ -2,11 +2,19 @@ Frequently Asked Questions
 ==========================
 
 
-Medium Data
------------
+Scalable Framework
+------------------
 
+* What do you mean by 'scalable' framework?
+    Workbench is a client/server architecture. The 'scalability' of the architecture is determined by the 
+    put/get performance of the data storage backend (currently MongoDB). So the workbench framework is focused
+    on bringing the work to the data. Meaning all the heavy lifting happens on the server side with worker
+    streaming over the data no data is copied or moved, the only thing that happens is a sample is pulled from
+    the data store ^once^ and than all of the workers in the current worker-chain operate on that sample. Afterward
+    the sample is released from memory. 
 * What do you mean by 'medium' data?
-    The developers of Workbench feel like Medium-Data is a sweet spot, large enough to be meaningful for model
+    Although Workbench can scale up with the datastore. During development and testing we're using it on 'medium'
+    data. The developers of Workbench feel like Medium-Data is a sweet spot, large enough to be meaningful for model
     generation, statistics and predictive performance but small enough to allow for low latency, fast interaction
     and streaming 'hyperslabs' from server to client.
 * What do you mean by hyperslabs?

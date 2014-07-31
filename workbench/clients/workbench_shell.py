@@ -89,8 +89,8 @@ class WorkbenchShell(object):
         # Our Interactive IPython shell
         self.ipshell = None
 
-        # Our silly progress meter
-        self.last_percent = -1
+        # What OS/Version do we have?
+        self.beer = '\360\237\215\272' if sys.platform == 'darwin' else ' '
 
     # Internal Classes
     class Session(object):
@@ -107,10 +107,7 @@ class WorkbenchShell(object):
            Credits: http://redino.net/blog/2013/07/display-a-progress-bar-in-console-using-python/
         """
         percent = min(int(sent*100.0/total),100)
-        if percent == self.last_percent:
-            return
-        self.last_percent = percent
-        sys.stdout.write('\r{0}[{1}{2}] {3}{4}%{5}'.format(Fore.GREEN, '#'*(percent/2), 
+        sys.stdout.write('\r{0}[{1}{2}] {3}{4}%{5}'.format(Fore.GREEN, '#'*(percent/2),
             ' '*(50-percent/2), Fore.YELLOW, percent, Fore.RESET))
         sys.stdout.flush()
 
@@ -157,7 +154,8 @@ class WorkbenchShell(object):
                     basename = os.path.basename(path)
                     md5 = self.file_chunker(basename, raw_bytes, 'unknown')
 
-                print '\n%s%s %sLocked and Loaded...%s\n' %(Fore.MAGENTA, md5[:6], Fore.YELLOW, Fore.RESET)
+                print '\n%s  %s%s %sLocked and Loaded...%s\n' % \
+                      (self.beer, Fore.MAGENTA, md5[:6], Fore.YELLOW, Fore.RESET)
 
                 # Store information about the sample into the sesssion
                 basename = os.path.basename(path)
