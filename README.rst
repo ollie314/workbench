@@ -6,7 +6,7 @@
 Workbench
 =========
 
-**A scalable framework for security research and development teams.**
+**A scalable python framework for security research and development teams.**
 
 
 Workbench focuses on simplicity, transparency, and easy on-site
@@ -29,11 +29,9 @@ Workbench Examples
 -  `PCAP DriveBy Analysis <http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/workbench/notebooks/PCAP_DriveBy.ipynb>`_
 -  `Using Neo4j for PE File Sim Graph <http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/workbench/notebooks/PE_SimGraph.ipynb>`_
 -  `Generator Pipelines Notebook <http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/workbench/notebooks/Generator_Pipelines.ipynb>`_
--  WIP Notebooks
-
-   -  `Network Stream Analysis Notebook <http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/workbench/notebooks/Network_Stream.ipynb>`_
-   -  `PE File Static Analysis Notebook <http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/workbench/notebooks/PE_Static_Analysis.ipynb>`_
-   -  `Memory Analysis Notebook <http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/workbench/notebooks/Rekall_to_Dataframe.ipynb>`_
+-  `Network Stream Analysis Notebook <http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/workbench/notebooks/Network_Stream.ipynb>`_
+-  `PE File Static Analysis Notebook <http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/workbench/notebooks/PE_Static_Analysis.ipynb>`_
+-  `Memory Analysis Notebook <http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/workbench/notebooks/Rekall_to_Dataframe.ipynb>`_
 
 Pull the repository
 ~~~~~~~~~~~~~~~~~~~

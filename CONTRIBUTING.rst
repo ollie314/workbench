@@ -54,6 +54,18 @@ Tips
 ----
 - Any questions/issue please join us on either the Email Forums or Gitter :)
 
+Workbench Conventions
+~~~~~~~~~~~~~~~~~~~~~
+
+These conventions are suggestions and not enforced by the framework in any way.
+
+- If you work on a specific type of sample than start the name with that 'type':
+    - Examples: pcap\_bro.py, pe\_features.py, log\_meta.py
+- A worker that is new/experimental should start with 'x\_':
+	- Examples: x\_pcap\_razor.py
+- A 'view'(worker that handles 'presentation') should start with 'view\_':
+    - Examples: view\_log\_meta.py, view\_pdf.py, view\_pe.py
+
 
 PyPI Checklist (Senior Dev Stuff)
 ---------------------------------
@@ -83,6 +95,8 @@ PyPI Checklist (Senior Dev Stuff)
 - change version in workbench/__init__.py
 - change version in setup.py
 - Update HISTORY.rst
+
+.. warning:: Make sure workbench/data/memory_images/exemplar4.vmem isn’t there, remove if necessary!
 
 ::
 

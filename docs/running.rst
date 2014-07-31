@@ -28,45 +28,10 @@ client (looking for node devs to pop some pull requests :).
     $ cd workbench/clients
     $ python simple_workbench_client.py [-s tcp://mega.server.com]
 
-Workbench Videos
-------------------
--  `Getting Started with Workbench <http://youtu.be/v4zXhZINdDQ>`_
--  `Workbench Command Interface <http://youtu.be/MvSa7aklWTI>`_
-
-Workbench Examples
-------------------
-
--  `PCAP to Graph <http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/workbench/notebooks/PCAP_to_Graph.ipynb/>`_ (A short teaser)
--  `Workbench Demo <http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/workbench/notebooks/Workbench_Demo.ipynb/>`_
--  `Adding a new Worker <http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/workbench/notebooks/Adding_Worker.ipynb/>`_ (super hawt)
--  `PCAP to Dataframe <http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/workbench/notebooks/PCAP_to_Dataframe.ipynb/>`_
--  `PCAP DriveBy Analysis <http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/workbench/notebooks/PCAP_DriveBy.ipynb>`_
--  `Using Neo4j for PE File Sim Graph <http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/workbench/notebooks/PE_SimGraph.ipynb>`_
--  `Generator Pipelines Notebook <http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/workbench/notebooks/Generator_Pipelines.ipynb>`_
--  WIP Notebooks
-
-    -  `Network Stream Analysis Notebook <http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/workbench/notebooks/Network_Stream.ipynb>`_
-    -  `PE File Static Analysis Notebook <http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/workbench/notebooks/PE_Static_Analysis.ipynb>`_
-
-
 Making your own Worker
 ----------------------
 
 -  See the notebook `Adding a new Worker <http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/workbench/notebooks/Adding_Worker.ipynb/>`_
-
-Workbench Conventions
-~~~~~~~~~~~~~~~~~~~~~
-
-Workers should adhere to the following naming conventions (not enforced)
-
--  If you work on a specific type of sample than start the name with
-    that
--  Examples: pcap\_bro.py, pe\_features.py, log\_meta.py
--  A worker that is new/experimental should start with 'x\_'
-    (x\_pcap\_razor.py)
--  A 'view'(worker that handles 'presentation') should start with
-    'view\_'
--  Examples: view\_log\_meta.py, view\_pdf.py, view\_pe.py
 
 
 .. _MakingClient:
