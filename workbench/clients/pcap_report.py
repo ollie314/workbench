@@ -41,6 +41,7 @@ def run():
             md5 = WORKBENCH.store_sample(filename, f.read(), 'pcap')
             result = WORKBENCH.work_request('view_pcap', md5)
             result.update(WORKBENCH.work_request('meta', result['view_pcap']['md5']))
+            result['filename'] = result['meta']['filename'].split('/')[-1]
             results.append(result)
 
     return results
@@ -53,8 +54,14 @@ def flask_app():
 
 @APP.route('/md5/<md5>/')
 def show_md5_view(md5):
-    md5_view = WORKBENCH.work_request('view', md5)
-    return flask.render_template('templates/md5_view.html', md5_view=md5_view)
+
+    if not WORKBENCH:
+        return flask.redirect('/')
+
+    md5_view = WORKBENCH.stream_sample(md5)
+    return flask.render_template('templates/md5_view.html', md5_view=list(md5_view))
+
+
 
 def test():
     ''' pcap_bro_view test '''
