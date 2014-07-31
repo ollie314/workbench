@@ -55,11 +55,6 @@ Client/Server
         to point to the groupserver.::
     
             server_uri = localhost  (change this to whatever)
-
-* Okay I've changed my config.ini file, and now it shows up when I do a '$ git status'. How do I have git ignore it?::
-
-    git update-index --assume-unchanged workbench/clients/config.ini
-    git update-index --assume-unchanged workbench/server/config.ini
     
 * How do I setup a development server and a production server?
     In general workbench should be treated like any other python module and it shouldn't add any complexity to existing development/QA/deployment models. One suggestion (to be taken with a grain of salt) is simply to use git braches.::
