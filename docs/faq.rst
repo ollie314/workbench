@@ -2,8 +2,8 @@ Frequently Asked Questions
 ==========================
 
 
-Scalable Framework
-------------------
+Scalable Python Framework
+-------------------------
 
 * What do you mean by 'scalable' framework?
     Workbench is a client/server architecture. The 'scalability' of the architecture is determined by the 
