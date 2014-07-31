@@ -21,7 +21,7 @@ history = open('HISTORY.rst').read().replace('.. :changelog:', '')
 setup(
     name='workbench',
     version='0.2.9',
-    description='A medium-data framework for security research and development teams.',
+    description='A scalable framework for security research and development teams.',
     long_description=readme + '\n\n' + doclink + '\n\n' + history,
     author='The Workbench Team',
     author_email='support@supercowpowers.com',
@@ -36,7 +36,7 @@ setup(
     install_requires=['cython', 'colorama', 'distorm3>=0', 'elasticsearch',
                       'funcsigs', 'flask', 'filemagic', 'ipython', 'mock', 'pefile',
                       'py2neo', 'pymongo', 'pytest', 'rekall==1.0rc11', 'requests',
-                      'ssdeep==2.9-0.3', 'urllib3', 'yara', 'zerorpc'],
+                      'ssdeep==2.9-0.3', 'urllib3', 'yara', 'zerorpc', 'cython'],
     license='MIT',
     zip_safe=False,
     keywords='workbench security python',

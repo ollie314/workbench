@@ -19,6 +19,14 @@ workbench.server.data_store module
     :undoc-members:
     :show-inheritance:
 
+workbench.server.dir_watcher module
+-----------------------------------
+
+.. automodule:: workbench.server.dir_watcher
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 workbench.server.els_indexer module
 -----------------------------------
 
@@ -43,10 +51,10 @@ workbench.server.plugin_manager module
     :undoc-members:
     :show-inheritance:
 
-workbench.server.workbench module
----------------------------------
+workbench.server.workbench_server module
+----------------------------------------
 
-.. automodule:: workbench.server.workbench
+.. automodule:: workbench.server.workbench_server
     :members:
     :undoc-members:
     :show-inheritance:

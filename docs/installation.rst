@@ -39,7 +39,6 @@ Workbench Client(s)
 
 ::
 
-    $ pip install workbench --pre
     $ workbench (this runs the Workbench CLI)
 
 That's it! 

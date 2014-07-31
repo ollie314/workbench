@@ -4,6 +4,14 @@ workbench.clients package
 Submodules
 ----------
 
+workbench.clients.client_helper module
+--------------------------------------
+
+.. automodule:: workbench.clients.client_helper
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 workbench.clients.customer_report module
 ----------------------------------------
 
@@ -76,6 +84,14 @@ workbench.clients.pcap_meta_indexer module
     :undoc-members:
     :show-inheritance:
 
+workbench.clients.pcap_report module
+------------------------------------
+
+.. automodule:: workbench.clients.pcap_report
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 workbench.clients.pe_indexer module
 -----------------------------------
 
@@ -100,6 +116,14 @@ workbench.clients.pe_sim_graph module
     :undoc-members:
     :show-inheritance:
 
+workbench.clients.short_md5s module
+-----------------------------------
+
+.. automodule:: workbench.clients.short_md5s
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 workbench.clients.upload_dir module
 -----------------------------------
 
@@ -116,10 +140,18 @@ workbench.clients.upload_file module
     :undoc-members:
     :show-inheritance:
 
-workbench.clients.workbench_client module
------------------------------------------
+workbench.clients.upload_file_chunks module
+-------------------------------------------
 
-.. automodule:: workbench.clients.workbench_client
+.. automodule:: workbench.clients.upload_file_chunks
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+workbench.clients.workbench_shell module
+----------------------------------------
+
+.. automodule:: workbench.clients.workbench_shell
     :members:
     :undoc-members:
     :show-inheritance:

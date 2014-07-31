@@ -1,4 +1,4 @@
-Running WorkBench
+Running/Using WorkBench
 =================
 
 Server (localhost or server machine)
@@ -13,6 +13,7 @@ CLI (Command Line Interface)
 ----------------------------
 
 ::
+
     $ workbench
 
 Example Clients (use -s for remote server)
@@ -26,6 +27,11 @@ client (looking for node devs to pop some pull requests :).
 
     $ cd workbench/clients
     $ python simple_workbench_client.py [-s tcp://mega.server.com]
+
+Workbench Videos
+------------------
+-  `Getting Started with Workbench <http://youtu.be/v4zXhZINdDQ>`_
+-  `Workbench Command Interface <http://youtu.be/MvSa7aklWTI>`_
 
 Workbench Examples
 ------------------
