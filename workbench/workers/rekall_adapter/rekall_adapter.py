@@ -178,8 +178,11 @@ class WorkbenchRenderer(BaseRenderer):
 
     def render(self, plugin):
         """This method starts the plugin, calls render and returns the plugin output """
+        gsleep()
         self.start(plugin_name=plugin.name)
+        gsleep()
         plugin.render(self)
+        gsleep()
         return self.output_data
 
     def _cast_row(self, keys, values, data_types):
