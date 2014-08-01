@@ -15,7 +15,11 @@ APP = flask.Flask(__name__, template_folder=STATIC_DIR,
 WORKBENCH = None
 
 def run():
-    """This client pulls PCAP 'views' (view summarize what's in a sample)."""
+    """This client pulls PCAP files for building report.
+
+    Returns:
+        A list with `view_pcap` , `meta` and `filename` objects.
+    """
 
     global WORKBENCH
     
@@ -52,8 +56,20 @@ def flask_app():
     results = run()
     return flask.render_template('templates/index.html', results=results)
 
+@APP.route('/files/<md5>/')
+def show_files(md5):
+    '''Renders template with `view` of the md5.'''
+    if not WORKBENCH:
+        return flask.redirect('/')
+
+    md5_view = WORKBENCH.work_request('view', md5)
+    return flask.render_template('templates/md5_view.html', md5_view=md5_view['view'], md5=md5)
+
+
+
 @APP.route('/md5/<md5>/')
 def show_md5_view(md5):
+    '''Renders template with `stream_sample` of the md5.'''
 
     if not WORKBENCH:
         return flask.redirect('/')
@@ -64,7 +80,7 @@ def show_md5_view(md5):
 
 
 def test():
-    ''' pcap_bro_view test '''
+    '''Tests for rendering pcap_report.'''
     run()
 
 if __name__ == '__main__':
