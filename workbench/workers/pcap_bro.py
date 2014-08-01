@@ -7,7 +7,12 @@ import gevent.subprocess
 import glob
 import zerorpc
 import pprint
+import gevent
 
+def gsleep():
+    ''' Convenience method for gevent.sleep '''
+    print '*** Gevent Sleep ***'
+    gevent.sleep(0)
 
 class PcapBro(object):
     ''' This worker runs Bro scripts on a pcap file '''
@@ -75,6 +80,7 @@ class PcapBro(object):
             self.subprocess_manager(command_line)
 
             # Scrape up all the output log files
+            gsleep()
             print 'pcap_bro: Scraping output logs...'
             my_output = {}
             for output_log in glob.glob('*.log'):
@@ -86,6 +92,7 @@ class PcapBro(object):
                     my_output[output_name] = self.workbench.store_sample(output_name, raw_bytes, 'bro')
 
             # Scrape any extracted files
+            gsleep()
             print 'pcap_bro: Scraping extracted files...'
             my_output['extracted_files'] = []
             for output_file in glob.glob('extract_files/*'):
