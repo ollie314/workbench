@@ -73,11 +73,10 @@ class WorkbenchShell(object):
         ''' Workbench CLI Initialization '''
 
         # Grab server arguments
-        server_info = client_helper.grab_server_args()
+        self.server_info = client_helper.grab_server_args()
 
         # Spin up workbench server
-        self.workbench = zerorpc.Client(timeout=300, heartbeat=60)
-        self.workbench.connect('tcp://'+server_info['server']+':'+server_info['port'])
+        self.connect(self.server_info)
 
         # Create a user session
         self.session = self.Session()
@@ -102,6 +101,12 @@ class WorkbenchShell(object):
             self.short_md5 = '-'
             self.server = 'localhost'
 
+    # Helper Methods
+    def connect(self, server_info):
+
+        self.workbench = zerorpc.Client(timeout=300, heartbeat=60)
+        self.workbench.connect('tcp://'+server_info['server']+':'+server_info['port'])
+
     def progress_print(self, sent, total):
         """Progress print show the progress of the current upload with a neat progress bar
            Credits: http://redino.net/blog/2013/07/display-a-progress-bar-in-console-using-python/
@@ -111,7 +116,6 @@ class WorkbenchShell(object):
             ' '*(50-percent/2), Fore.YELLOW, percent, Fore.RESET))
         sys.stdout.flush()
 
-    # Helper Methods
     @staticmethod
     def chunks(data, chunk_size):
         """ Yield chunk_size chunks from data."""
@@ -217,6 +221,7 @@ class WorkbenchShell(object):
             'workbench': self.workbench,
             'help': repr_to_str_decorator(self.workbench.help),
             'load_sample': self.load_sample,
+            'reconnect': self.connect(self.server_info),
             'short_md5': self.session.short_md5
         }
         commands.update(general)
