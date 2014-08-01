@@ -22,6 +22,10 @@ def gsleep():
     print '*** Gevent Sleep ***'
     gevent.sleep(0)
 
+def gsleep_test():
+    ''' Convenience method for gevent.sleep '''
+    print '*** Gevent Sleep TEST STUB***'
+
 class RekallAdapter(object):
     """RekallAdapter: Helps utilize the Rekall Memory Forensic Framework."""
 
@@ -250,15 +254,15 @@ def test():
 
     # Create any kind of plugin supported by this session
     output = renderer.render(session.plugins.imageinfo())
-    pprint.pprint(output)
+    pprint.pprint(output.keys())
     assert 'Error' not in output
 
     output = renderer.render(session.plugins.pslist())
-    pprint.pprint(output)
+    pprint.pprint(output.keys())
     assert 'Error' not in output
 
     output = renderer.render(session.plugins.dlllist())
-    pprint.pprint(output)
+    pprint.pprint(output.keys())
     assert 'Error' not in output
 
 
