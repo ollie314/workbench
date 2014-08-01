@@ -11,6 +11,7 @@ import tempfile
 import shutil
 import glob, os
 import hashlib
+import pprint
 
 class MemoryImageProcDump(object):
     ''' This worker dumps process pe files from memory image files. '''
@@ -117,14 +118,12 @@ def test():
     worker = MemoryImageProcDump()
     output = worker.execute({'sample':{'raw_bytes':raw_bytes}})
     print '\n<<< Unit Test >>>'
-    import pprint
     pprint.pprint(output)
     assert 'Error' not in output
 
     # Execute the worker (server test)
     output = workbench.work_request('mem_procdump', md5)
     print '\n<<< Server Test >>>'
-    import pprint
     pprint.pprint(output)
     assert 'Error' not in output
 

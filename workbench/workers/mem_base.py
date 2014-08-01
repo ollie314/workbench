@@ -6,6 +6,7 @@
 
 import os
 from rekall_adapter.rekall_adapter import RekallAdapter
+import pprint
 
 class MemoryImageBase(object):
     ''' This worker computes meta-data for memory image files. '''
@@ -78,14 +79,12 @@ def test():
     worker.set_plugin_name('imageinfo')
     output = worker.execute(input_data)
     print '\n<<< Unit Test >>>'
-    import pprint
     pprint.pprint(output)
     assert 'Error' not in output
 
     # Execute the worker (server test)
     output = c.work_request('mem_base', md5)
     print '\n<<< Server Test >>>'
-    import pprint
     pprint.pprint(output)
     assert 'Error' not in output
 

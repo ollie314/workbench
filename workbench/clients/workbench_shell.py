@@ -6,14 +6,15 @@ import os, sys
 import hashlib
 import zerorpc
 import IPython
+from IPython.core.prefilter import PrefilterTransformer
 import functools
-from colorama import Fore
+from colorama import Fore as F
 import re
 try:
     import pandas as pd
 except ImportError:
-    print '\n%sNotice: pandas not found...' % Fore.YELLOW
-    print '\t%sWe recommend installing pandas: %s$ pip install pandas%s' % (Fore.BLUE, Fore.RED, Fore.RESET)
+    print '\n%sNotice: pandas not found...' % F.YELLOW
+    print '\t%sWe recommend installing pandas: %s$ pip install pandas%s' % (F.BLUE, F.RED, F.RESET)
 
 try:
     from . import client_helper
@@ -40,7 +41,7 @@ def repr_to_str_decorator(func):
     return wrapper
 
 # Helper Classes
-class AutoQuoteTransformer(IPython.core.prefilter.PrefilterTransformer):
+class AutoQuoteTransformer(PrefilterTransformer):
     """IPython Transformer for commands to use 'auto-quotes'"""
 
     def register_command_set(self, command_set):
@@ -62,7 +63,7 @@ class AutoQuoteTransformer(IPython.core.prefilter.PrefilterTransformer):
 
 
         # 1) Lines with any of these symbols ; , ' " ( ) aren't touched
-        skip_symbols = [';',',','\'','"','(',')']
+        skip_symbols = [';', ',', '\'', '"', '(', ')']
         if any([sym in line for sym in skip_symbols]):
             return line
 
@@ -142,21 +143,21 @@ class WorkbenchShell(object):
             _tmp_connect.close()
         except zerorpc.exceptions.LostRemote:
             print '%sError: Could not connect to Workbench Server at %s:%s%s' % \
-                  (Fore.RED, server_info['server'], server_info['port'], Fore.RESET)
+                  (F.RED, server_info['server'], server_info['port'], F.RESET)
             exit(1)
 
         # Okay do the real connection
         self.workbench = zerorpc.Client(timeout=300, heartbeat=60)
         self.workbench.connect('tcp://'+server_info['server']+':'+server_info['port'])
-        print '\t%s- Connected to Server: (%s:%s)%s' % (Fore.GREEN, server_info['server'], server_info['port'], Fore.RESET)
+        print '\t%s- Connected to Server: (%s:%s)%s' % (F.GREEN, server_info['server'], server_info['port'], F.RESET)
 
     def progress_print(self, sent, total):
         """Progress print show the progress of the current upload with a neat progress bar
            Credits: http://redino.net/blog/2013/07/display-a-progress-bar-in-console-using-python/
         """
-        percent = min(int(sent*100.0/total),100)
-        sys.stdout.write('\r{0}[{1}{2}] {3}{4}%{5}'.format(Fore.GREEN, '#'*(percent/2),
-            ' '*(50-percent/2), Fore.YELLOW, percent, Fore.RESET))
+        percent = min(int(sent*100.0/total), 100)
+        sys.stdout.write('\r{0}[{1}{2}] {3}{4}%{5}'.
+                         format(F.GREEN, '#'*(percent/2), ' '*(50-percent/2), F.YELLOW, percent, F.RESET))
         sys.stdout.flush()
 
     @staticmethod
@@ -176,7 +177,7 @@ class WorkbenchShell(object):
             md5_list.append(self.workbench.store_sample(filename, chunk, type_tag))
             sent_bytes += chunk_size
             self.progress_print(sent_bytes, total_bytes)
-            # print '\t%s- Sending %.1f MB (%.1f MB)...%s' % (Fore.YELLOW, sent_bytes/mb, total_bytes/mb, Fore.RESET)
+            # print '\t%s- Sending %.1f MB (%.1f MB)...%s' % (F.YELLOW, sent_bytes/mb, total_bytes/mb, F.RESET)
 
         # Now we just ask Workbench to combine these
         return self.workbench.combine_samples(md5_list, filename, type_tag)
@@ -197,12 +198,12 @@ class WorkbenchShell(object):
                 raw_bytes = my_file.read()
                 md5 = hashlib.md5(raw_bytes).hexdigest()
                 if not self.workbench.has_sample(md5):
-                    print '%sStreaming Sample...%s' % (Fore.MAGENTA, Fore.RESET)
+                    print '%sStreaming Sample...%s' % (F.MAGENTA, F.RESET)
                     basename = os.path.basename(path)
                     md5 = self.file_chunker(basename, raw_bytes, 'unknown')
 
                 print '\n%s  %s%s %sLocked and Loaded...%s\n' % \
-                      (self.beer, Fore.MAGENTA, md5[:6], Fore.YELLOW, Fore.RESET)
+                      (self.beer, F.MAGENTA, md5[:6], F.YELLOW, F.RESET)
 
                 # Store information about the sample into the sesssion
                 basename = os.path.basename(path)
@@ -241,7 +242,7 @@ class WorkbenchShell(object):
 
     def _data_not_found(self, e):
         """Message when you get a DataNotFound exception from the server"""
-        return '%s%s%s' % (Fore.RED, e.msg, Fore.RESET)
+        return '%s%s%s' % (F.RED, e.msg, F.RESET)
 
     def _generate_command_dict(self):
         """Create a customized namespace for Workbench with a bunch of shortcuts
@@ -301,7 +302,7 @@ class WorkbenchShell(object):
         auto_quoter.register_command_set(self.command_set)
 
         # Start up the shell with our set of workbench commands
-        self.ipshell(local_ns = self.command_dict)
+        self.ipshell(local_ns=self.command_dict)
 
 import pytest
 @pytest.mark.exclude
