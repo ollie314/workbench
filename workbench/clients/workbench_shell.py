@@ -141,14 +141,14 @@ class WorkbenchShell(object):
             _tmp_connect._zerorpc_name()
             _tmp_connect.close()
         except zerorpc.exceptions.LostRemote:
-            print '%sError: Could not connect to Workbench Server at %s:%s' % \
-                  (Fore.RED, server_info['server'], server_info['port'])
+            print '%sError: Could not connect to Workbench Server at %s:%s%s' % \
+                  (Fore.RED, server_info['server'], server_info['port'], Fore.RESET)
             exit(1)
 
         # Okay do the real connection
         self.workbench = zerorpc.Client(timeout=300, heartbeat=60)
         self.workbench.connect('tcp://'+server_info['server']+':'+server_info['port'])
-        print 'Info: Connecting %s:%s...' % (server_info['server'], server_info['port'])
+        print '\t%s- Connected to Server: (%s:%s)%s' % (Fore.GREEN, server_info['server'], server_info['port'], Fore.RESET)
 
     def progress_print(self, sent, total):
         """Progress print show the progress of the current upload with a neat progress bar
@@ -264,7 +264,7 @@ class WorkbenchShell(object):
             'workbench': self.workbench,
             'help': repr_to_str_decorator(self.workbench.help),
             'load_sample': self.load_sample,
-            'reconnect': self.connect(self.server_info),
+            'reconnect': lambda info=self.server_info: self.connect(info),
             'short_md5': self.session.short_md5
         }
         commands.update(general)
