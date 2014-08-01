@@ -143,7 +143,7 @@ class WorkbenchShell(object):
         except zerorpc.exceptions.LostRemote:
             print '%sError: Could not connect to Workbench Server at %s:%s%s' % \
                   (Fore.RED, server_info['server'], server_info['port'], Fore.RESET)
-            exit(1)
+            sys.exit(1)
 
         # Okay do the real connection
         self.workbench = zerorpc.Client(timeout=300, heartbeat=60)
