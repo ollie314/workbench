@@ -50,20 +50,50 @@ class AutoQuoteTransformer(IPython.core.prefilter.PrefilterTransformer):
     def transform(self, line, _continue_prompt):
         """IPython Transformer for commands to use 'auto-quotes'"""
 
-        # Very conservative logic here
-        # - Need to have more than one token
-        # - First token in line must be in the workbench command set
-        # - No other otkens can be in any of the shell namespaces
+        # Capture the original line
+        orig_line = line
+
+        # Very conservative logic (but possibly flawed)
+        # 1) Lines with any of these symbols ; , ' " ( ) aren't touched
+        # 2) Need to have more than one token
+        # 3) First token in line must be in the workbench command set
+        # 4) If first token is 'help' than all other tokens are quoted
+        # 5) Otherwise only tokens that are not in any of the namespace are quoted
+
+
+        # 1) Lines with any of these symbols ; , ' " ( ) aren't touched
+        skip_symbols = [';',',','\'','"','(',')']
+        if any([sym in line for sym in skip_symbols]):
+            return line
+
+        # Build up token set and info
         token_list = re.split(' |;|,|(|)|\'|"', line)
         num_tokens = len(token_list)
         first_token = token_list[0]
         token_set = set(token_list)
-        if num_tokens > 1 and first_token in self.command_set:
-            ns_token_set = set([token for nspace in self.shell.all_ns_refs for token in nspace])
-            if len(token_set.intersection(ns_token_set))==1:
-                return ','+line
+        if None in token_set: # In some cases None creeps in
+            token_set.remove(None)
 
-        # Doesn't match criteria so don't try to auto-quote it
+        # 2) Need to have more than one token
+        # 3) First token in line must be in the workbench command set
+        if num_tokens > 1 and first_token in self.command_set:
+
+            # 4) If first token is 'help' than all other tokens are quoted
+            if first_token == 'help':
+                token_set.remove('help')
+                for token in token_set:
+                    line = line.replace(token, '"'+token+'"')
+
+            # 5) Otherwise only tokens that are not in any of the namespace are quoted
+            else: # Not help
+                ns_token_set = set([token for nspace in self.shell.all_ns_refs for token in nspace])
+                for token in token_set:
+                    if token not in ns_token_set:
+                        line = line.replace(token, '"'+token+'"')
+
+        # Push out the processed line and return it
+        if orig_line != line:
+            self.shell.auto_rewrite_input(line)
         return line
 
 class WorkbenchShell(object):
