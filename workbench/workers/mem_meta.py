@@ -6,6 +6,7 @@
 import os
 import hashlib
 import mem_base
+import pprint
 
 class MemoryImageMeta(mem_base.MemoryImageBase):
     ''' This worker computes meta-data for memory image files. '''
@@ -49,14 +50,12 @@ def test():
     worker = MemoryImageMeta()
     output = worker.execute({'sample':{'raw_bytes':raw_bytes}})
     print '\n<<< Unit Test >>>'
-    import pprint
     pprint.pprint(output)
     assert 'Error' not in output
 
     # Execute the worker (server test)
     output = workbench.work_request('mem_meta', md5)
     print '\n<<< Server Test >>>'
-    import pprint
     pprint.pprint(output)
     assert 'Error' not in output
 

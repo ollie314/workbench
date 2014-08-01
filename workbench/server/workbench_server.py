@@ -149,7 +149,7 @@ class WorkBench(object):
         """
         return self.data_store.has_sample(md5)
 
-    def list_samples(self, predicate={}):
+    def list_samples(self, predicate=None):
         """List all samples that meet the predicate or all if predicate is not specified.
 
             Args:
@@ -184,7 +184,7 @@ class WorkBench(object):
         self.data_store.remove_sample(md5)
 
     @zerorpc.stream
-    def stream_sample(self, md5, kwargs={}):
+    def stream_sample(self, md5, kwargs=None):
         """ Stream the sample by giving back a generator, typically used on 'logs'.
             Args:
                 md5: the md5 of the sample
@@ -195,7 +195,7 @@ class WorkBench(object):
         """
 
         # Get the max_rows if specified
-        max_rows = kwargs.get('max_rows', None)      
+        max_rows = kwargs.get('max_rows', None) if kwargs else None
 
         # Grab the sample and it's raw bytes
         sample = self.get_sample(md5)['sample']
@@ -397,7 +397,7 @@ class WorkBench(object):
         return work_results
 
     @zerorpc.stream
-    def batch_work_request(self, worker_name, kwargs={}):
+    def batch_work_request(self, worker_name, kwargs=None):
         """Make a batch work request for an existing set of stored samples.
 
         A subset of sample can be specified with kwargs.
@@ -411,9 +411,9 @@ class WorkBench(object):
         Returns:
             A generator that yields rows of worker output or subfields of the worker output
         """
-        type_tag = kwargs.get('type_tag',None)
-        md5_list = kwargs.get('md5_list',None)
-        subkeys = kwargs.get('subkeys',None)
+        type_tag = kwargs.get('type_tag',None) if kwargs else None
+        md5_list = kwargs.get('md5_list',None) if kwargs else None
+        subkeys = kwargs.get('subkeys',None) if kwargs else None
 
         # If no md5_list specified put all samples (of type type_tag if not None)
         if not md5_list:
