@@ -2,6 +2,12 @@
 import zerorpc
 import os
 import pprint
+import gevent
+
+def gsleep():
+    ''' Convenience method for gevent.sleep '''
+    print '*** Gevent Sleep ***'
+    gevent.sleep(0)
 
 class PcapGraph(object):
     ''' This worker generates a graph from a PCAP (depends on Bro) '''
@@ -52,14 +58,18 @@ class PcapGraph(object):
             self.weird_log_graph(stream)
 
         # HTTP log
+        gsleep()
         stream = self.workbench.stream_sample(bro_logs['http_log'])
         self.http_log_graph(stream)
 
         # Files log
+        gsleep()
         stream = self.workbench.stream_sample(bro_logs['files_log'])
         self.files_log_graph(stream)
 
         # Conn log
+        gsleep()
+        print 'Going into conn_log...'
         stream = self.workbench.stream_sample(bro_logs['conn_log'])
         self.conn_log_graph(stream)
 
@@ -67,25 +77,32 @@ class PcapGraph(object):
 
     def conn_log_graph(self, stream):
         ''' Build up a graph (nodes and edges from a Bro conn.log) '''
-        for row in list(stream):
+
+        # The conn stream can be very large, so skipping for now.. ;p
+        return
+
+        conn_log = list(stream)
+        print 'Entering conn_log_graph...(%d rows)' % len(conn_log)
+        for row in stream:
 
             # Add the connection id with service as one of the labels
-            self.workbench.add_node(row['uid'], row['uid'][:6], ['conn_id', row['service']])
+            self.add_node(row['uid'], row['uid'][:6], ['conn_id', row['service']])
 
             # Add the originating host
-            self.workbench.add_node(row['id.orig_h'], row['id.orig_h'], ['ip', 'origin'])
+            self.add_node(row['id.orig_h'], row['id.orig_h'], ['ip', 'origin'])
 
             # Add the response host
-            self.workbench.add_node(row['id.resp_h'], row['id.resp_h'], ['ip', 'response'])
+            self.add_node(row['id.resp_h'], row['id.resp_h'], ['ip', 'response'])
 
             # Add the ip->connection relationships
-            self.workbench.add_rel(row['uid'], row['id.orig_h'], 'origin')
-            self.workbench.add_rel(row['uid'], row['id.resp_h'], 'response')
+            self.add_rel(row['uid'], row['id.orig_h'], 'origin')
+            self.add_rel(row['uid'], row['id.resp_h'], 'response')
 
     def http_log_graph(self, stream):
         ''' Build up a graph (nodes and edges from a Bro http.log) '''
-        print 'Entering http_log_graph...'
-        for row in list(stream):
+        http_log = list(stream)
+        print 'Entering http_log_graph...(%d rows)' % len(http_log)
+        for row in http_log:
 
             # Skip '-' hosts
             if (row['id.orig_h'] == '-'):
@@ -99,8 +116,8 @@ class PcapGraph(object):
             self.add_node(row['id.resp_h'], row['id.resp_h'], ['host'])
 
             # Add the http request relationships
-            self.workbench.add_rel(row['id.orig_h'], row['host'], 'http_request')
-            self.workbench.add_rel(row['host'], row['id.resp_h'], 'A')
+            self.add_rel(row['id.orig_h'], row['host'], 'http_request')
+            self.add_rel(row['host'], row['id.resp_h'], 'A')
             
             # If the mime-type is interesting add the uri and the host->uri->host relationships
             '''
@@ -111,8 +128,9 @@ class PcapGraph(object):
 
     def dns_log_graph(self, stream):
         ''' Build up a graph (nodes and edges from a Bro dns.log) '''
-        print 'Entering dns_log_graph..'
-        for row in list(stream):
+        dns_log = list(stream)
+        print 'Entering dns_log_graph...(%d rows)' % len(dns_log)
+        for row in dns_log:
             
             # Skip '-' hosts
             if (row['id.orig_h'] == '-'):
@@ -131,15 +149,16 @@ class PcapGraph(object):
             for answer in row['answers'].split(','):
                 self.add_node(answer, answer, ['host'])
                 self.add_rel(row['query'], answer, row['qtype_name'])
-            print '\tdns_log_graph...'
 
     def weird_log_graph(self, stream):
         ''' Build up a graph (nodes and edges from a Bro weird.log) '''
+        weird_log = list(stream)
+        print 'Entering weird_log_graph...(%d rows)' % len(weird_log)
 
         # Here we're just going to capture that something weird
         # happened between two hosts
         weird_pairs = set()
-        for row in list(stream):
+        for row in weird_log:
             weird_pairs.add((row['id.orig_h'], row['id.resp_h']))
 
         # Okay now make the weird node for each pair
@@ -164,11 +183,11 @@ class PcapGraph(object):
             self.add_rel(weird_name, pair[1], 'weird')
 
     def files_log_graph(self, stream):
-        ''' Build up a graph (nodes and edges from a Bro dns.log) '''
-        for row in list(stream):
+        ''' Build up a graph (nodes and edges from a Bro files.log) '''
+        file_log = list(stream)
+        print 'Entering file_log_graph...(%d rows)' % len(file_log)
+        for row in file_log:
 
-            # dataframes['files_log'][['md5','mime_type','missing_bytes','rx_hosts','source','tx_hosts']]
-            
             # If the mime-type is interesting add the uri and the host->uri->host relationships
             if row['mime_type'] not in self.exclude_mime_types:
 
