@@ -91,9 +91,7 @@ class AutoQuoteTransformer(IPython.core.prefilter.PrefilterTransformer):
                     if token not in ns_token_set:
                         line = line.replace(token, '"'+token+'"')
 
-        # Push out the processed line and return it
-        if orig_line != line:
-            self.shell.auto_rewrite_input(line)
+        # Return the processed line
         return line
 
 class WorkbenchShell(object):
