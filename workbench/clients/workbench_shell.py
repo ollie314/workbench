@@ -62,7 +62,7 @@ class AutoQuoteTransformer(IPython.core.prefilter.PrefilterTransformer):
 
 
         # 1) Lines with any of these symbols ; , ' " ( ) aren't touched
-        skip_symbols = [';',',','\'','"','(',')']
+        skip_symbols = [';', ',', '\'', '"', '(', ')']
         if any([sym in line for sym in skip_symbols]):
             return line
 
@@ -154,9 +154,9 @@ class WorkbenchShell(object):
         """Progress print show the progress of the current upload with a neat progress bar
            Credits: http://redino.net/blog/2013/07/display-a-progress-bar-in-console-using-python/
         """
-        percent = min(int(sent*100.0/total),100)
-        sys.stdout.write('\r{0}[{1}{2}] {3}{4}%{5}'.format(Fore.GREEN, '#'*(percent/2),
-            ' '*(50-percent/2), Fore.YELLOW, percent, Fore.RESET))
+        percent = min(int(sent*100.0/total), 100)
+        sys.stdout.write('\r{0}[{1}{2}] {3}{4}%{5}'.
+                         format(Fore.GREEN, '#'*(percent/2),' '*(50-percent/2), Fore.YELLOW, percent, Fore.RESET))
         sys.stdout.flush()
 
     @staticmethod

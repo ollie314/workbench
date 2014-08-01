@@ -272,7 +272,7 @@ class DataStore(object):
         sample = self.get_sample(md5)
         return True if sample else False
 
-    def list_samples(self, predicate={}):
+    def list_samples(self, predicate=None):
         """List all samples that meet the predicate or all if predicate is not specified.
 
         Args:
