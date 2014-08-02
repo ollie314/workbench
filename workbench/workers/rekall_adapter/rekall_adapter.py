@@ -15,12 +15,12 @@ import StringIO
 import datetime
 import pprint
 import pytz
-#import gevent
+import gevent
 
 def gsleep():
     ''' Convenience method for gevent.sleep '''
     print '*** Gevent Sleep ***'
-    #gevent.sleep(1)
+    gevent.sleep(0)
 
 class RekallAdapter(object):
     """RekallAdapter: Helps utilize the Rekall Memory Forensic Framework."""
