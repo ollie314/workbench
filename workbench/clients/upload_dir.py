@@ -52,9 +52,9 @@ def run():
                 print 'Filename %s uploaded: type_tag %s, md5 %s' % (filename, 'unknown', md5)
 
     # Okay now explode any container types
-    workbench.batch_work_request('unzip', {'type_tag': 'zip'})
-    workbench.batch_work_request('pcap_bro', {'type_tag': 'pcap'})
-    workbench.batch_work_request('mem_procdump', {'type_tag': 'mem'})
+    _foo = workbench.batch_work_request('unzip', {'type_tag': 'zip'}); list(_foo) # See Issue #306
+    _foo = workbench.batch_work_request('pcap_bro', {'type_tag': 'pcap'}); list(_foo) # See Issue #306
+    _foo = workbench.batch_work_request('mem_procdump', {'type_tag': 'mem'}); list(_foo) # See Issue #306
     
 
     # Make sure all files are properly identified
