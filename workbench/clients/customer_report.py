@@ -1,7 +1,6 @@
 """This client generates customer reports on all the samples in workbench."""
 
 import zerorpc
-import pprint
 import os
 import client_helper
 
@@ -17,7 +16,7 @@ def run():
 
     results = workbench.batch_work_request('view_customer')
     for customer in results:
-        pprint.pprint(customer)
+        print customer['customer']
 
 def test():
     """Executes test for customer_report."""
