@@ -5,7 +5,7 @@
 """
 
 
-import os
+import os, sys
 import logging
 from rekall import session
 from rekall.plugins.addrspaces import standard
@@ -28,7 +28,6 @@ class RekallAdapter(object):
     def __init__(self, raw_bytes):
         """Initialization."""
 
-        gsleep()
         self.MemS = MemSession(raw_bytes)
         gsleep()
         self.renderer = WorkbenchRenderer()
@@ -179,6 +178,7 @@ class WorkbenchRenderer(BaseRenderer):
     def render(self, plugin):
         """This method starts the plugin, calls render and returns the plugin output """
         self.start(plugin_name=plugin.name)
+        gsleep()
         plugin.render(self)
         return self.output_data
 
@@ -235,8 +235,7 @@ def test():
     # Did we properly download the memory file?
     if not os.path.isfile(data_path):
         print 'Could not open exemplar4.vmem'
-        exit(1)
-
+        sys.exit(1)
 
     # Got the file, now process it
     raw_bytes = open(data_path, 'rb').read()
@@ -247,15 +246,15 @@ def test():
 
     # Create any kind of plugin supported by this session
     output = renderer.render(session.plugins.imageinfo())
-    pprint.pprint(output)
+    pprint.pprint(output.keys())
     assert 'Error' not in output
 
     output = renderer.render(session.plugins.pslist())
-    pprint.pprint(output)
+    pprint.pprint(output.keys())
     assert 'Error' not in output
 
     output = renderer.render(session.plugins.dlllist())
-    pprint.pprint(output)
+    pprint.pprint(output.keys())
     assert 'Error' not in output
 
 

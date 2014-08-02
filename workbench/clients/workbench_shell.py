@@ -92,9 +92,7 @@ class AutoQuoteTransformer(PrefilterTransformer):
                     if token not in ns_token_set:
                         line = line.replace(token, '"'+token+'"')
 
-        # Push out the processed line and return it
-        if orig_line != line:
-            self.shell.auto_rewrite_input(line)
+        # Return the processed line
         return line
 
 class WorkbenchShell(object):
@@ -141,10 +139,11 @@ class WorkbenchShell(object):
         try:
             _tmp_connect._zerorpc_name()
             _tmp_connect.close()
+            del _tmp_connect
         except zerorpc.exceptions.LostRemote:
             print '%sError: Could not connect to Workbench Server at %s:%s%s' % \
                   (F.RED, server_info['server'], server_info['port'], F.RESET)
-            exit(1)
+            sys.exit(1)
 
         # Okay do the real connection
         self.workbench = zerorpc.Client(timeout=300, heartbeat=60)

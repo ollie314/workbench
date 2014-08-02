@@ -2,6 +2,12 @@
 import os
 import zerorpc
 import pprint
+import gevent
+
+def gsleep():
+    ''' Convenience method for gevent.sleep '''
+    print '*** Gevent Sleep ***'
+    gevent.sleep(0)
 
 class PcapHTTPGraph(object):
     ''' This worker generates a graph from a PCAP (depends on Bro) '''
@@ -48,10 +54,12 @@ class PcapHTTPGraph(object):
             self.weird_log_graph(stream)
 
         # HTTP log
+        gsleep()
         stream = self.workbench.stream_sample(bro_logs['http_log'])
         self.http_log_graph(stream)
 
         # Files log
+        gsleep()
         stream = self.workbench.stream_sample(bro_logs['files_log'])
         self.files_log_graph(stream)
 
@@ -74,8 +82,8 @@ class PcapHTTPGraph(object):
             self.add_node(row['id.resp_h'], row['id.resp_h'], ['host'])
 
             # Add the http request relationships
-            self.workbench.add_rel(row['id.orig_h'], row['host'], 'http_request')
-            self.workbench.add_rel(row['host'], row['id.resp_h'], 'A')
+            self.add_rel(row['id.orig_h'], row['host'], 'http_request')
+            self.add_rel(row['host'], row['id.resp_h'], 'A')
 
     def weird_log_graph(self, stream):
         ''' Build up a graph (nodes and edges from a Bro weird.log) '''
