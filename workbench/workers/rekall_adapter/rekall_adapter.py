@@ -34,9 +34,7 @@ class RekallAdapter(object):
 
         gsleep()
         self.MemS = MemSession(raw_bytes)
-        gsleep()
         self.renderer = WorkbenchRenderer()
-        gsleep()
         self.session = self.MemS.get_session()
         gsleep()
 
