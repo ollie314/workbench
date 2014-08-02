@@ -20,11 +20,7 @@ import gevent
 def gsleep():
     ''' Convenience method for gevent.sleep '''
     print '*** Gevent Sleep ***'
-    gevent.sleep(0)
-
-def gsleep_test():
-    ''' Convenience method for gevent.sleep '''
-    print '*** Gevent Sleep TEST STUB***'
+    # gevent.sleep(0)
 
 class RekallAdapter(object):
     """RekallAdapter: Helps utilize the Rekall Memory Forensic Framework."""
