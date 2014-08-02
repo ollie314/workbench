@@ -20,7 +20,7 @@ import gevent
 def gsleep():
     ''' Convenience method for gevent.sleep '''
     print '*** Gevent Sleep ***'
-    # gevent.sleep(0)
+    gevent.sleep(0)
 
 class RekallAdapter(object):
     """RekallAdapter: Helps utilize the Rekall Memory Forensic Framework."""
@@ -176,10 +176,8 @@ class WorkbenchRenderer(BaseRenderer):
 
     def render(self, plugin):
         """This method starts the plugin, calls render and returns the plugin output """
-        gsleep()
         self.start(plugin_name=plugin.name)
         plugin.render(self)
-        gsleep()
         return self.output_data
 
     def _cast_row(self, keys, values, data_types):
