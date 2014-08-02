@@ -5,7 +5,7 @@
 """
 
 
-import os
+import os, sys
 import logging
 from rekall import session
 from rekall.plugins.addrspaces import standard
@@ -182,7 +182,6 @@ class WorkbenchRenderer(BaseRenderer):
         """This method starts the plugin, calls render and returns the plugin output """
         gsleep()
         self.start(plugin_name=plugin.name)
-        gsleep()
         plugin.render(self)
         gsleep()
         return self.output_data
@@ -240,8 +239,7 @@ def test():
     # Did we properly download the memory file?
     if not os.path.isfile(data_path):
         print 'Could not open exemplar4.vmem'
-        exit(1)
-
+        sys.exit(1)
 
     # Got the file, now process it
     raw_bytes = open(data_path, 'rb').read()
