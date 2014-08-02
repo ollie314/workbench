@@ -79,9 +79,10 @@ class PcapGraph(object):
         ''' Build up a graph (nodes and edges from a Bro conn.log) '''
 
         # The conn stream can be very large, so skipping for now.. ;p
+        conn_log = list(stream)
         return
 
-        conn_log = list(stream)
+        '''
         print 'Entering conn_log_graph...(%d rows)' % len(conn_log)
         for row in stream:
 
@@ -97,6 +98,7 @@ class PcapGraph(object):
             # Add the ip->connection relationships
             self.add_rel(row['uid'], row['id.orig_h'], 'origin')
             self.add_rel(row['uid'], row['id.resp_h'], 'response')
+        '''
 
     def http_log_graph(self, stream):
         ''' Build up a graph (nodes and edges from a Bro http.log) '''
