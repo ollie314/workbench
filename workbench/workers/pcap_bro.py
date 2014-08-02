@@ -63,8 +63,7 @@ class PcapBro(object):
         script_path = self.get_bro_script_path()
 
         # Create a temporary directory
-        with self.make_temp_directory() as temp_dir:
-            os.chdir(temp_dir)
+        with self.goto_temp_directory() as temp_dir:
 
             # Get the pcap inputs (filenames)
             print 'pcap_bro: Setting up PCAP inputs...'
@@ -131,16 +130,17 @@ class PcapBro(object):
             raise RuntimeError('%s\npcap_bro had returncode: %d' % (exec_args, sp.returncode))
 
     @contextlib.contextmanager
-    def make_temp_directory(self):
-        ''' Bro temporary directory context manager '''
+    def goto_temp_directory(self):
+        previousDir = os.getcwd()
         temp_dir = tempfile.mkdtemp()
+        os.chdir(temp_dir)
         try:
             yield temp_dir
         finally:
+            # Change back to original directory
+            os.chdir(previousDir)
             # Remove the directory/files
             shutil.rmtree(temp_dir)
-            # Change back to original directory
-            os.chdir(self.orig_dir)
 
     def __del__(self):
         ''' Class Cleanup '''
