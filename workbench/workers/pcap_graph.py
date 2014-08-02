@@ -68,21 +68,18 @@ class PcapGraph(object):
         self.files_log_graph(stream)
 
         # Conn log
+        # Conn log can be big; skipping for now
+        '''
         gsleep()
-        print 'Going into conn_log...'
         stream = self.workbench.stream_sample(bro_logs['conn_log'])
         self.conn_log_graph(stream)
+        '''
 
         return {'output':'go to http://localhost:7474/browser and execute this query "match (s:origin), (t:file), p=allShortestPaths((s)--(t)) return p"'}
 
     def conn_log_graph(self, stream):
         ''' Build up a graph (nodes and edges from a Bro conn.log) '''
-
-        # The conn stream can be very large, so skipping for now.. ;p
         conn_log = list(stream)
-        return
-
-        '''
         print 'Entering conn_log_graph...(%d rows)' % len(conn_log)
         for row in stream:
 
@@ -98,7 +95,6 @@ class PcapGraph(object):
             # Add the ip->connection relationships
             self.add_rel(row['uid'], row['id.orig_h'], 'origin')
             self.add_rel(row['uid'], row['id.resp_h'], 'response')
-        '''
 
     def http_log_graph(self, stream):
         ''' Build up a graph (nodes and edges from a Bro http.log) '''
