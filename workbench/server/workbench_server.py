@@ -109,8 +109,15 @@ class WorkBench(object):
 
         # If the sample comes in with an unknown type_tag try to determine it
         if type_tag == 'unknown':
-            print '<<< Unknown File: Trying to Determine Type >>>'
+            print 'Info: Unknown File -- Trying to Determine Type...'
             type_tag = self.guess_type_tag(input_bytes)
+            if type_tag == 'data':
+                print 'Info: File -- Trying to Determine Type from filename...'
+                ext = os.path.splitext(filename)[1][1:]
+                if ext in ['mem','vmem']:
+                    type_tag = 'mem'
+                else:
+                    print 'Alert: Failed to Determine Type!'
 
         return self.data_store.store_sample(filename, input_bytes, type_tag)
 
@@ -238,7 +245,9 @@ class WorkBench(object):
                         'image/png': 'png',
                         'text/html': 'html',
                         'application/vnd.ms-fontobject': 'ms_font',
-                        'application/x-shockwave-flash': 'swf'}
+                        'application/x-shockwave-flash': 'swf',
+                        'application/vnd.tcpdump.pcap': 'pcap',
+                        'application/octet-stream': 'data'}
 
         # See what filemagic can determine
         with magic.Magic(flags=magic.MAGIC_MIME_TYPE) as mag:
@@ -246,7 +255,7 @@ class WorkBench(object):
             if mime_type in mime_to_type:
                 return mime_to_type[mime_type]
             else:
-                print '<<< Sample Type could not be Determined >>>'
+                print 'Alert: Sample Type could not be Determined'
                 return 'unknown'
 
 
