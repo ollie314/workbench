@@ -28,9 +28,10 @@ class RekallAdapter(object):
     def __init__(self, raw_bytes):
         """Initialization."""
 
-        gsleep()
         self.MemS = MemSession(raw_bytes)
+        gsleep()
         self.renderer = WorkbenchRenderer()
+        gsleep()
         self.session = self.MemS.get_session()
         gsleep()
 
@@ -177,6 +178,7 @@ class WorkbenchRenderer(BaseRenderer):
     def render(self, plugin):
         """This method starts the plugin, calls render and returns the plugin output """
         self.start(plugin_name=plugin.name)
+        gsleep()
         plugin.render(self)
         return self.output_data
 

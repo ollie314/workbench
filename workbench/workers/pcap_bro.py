@@ -7,12 +7,12 @@ import gevent.subprocess
 import glob
 import zerorpc
 import pprint
-#import gevent
+import gevent
 
 def gsleep():
     ''' Convenience method for gevent.sleep '''
     print '*** Gevent Sleep ***'
-    #gevent.sleep(1)
+    gevent.sleep(0)
 
 class PcapBro(object):
     ''' This worker runs Bro scripts on a pcap file '''

@@ -2,12 +2,12 @@
 import os
 import zerorpc
 import pprint
-#import gevent
+import gevent
 
 def gsleep():
     ''' Convenience method for gevent.sleep '''
     print '*** Gevent Sleep ***'
-    #gevent.sleep(1)
+    gevent.sleep(0)
 
 class PcapHTTPGraph(object):
     ''' This worker generates a graph from a PCAP (depends on Bro) '''
