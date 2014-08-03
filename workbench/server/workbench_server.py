@@ -97,15 +97,18 @@ class WorkBench(object):
     #######################
     # Sample Methods
     #######################
-    def store_sample(self, filename, input_bytes, type_tag):
+    def store_sample(self, input_bytes, filename, type_tag):
         """ Store a sample into the DataStore.
             Args:
-                filename: name of the file (used purely as meta data not for lookup)
                 input_bytes: the actual bytes of the sample e.g. f.read()
+                filename: name of the file (used purely as meta data not for lookup)
                 type_tag: ('exe','pcap','pdf','json','swf', or ...)
             Returns:
                 the md5 of the sample.
         """
+
+        # Store the sample
+        md5 = self.data_store.store_sample(input_bytes, filename, type_tag)
 
         # If the sample comes in with an unknown type_tag try to determine it
         if type_tag == 'unknown':
@@ -118,8 +121,11 @@ class WorkBench(object):
                     type_tag = 'mem'
                 else:
                     print 'Alert: Failed to Determine Type!'
+            
+            # Temp
+            md5 = self.data_store.store_sample(input_bytes, filename, type_tag)
 
-        return self.data_store.store_sample(filename, input_bytes, type_tag)
+        return md5
 
     def get_sample(self, md5):
         """ Get a sample from the DataStore.
@@ -234,20 +240,24 @@ class WorkBench(object):
 
     def guess_type_tag(self, input_bytes):
         """ Try to guess the type_tag for this sample """
-        mime_to_type = {'application/x-dosexec': 'exe',
+        mime_to_type = {'application/jar': 'jar',
+                        'application/java-archive': 'jar',
+                        'application/octet-stream': 'data',
                         'application/pdf': 'pdf',
-                        'application/zip': 'zip',
-                        'application/jar': 'jar',
                         'application/vnd.ms-cab-compressed': 'cab',
-                        'text/plain': 'txt',
+                        'application/vnd.ms-fontobject': 'ms_font',
+                        'application/vnd.tcpdump.pcap': 'pcap',
+                        'application/x-dosexec': 'exe',
+                        'application/x-empty': 'empty',
+                        'application/x-shockwave-flash': 'swf',
+                        'application/zip': 'zip',
                         'image/gif': 'gif',
+                        'text/html': 'html',
                         'image/jpeg': 'jpg',
                         'image/png': 'png',
-                        'text/html': 'html',
-                        'application/vnd.ms-fontobject': 'ms_font',
-                        'application/x-shockwave-flash': 'swf',
-                        'application/vnd.tcpdump.pcap': 'pcap',
-                        'application/octet-stream': 'data'}
+                        'image/x-icon': 'icon',
+                        'text/plain': 'txt'
+                        }
 
         # See what filemagic can determine
         with magic.Magic(flags=magic.MAGIC_MIME_TYPE) as mag:
