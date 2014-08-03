@@ -148,14 +148,6 @@ workbench.clients.upload_file_chunks module
     :undoc-members:
     :show-inheritance:
 
-workbench.clients.workbench_shell module
-----------------------------------------
-
-.. automodule:: workbench.clients.workbench_shell
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 workbench.clients.zip_file_extraction module
 --------------------------------------------
 
