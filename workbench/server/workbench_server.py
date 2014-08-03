@@ -108,7 +108,7 @@ class WorkBench(object):
         """
 
         # Store the sample
-        md5 = self.data_store.store_sample(input_bytes, filename, type_tag)
+        # md5 = self.data_store.store_sample(input_bytes, filename, type_tag)
 
         # If the sample comes in with an unknown type_tag try to determine it
         if type_tag == 'unknown':
@@ -120,10 +120,11 @@ class WorkBench(object):
                 if ext in ['mem','vmem']:
                     type_tag = 'mem'
                 else:
-                    print 'Alert: Failed to Determine Type!'
+                    print 'Alert: Failed to Determine Type for %s' % filename
+                    exit(1) # Temp
             
-            # Temp
-            md5 = self.data_store.store_sample(input_bytes, filename, type_tag)
+        # Temp
+        md5 = self.data_store.store_sample(input_bytes, filename, type_tag)
 
         return md5
 
