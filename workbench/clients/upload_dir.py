@@ -55,7 +55,7 @@ def run():
     _foo = workbench.batch_work_request('unzip', {'type_tag': 'zip'}); list(_foo) # See Issue #306
     _foo = workbench.batch_work_request('pcap_bro', {'type_tag': 'pcap'}); list(_foo) # See Issue #306
     _foo = workbench.batch_work_request('mem_procdump', {'type_tag': 'mem'}); list(_foo) # See Issue #306
-    
+
 
     # Make sure all files are properly identified
     print 'Info: Ensuring File Identifications...'
@@ -63,6 +63,8 @@ def run():
     meta_all = workbench.batch_work_request('meta')
     for meta in meta_all:
         type_tag_set.add(meta['type_tag'])
+        if meta['type_tag'] in ['unknown', 'own']:
+            print meta
     pprint.pprint(type_tag_set)
 
 
