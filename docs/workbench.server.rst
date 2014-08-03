@@ -51,6 +51,14 @@ workbench.server.plugin_manager module
     :undoc-members:
     :show-inheritance:
 
+workbench.server.version module
+-------------------------------
+
+.. automodule:: workbench.server.version
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 workbench.server.workbench_server module
 ----------------------------------------
 

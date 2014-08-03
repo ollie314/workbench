@@ -29,6 +29,7 @@ try:
     from . import neo_db
     from . import plugin_manager
     from bro import bro_log_reader
+    from . import version
 
 # Okay this happens when you're running workbench in a debugger so having
 # this is super handy and we'll keep it even though it hurts coverage score.
@@ -38,6 +39,7 @@ except ValueError:
     import neo_db
     import plugin_manager
     from bro import bro_log_reader
+    import version
 
 
 class WorkBench(object):
@@ -61,12 +63,9 @@ class WorkBench(object):
         # Needs to be replaced by logger
         self.VERBOSE = False
 
-        # Announce Version
-        try:
-            self.version = sys.modules['workbench'].__version__
-        except (AttributeError, KeyError):
-            self.version = '<Develop>'
-        print '<<< Workbench Version %s >>>' % self.version
+        # Workbench Server Version
+        self.version = version.__version__
+        print '<<< Workbench Server Version %s >>>' % self.version
 
         # Open DataStore
         self.data_store = data_store.DataStore(**store_args)
@@ -93,6 +92,9 @@ class WorkBench(object):
         # Store information about commands and workbench
         self._store_information()
 
+    def version(self):
+        """Return the version of the Workbench server"""
+        return self.version
 
     #######################
     # Sample Methods
@@ -637,7 +639,7 @@ class WorkBench(object):
                 self.store_info(info, name, type_tag='command')
 
         # Stores help text into the workbench information system
-        self.store_info({'help': '<<< Workbench Version %s >>>' % self.version}, 'version', type_tag='help')
+        self.store_info({'help': '<<< Workbench Server Version %s >>>' % self.version}, 'version', type_tag='help')
         self.store_info({'help': self._help_workbench()}, 'workbench', type_tag='help')
         self.store_info({'help': self._help_basic()}, 'basic', type_tag='help')
         self.store_info({'help': self._help_commands()}, 'commands', type_tag='help')
@@ -756,7 +758,6 @@ def run():
     # Spin up Workbench ZeroRPC
     try:
         store_args = {'uri': datastore_uri, 'database': database, 'worker_cap':worker_cap, 'samples_cap':samples_cap}
-        print '<<< Workbench Server at %s >>>' % ('tcp://0.0.0.0:4242')
         workbench = zerorpc.Server(WorkBench(store_args=store_args), name='workbench', heartbeat=60)
         workbench.bind('tcp://0.0.0.0:4242')
         print '\nWorkbench is ready and feeling super duper!'

@@ -18,9 +18,10 @@ Documentation
 The full documentation is at http://workbench.rtfd.org. '''
 history = open('HISTORY.rst').read().replace('.. :changelog:', '')
 
+exec(open('workbench/server/version.py').read())
 setup(
     name='workbench',
-    version='0.2.9',
+    version=__version__,
     description='A scalable framework for security research and development teams.',
     long_description=readme + '\n\n' + doclink + '\n\n' + history,
     author='The Workbench Team',
