@@ -31,11 +31,11 @@ def run():
         raw_bytes = f.read()
         md5_list = []
         for chunk in chunks(raw_bytes, 1024*1024):
-            md5_list.append(workbench.store_sample(filename, chunk, 'exe'))
+            md5_list.append(workbench.store_sample(chunk, filename, 'exe'))
 
         # Now we just ask Workbench to combine these
         combined_md5 = workbench.combine_samples(md5_list, filename, 'exe')
-        real_md5 = workbench.store_sample(filename, raw_bytes, 'exe')
+        real_md5 = workbench.store_sample(raw_bytes, filename, 'exe')
         assert(combined_md5 == real_md5)
 
 def test():

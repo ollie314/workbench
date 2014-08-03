@@ -27,7 +27,7 @@ def run():
 
         with open(filename,'rb') as f:
             base_name = os.path.basename(filename)
-            md5 = workbench.store_sample(base_name, f.read(), 'exe')
+            md5 = workbench.store_sample(f.read(), base_name, 'exe')
             results = workbench.work_request('pe_peid', md5)
             pprint.pprint(results)
 

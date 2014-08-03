@@ -40,7 +40,7 @@ def test():
     import os
     data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
                              '../data/pcap/winmediaplayer.pcap')
-    md5 = workbench.store_sample('winmedia.pcap', open(data_path, 'rb').read(), 'pcap')
+    md5 = workbench.store_sample(open(data_path, 'rb').read(), 'winmedia.pcap', 'pcap')
     input_data = workbench.work_request('pcap_bro', md5)
 
     # Execute the worker (unit test)

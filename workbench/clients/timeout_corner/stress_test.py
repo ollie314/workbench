@@ -42,7 +42,7 @@ def process_files(path):
         for filename in file_list:
             with open(filename, 'rb') as f:
                 base_name = os.path.basename(filename)
-                md5 = workbench.store_sample(base_name, f.read(), type_tag)
+                md5 = workbench.store_sample(f.read(), base_name, type_tag)
                 workbench.work_request('view', md5)
                 print 'Filename: %s' % (base_name)
         total_files += num_files

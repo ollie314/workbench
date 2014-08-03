@@ -38,7 +38,7 @@ def test():
     import os
     data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
                              '../data/pe/bad/033d91aae8ad29ed9fbb858179271232')
-    md5 = workbench.store_sample('bad', open(data_path, 'rb').read(), 'exe')
+    md5 = workbench.store_sample(open(data_path, 'rb').read(), 'bad_pe', 'exe')
     input_data = workbench.work_request('pe_features', md5)
     input_data.update(workbench.work_request('pe_indicators', md5))
 

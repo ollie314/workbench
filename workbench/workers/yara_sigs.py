@@ -54,7 +54,7 @@ def test():
 
         with open(filename,'rb') as pe_file:
             base_name = os.path.basename(filename)
-            md5_list.append(workbench.store_sample(base_name, pe_file.read(), 'exe'))
+            md5_list.append(workbench.store_sample(pe_file.read(), base_name, 'exe'))
 
     # Store the md5 list on the server as a sample set
     workbench.store_sample_set(md5_list)

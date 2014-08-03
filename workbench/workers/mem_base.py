@@ -69,7 +69,7 @@ def test():
         exit(1)
 
     # Store the sample
-    md5 = c.store_sample('exemplar4.vmem', open(data_path, 'rb').read(), 'mem')
+    md5 = c.store_sample(open(data_path, 'rb').read(), 'exemplar4.vmem', 'mem')
 
     # Unit test stuff
     input_data = c.get_sample(md5)

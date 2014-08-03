@@ -40,7 +40,7 @@ def test():
 
         with open(filename,'rb') as f:
             base_name = os.path.basename(filename)
-            pcap_md5s.append(workbench.store_sample(base_name, f.read(), 'pcap'))
+            pcap_md5s.append(workbench.store_sample(f.read(), base_name, 'pcap'))
 
     # Now store the sample set
     set_md5 = workbench.store_sample_set(pcap_md5s)

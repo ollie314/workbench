@@ -38,7 +38,7 @@ def run():
 
         # Process the pcap file
         with open(filename,'rb') as f:
-            md5 = WORKBENCH.store_sample(filename, f.read(), 'pcap')
+            md5 = WORKBENCH.store_sample(f.read(), filename, 'pcap')
             result = WORKBENCH.work_request('view_pcap', md5)
             result.update(WORKBENCH.work_request('meta', result['view_pcap']['md5']))
             results.append(result)

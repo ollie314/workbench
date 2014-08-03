@@ -21,7 +21,7 @@ def run():
     for filename in file_list:
         with open(filename,'rb') as f:
             base_name = os.path.basename(filename)
-            md5 = workbench.store_sample(base_name, f.read(), 'zip')
+            md5 = workbench.store_sample(f.read(), base_name, 'zip')
             results = workbench.work_request('view', md5)
             print 'Filename: %s ' % (base_name)
             pprint.pprint(results)
