@@ -75,7 +75,7 @@ PyPI Checklist (Senior Dev Stuff)
 Workbench (Server/CLI/All)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 .. warning:: Make sure workbench/data/memory_images/exemplar4.vmem isn’t there, remove if necessary!
-.. info:: Change the default server in workbench_cli/config.ini to 'server_uri = localhost'
+.. important:: Change the default server in workbench_cli/config.ini to 'server_uri = localhost'
 
 ::
 
@@ -121,7 +121,7 @@ Workbench (Server/CLI/All)
 
 Workbench CLI (Just CLI)
 ~~~~~~~~~~~~~~~~~~~~~~~~
-.. info:: Change the default server in workbench_cli/config.ini to 'server_uri = workbenchserver.com'
+.. important:: Change the default server in workbench_cli/config.ini to 'server_uri = workbenchserver.com'
 
 - New (or Clean) Python VirtualENV
 
@@ -137,7 +137,7 @@ Workbench CLI (Just CLI)
     $ vi workbench_cli/version.py (change version)
     $ python setup_cli.py publish
 
-.. info:: Revert the default server in workbench_cli/config.ini to 'server_uri = localhost'
+.. important:: Revert the default server in workbench_cli/config.ini to 'server_uri = localhost'
 
 - Push the version branch
 - Go to git do a PR
