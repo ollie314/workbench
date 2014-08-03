@@ -21,7 +21,6 @@ class MemoryImageProcDump(object):
         ''' Initialization '''
         self.output = {}
         self.plugin_name = 'procdump'
-        self.orig_dir = os.getcwd()
 
         # Spin up workbench connection
         self.c = zerorpc.Client(timeout=300, heartbeat=60)
@@ -39,12 +38,11 @@ class MemoryImageProcDump(object):
         renderer = adapter.get_renderer()
 
         # Create a temporary directory
-        with self.make_temp_directory() as temp_dir:
-            os.chdir(temp_dir)
+        with self.goto_temp_directory():
 
             # Here we can grab any plugin
             try:
-                plugin = session.plugins.procdump(dump_dir=temp_dir)
+                plugin = session.plugins.procdump()
             except KeyError:
                 print 'Could not load the %s Rekall Plugin.. Failing with Error.' % self.plugin_name
                 return {'Error': 'Could not load the %s Rekall Plugin' % self.plugin_name}
@@ -62,7 +60,7 @@ class MemoryImageProcDump(object):
                 output_name = output_name.replace('executable.', '')
                 with open(output_file, 'rb') as dumped_file:
                     raw_bytes = dumped_file.read()
-                    md5 = self.c.store_sample(output_name, raw_bytes, 'exe')
+                    md5 = self.c.store_sample(raw_bytes, output_name, 'exe')
 
                     # Remove some columns from meta data
                     meta = self.c.work_request('meta', md5)['meta']
@@ -77,15 +75,17 @@ class MemoryImageProcDump(object):
         return self.output
 
     @contextlib.contextmanager
-    def make_temp_directory(self):
+    def goto_temp_directory(self):
+        previousDir = os.getcwd()
         temp_dir = tempfile.mkdtemp()
+        os.chdir(temp_dir)
         try:
-            yield temp_dir
+            yield
         finally:
+            # Change back to original directory
+            os.chdir(previousDir)
             # Remove the directory/files
             shutil.rmtree(temp_dir)
-            # Change back to original directory
-            os.chdir(self.orig_dir)            
 
     def __del__(self):
         ''' Class Cleanup '''
@@ -112,7 +112,7 @@ def test():
         raw_bytes = mem_file.read()
         md5 = hashlib.md5(raw_bytes).hexdigest()
         if not workbench.has_sample(md5):
-            md5 = workbench.store_sample('exemplar4.vmem', open(data_path, 'rb').read(), 'mem')
+            md5 = workbench.store_sample(open(data_path, 'rb').read(), 'exemplar4.vmem', 'mem')
 
     # Execute the worker (unit test)
     worker = MemoryImageProcDump()

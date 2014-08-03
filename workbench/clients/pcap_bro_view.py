@@ -28,7 +28,7 @@ def run():
         # Process the pcap file
         with open(filename,'rb') as f:
             base_name = os.path.basename(filename)
-            md5 = workbench.store_sample(base_name, f.read(), 'pcap')
+            md5 = workbench.store_sample(f.read(), base_name, 'pcap')
             results = workbench.work_request('view_pcap', md5)
             print '\n<<< %s >>>' % base_name
             pprint.pprint(results)

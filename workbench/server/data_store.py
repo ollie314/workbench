@@ -48,7 +48,7 @@ class DataStore(object):
         """ Return the uri of the data store."""
         return self.uri
 
-    def store_sample(self, filename, sample_bytes, type_tag):
+    def store_sample(self, sample_bytes, filename, type_tag):
         """Store a sample into the datastore.
 
         Args:
@@ -59,6 +59,11 @@ class DataStore(object):
         Returns:
             Digest md5 digest of the sample.
         """
+
+        # Temp sanity
+        if len(filename) > 100:
+            print 'switched bytes/filename... %s %s' % (sample_bytes[:100], filename[:100])
+            exit(1)
 
         sample_info = {}
 

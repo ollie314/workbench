@@ -30,7 +30,7 @@ def test():
     import os
     data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
                              '../data/pdf/bad/067b3929f096768e864f6a04f04d4e54')
-    md5 = workbench.store_sample('bad_pdf', open(data_path, 'rb').read(), 'pdf')
+    md5 = workbench.store_sample(open(data_path, 'rb').read(), 'bad_pdf', 'pdf')
     input_data = workbench.work_request('meta', md5)
     input_data.update(workbench.work_request('strings', md5))
 

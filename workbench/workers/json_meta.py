@@ -39,7 +39,7 @@ def test():
     # Generate input for the worker
     import os
     data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),'../data/json/generated.json')
-    md5 = workbench.store_sample('unknown.json', open(data_path, 'rb').read(), 'json')
+    md5 = workbench.store_sample( open(data_path, 'rb').read(), 'unknown.json', 'json')
     input_data = workbench.get_sample(md5)
     input_data.update(workbench.work_request('meta', md5))
 

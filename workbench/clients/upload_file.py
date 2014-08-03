@@ -23,7 +23,7 @@ def run():
         # Throw file into workbench
         filename = os.path.basename(my_file)
         raw_bytes = f.read()
-        md5 = workbench.store_sample(filename, raw_bytes, 'exe')
+        md5 = workbench.store_sample(raw_bytes, filename, 'exe')
         results = workbench.work_request('view', md5)
         print 'Filename: %s' % filename
         pprint.pprint(results)

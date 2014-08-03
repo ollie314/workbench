@@ -231,7 +231,7 @@ def test():
 
     # Generate the input data for this worker
     data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../data/pcap/kitchen_boss.pcap')
-    md5 = workbench.store_sample('kitchen_boss.pcap', open(data_path, 'rb').read(), 'pcap')
+    md5 = workbench.store_sample(open(data_path, 'rb').read(), 'kitchen_boss.pcap', 'pcap')
     input_data = workbench.work_request('pcap_bro', md5)
 
     # Execute the worker (unit test)

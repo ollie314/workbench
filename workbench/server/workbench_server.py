@@ -97,22 +97,36 @@ class WorkBench(object):
     #######################
     # Sample Methods
     #######################
-    def store_sample(self, filename, input_bytes, type_tag):
+    def store_sample(self, input_bytes, filename, type_tag):
         """ Store a sample into the DataStore.
             Args:
-                filename: name of the file (used purely as meta data not for lookup)
                 input_bytes: the actual bytes of the sample e.g. f.read()
+                filename: name of the file (used purely as meta data not for lookup)
                 type_tag: ('exe','pcap','pdf','json','swf', or ...)
             Returns:
                 the md5 of the sample.
         """
 
+        # Store the sample
+        # md5 = self.data_store.store_sample(input_bytes, filename, type_tag)
+
         # If the sample comes in with an unknown type_tag try to determine it
         if type_tag == 'unknown':
-            print '<<< Unknown File: Trying to Determine Type >>>'
+            print 'Info: Unknown File -- Trying to Determine Type...'
             type_tag = self.guess_type_tag(input_bytes)
+            if type_tag == 'data':
+                print 'Info: File -- Trying to Determine Type from filename...'
+                ext = os.path.splitext(filename)[1][1:]
+                if ext in ['mem','vmem']:
+                    type_tag = 'mem'
+                else:
+                    print 'Alert: Failed to Determine Type for %s' % filename
+                    exit(1) # Temp
+            
+        # Temp
+        md5 = self.data_store.store_sample(input_bytes, filename, type_tag)
 
-        return self.data_store.store_sample(filename, input_bytes, type_tag)
+        return md5
 
     def get_sample(self, md5):
         """ Get a sample from the DataStore.
@@ -177,7 +191,7 @@ class WorkBench(object):
             self.remove_sample(md5)
 
         # Store it
-        return self.store_sample(filename, total_bytes, type_tag)
+        return self.store_sample(total_bytes, filename, type_tag)
 
     def remove_sample(self, md5):
         """Remove the sample from the data store"""
@@ -227,18 +241,24 @@ class WorkBench(object):
 
     def guess_type_tag(self, input_bytes):
         """ Try to guess the type_tag for this sample """
-        mime_to_type = {'application/x-dosexec': 'exe',
+        mime_to_type = {'application/jar': 'jar',
+                        'application/java-archive': 'jar',
+                        'application/octet-stream': 'data',
                         'application/pdf': 'pdf',
-                        'application/zip': 'zip',
-                        'application/jar': 'jar',
                         'application/vnd.ms-cab-compressed': 'cab',
-                        'text/plain': 'txt',
+                        'application/vnd.ms-fontobject': 'ms_font',
+                        'application/vnd.tcpdump.pcap': 'pcap',
+                        'application/x-dosexec': 'exe',
+                        'application/x-empty': 'empty',
+                        'application/x-shockwave-flash': 'swf',
+                        'application/zip': 'zip',
                         'image/gif': 'gif',
+                        'text/html': 'html',
                         'image/jpeg': 'jpg',
                         'image/png': 'png',
-                        'text/html': 'html',
-                        'application/vnd.ms-fontobject': 'ms_font',
-                        'application/x-shockwave-flash': 'swf'}
+                        'image/x-icon': 'icon',
+                        'text/plain': 'txt'
+                        }
 
         # See what filemagic can determine
         with magic.Magic(flags=magic.MAGIC_MIME_TYPE) as mag:
@@ -246,7 +266,7 @@ class WorkBench(object):
             if mime_type in mime_to_type:
                 return mime_to_type[mime_type]
             else:
-                print '<<< Sample Type could not be Determined >>>'
+                print 'Alert: Sample Type could not be Determined'
                 return 'unknown'
 
 

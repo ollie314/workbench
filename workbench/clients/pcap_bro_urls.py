@@ -26,7 +26,7 @@ def run():
 
         with open(filename,'rb') as f:
             base_name = os.path.basename(filename)
-            pcap_md5 = workbench.store_sample(base_name, f.read(), 'pcap')
+            pcap_md5 = workbench.store_sample(f.read(), base_name, 'pcap')
             results = workbench.work_request('pcap_bro', pcap_md5)
 
             # Just grab the http log

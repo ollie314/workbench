@@ -26,7 +26,7 @@ def test():
     # Generate input for the worker
     import os
     data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../data/swf/unknown.swf')
-    md5 = workbench.store_sample('unknown.swf', open(data_path, 'rb').read(), 'swf')
+    md5 = workbench.store_sample(open(data_path, 'rb').read(), 'unknown.swf', 'swf')
     input_data = workbench.get_sample(md5)
     input_data.update(workbench.work_request('meta', md5))
 

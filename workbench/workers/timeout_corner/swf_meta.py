@@ -58,7 +58,7 @@ def test():
     workbench.connect("tcp://127.0.0.1:4242")
 
     # Generate the input data for this worker
-    md5 = workbench.store_sample('unknown.swf', open('../data/swf/unknown.swf', 'rb').read(), 'exe')
+    md5 = workbench.store_sample(open('../data/swf/unknown.swf', 'rb').read(), 'unknown.swf', 'swf')
     input_data = workbench.get_sample(md5)
     input_data.update(workbench.work_request('meta', md5))
 

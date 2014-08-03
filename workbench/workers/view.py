@@ -49,7 +49,7 @@ def test():
     import os
     data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
                              '../data/pdf/bad/067b3929f096768e864f6a04f04d4e54')
-    md5 = workbench.store_sample('bad_067b39', open(data_path, 'rb').read(), 'pdf')
+    md5 = workbench.store_sample(open(data_path, 'rb').read(), 'bad_pdf', 'pdf')
     input_data = workbench.work_request('meta', md5)
 
     # Execute the worker
@@ -61,7 +61,7 @@ def test():
     # Generate the input data for this worker
     data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
                              '../data/pe/bad/033d91aae8ad29ed9fbb858179271232')
-    md5 = workbench.store_sample('bad_033d91', open(data_path, 'rb').read(), 'exe')
+    md5 = workbench.store_sample(open(data_path, 'rb').read(), 'bad_pe', 'exe')
     input_data = workbench.work_request('meta', md5)
 
     # Execute the worker
@@ -72,7 +72,7 @@ def test():
     # Generate the input data for this worker
     data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
                              '../data/zip/good.zip')
-    md5 = workbench.store_sample('good.zip', open(data_path, 'rb').read(), 'zip')
+    md5 = workbench.store_sample(open(data_path, 'rb').read(), 'good.zip', 'zip')
     input_data = workbench.work_request('meta', md5)
 
     # Execute the worker

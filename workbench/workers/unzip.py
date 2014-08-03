@@ -19,7 +19,7 @@ class Unzip(object):
         zipfile_output = zipfile.ZipFile(StringIO.StringIO(raw_bytes))
         payload_md5s = []
         for name in zipfile_output.namelist():
-            payload_md5s.append(self.workbench.store_sample(name,zipfile_output.read(name), 'unknown'))
+            payload_md5s.append(self.workbench.store_sample(zipfile_output.read(name), name, 'unknown'))
         return {'payload_md5s': payload_md5s}
 
     def __del__(self):
@@ -39,9 +39,9 @@ def test():
     # Generate input for the worker
     import os
     data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../data/zip/bad.zip')
-    md5 = workbench.store_sample('bad.zip', open(data_path, 'rb').read(), 'zip')
+    md5 = workbench.store_sample(open(data_path, 'rb').read(), 'bad.zip', 'zip')
     data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../data/zip/good.zip')
-    md5_2 = workbench.store_sample('good.zip', open(data_path, 'rb').read(), 'zip')
+    md5_2 = workbench.store_sample(open(data_path, 'rb').read(), 'good.zip', 'zip')
     input_data = workbench.get_sample(md5)
     input_data_2 = workbench.get_sample(md5_2)    
 
