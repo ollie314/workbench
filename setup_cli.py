@@ -18,9 +18,10 @@ Documentation
 The full documentation is at http://workbench.rtfd.org. '''
 history = open('HISTORY.rst').read().replace('.. :changelog:', '')
 
+exec(open('workbench_cli/version.py').read())
 setup(
     name='workbench_cli',
-    version='0.1.10',
+    version=__version__,
     description='Command Line Interface for Workbench',
     long_description=readme + '\n\n' + doclink + '\n\n' + history,
     author='The Workbench Team',
