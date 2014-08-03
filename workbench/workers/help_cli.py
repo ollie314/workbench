@@ -14,17 +14,17 @@ class HelpCLI(object):
 
         # Standard help text
         if type_tag == 'help':
-            output = '\n%s%s%s%s%s' % (Style.BRIGHT, Fore.BLUE, input_data['help'], Fore.RESET, Style.RESET_ALL)
+            output = '%s%s%s%s%s' % (Style.BRIGHT, Fore.BLUE, input_data['help'], Fore.RESET, Style.RESET_ALL)
 
         # Worker
         elif type_tag == 'worker':
-            output = '\n%s%s%s%s' % (Style.BRIGHT, Fore.YELLOW, input_data['name'], Style.RESET_ALL)
+            output = '%s%s%s%s' % (Style.BRIGHT, Fore.YELLOW, input_data['name'], Style.RESET_ALL)
             output += '\n %sInput: %s%s%s' % (Fore.BLUE, Fore.GREEN, input_data['dependencies'], Fore.RESET)
             output += '\n%s%s' % (Fore.GREEN, input_data['docstring'])
 
         # Command
         elif type_tag == 'command':
-            output = '\n%s%s%s%s%s%s' % (Style.BRIGHT, Fore.YELLOW, input_data['command'],
+            output = '%s%s%s%s%s%s' % (Style.BRIGHT, Fore.YELLOW, input_data['command'],
                                              Style.RESET_ALL, Fore.BLUE, input_data['sig'])
             output += '%s\n%s%s' % (Fore.GREEN, input_data['docstring'], Fore.RESET)
 
