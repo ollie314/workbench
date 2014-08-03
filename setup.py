@@ -26,7 +26,7 @@ setup(
     author='The Workbench Team',
     author_email='support@supercowpowers.com',
     url='http://github.com/SuperCowPowers/workbench',
-    packages=['workbench', 'workbench.workbench_cli', 'workbench.server',
+    packages=['workbench_cli', 'workbench', 'workbench.server',
               'workbench.server.bro', 'workbench.workers',
               'workbench.workers.rekall_adapter', 'workbench.clients'],
     package_dir={'workbench': 'workbench'},
