@@ -134,9 +134,10 @@ Workbench CLI (Just CLI)
     $ cd workbench_cli-0.x.y/
     $ python setup_cli.py install
     $ workbench  (play around do at least one load_sample)
-    $ vi workbench/server/version.py (change version)
-    $ python setup.py publish
+    $ vi workbench_cli/version.py (change version)
+    $ python setup_cli.py publish
 
+.. info:: Revert the default server in workbench_cli/config.ini to 'server_uri = localhost'
 
 - Push the version branch
 - Go to git do a PR
