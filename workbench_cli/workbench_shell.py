@@ -18,11 +18,13 @@ except ImportError:
 
 try:
     from . import client_helper
+    from . import version
 
 # Okay this happens when you're running in a debugger so having this is
 # super handy and we'll keep it even though it hurts coverage score.
-except ValueError:
+except (ImportError,ValueError):
     import client_helper
+    import version
 
 # These little helpers get around IPython wanting to take the
 # __repr__ of string output instead of __str__.
@@ -101,6 +103,9 @@ class WorkbenchShell(object):
     def __init__(self):
         ''' Workbench CLI Initialization '''
 
+        # Workbench CLI version
+        self.version = version.__version__
+
         # Grab server arguments
         self.server_info = client_helper.grab_server_args()
 
@@ -148,7 +153,7 @@ class WorkbenchShell(object):
         # Okay do the real connection
         self.workbench = zerorpc.Client(timeout=300, heartbeat=60)
         self.workbench.connect('tcp://'+server_info['server']+':'+server_info['port'])
-        print '\t%s- Connected to Server: (%s:%s)%s' % (F.GREEN, server_info['server'], server_info['port'], F.RESET)
+        print '\n%s<<< Connected: %s:%s >>>%s' % (F.GREEN, server_info['server'], server_info['port'], F.RESET)
 
     def progress_print(self, sent, total):
         """Progress print show the progress of the current upload with a neat progress bar
@@ -173,7 +178,7 @@ class WorkbenchShell(object):
         chunk_size = 1*mb # 1 MB
         total_bytes = len(raw_bytes)
         for chunk in self.chunks(raw_bytes, chunk_size):
-            md5_list.append(self.workbench.store_sample(chunk, filename, type_tag))
+            md5_list.append(self.workbench.store_sample(filename, chunk, type_tag))
             sent_bytes += chunk_size
             self.progress_print(sent_bytes, total_bytes)
             # print '\t%s- Sending %.1f MB (%.1f MB)...%s' % (F.YELLOW, sent_bytes/mb, total_bytes/mb, F.RESET)
@@ -275,7 +280,10 @@ class WorkbenchShell(object):
     def run(self):
         ''' Running the workbench CLI '''
 
-        # Announce Version
+        # Announce CLI Version
+        print '%s<<< Workbench CLI Version %s >>>%s' % (F.BLUE, self.version, F.RESET)
+
+        # Announce Server Version
         print self.workbench.help('version')
 
         # Now that we have the Workbench connection spun up, we register some stuff

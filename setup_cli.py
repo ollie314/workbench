@@ -18,25 +18,20 @@ Documentation
 The full documentation is at http://workbench.rtfd.org. '''
 history = open('HISTORY.rst').read().replace('.. :changelog:', '')
 
+exec(open('workbench_cli/version.py').read())
 setup(
-    name='workbench',
-    version='0.2.9',
-    description='A scalable framework for security research and development teams.',
+    name='workbench_cli',
+    version=__version__,
+    description='Command Line Interface for Workbench',
     long_description=readme + '\n\n' + doclink + '\n\n' + history,
     author='The Workbench Team',
     author_email='support@supercowpowers.com',
     url='http://github.com/SuperCowPowers/workbench',
-    packages=['workbench_cli', 'workbench', 'workbench.server',
-              'workbench.server.bro', 'workbench.workers',
-              'workbench.workers.rekall_adapter', 'workbench.clients'],
-    package_dir={'workbench': 'workbench'},
+    packages=['workbench_cli'],
+    package_dir={'workbench_cli': 'workbench_cli'},
     include_package_data=True,
-    scripts=['workbench/server/workbench_server', 'workbench_cli/workbench'],
-    tests_require=['tox'],
-    install_requires=['cython', 'colorama', 'distorm3>=0', 'elasticsearch',
-                      'funcsigs', 'flask', 'filemagic', 'ipython', 'mock', 'pefile',
-                      'py2neo', 'pymongo', 'pytest', 'rekall==1.0rc11', 'requests',
-                      'ssdeep==2.9-0.3', 'urllib3', 'yara', 'zerorpc', 'cython'],
+    scripts=['workbench_cli/workbench'],
+    install_requires=['colorama', 'ipython', 'pytest', 'zerorpc'],
     license='MIT',
     zip_safe=False,
     keywords='workbench security python',

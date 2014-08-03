@@ -80,7 +80,7 @@ class MemoryImageProcDump(object):
         temp_dir = tempfile.mkdtemp()
         os.chdir(temp_dir)
         try:
-            yield
+            yield temp_dir
         finally:
             # Change back to original directory
             os.chdir(previousDir)
