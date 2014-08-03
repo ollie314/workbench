@@ -60,7 +60,7 @@ class MemoryImageProcDump(object):
                 output_name = output_name.replace('executable.', '')
                 with open(output_file, 'rb') as dumped_file:
                     raw_bytes = dumped_file.read()
-                    md5 = self.c.store_sample(output_name, raw_bytes, 'exe')
+                    md5 = self.c.store_sample(raw_bytes, output_name, 'exe')
 
                     # Remove some columns from meta data
                     meta = self.c.work_request('meta', md5)['meta']
@@ -112,7 +112,7 @@ def test():
         raw_bytes = mem_file.read()
         md5 = hashlib.md5(raw_bytes).hexdigest()
         if not workbench.has_sample(md5):
-            md5 = workbench.store_sample('exemplar4.vmem', open(data_path, 'rb').read(), 'mem')
+            md5 = workbench.store_sample(open(data_path, 'rb').read(), 'exemplar4.vmem', 'mem')
 
     # Execute the worker (unit test)
     worker = MemoryImageProcDump()

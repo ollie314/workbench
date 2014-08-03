@@ -25,7 +25,7 @@ def run():
 
         with open(filename, 'rb') as f:
             base_name = os.path.basename(filename)
-            md5 = workbench.store_sample(base_name, f.read(), 'exe')
+            md5 = workbench.store_sample(f.read(), base_name, 'exe')
 
             # Index the strings and features output (notice we can ask for any worker output)
             # Also (super important) it all happens on the server side.

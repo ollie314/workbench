@@ -48,7 +48,7 @@ def run():
                 print 'Workbench already has this sample %s' % md5
             else:
                 # Store the sample into workbench
-                md5 = workbench.store_sample(filename, raw_bytes, 'unknown')
+                md5 = workbench.store_sample(raw_bytes, filename, 'unknown')
                 print 'Filename %s uploaded: type_tag %s, md5 %s' % (filename, 'unknown', md5)
 
     # Okay now explode any container types

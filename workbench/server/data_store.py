@@ -48,7 +48,7 @@ class DataStore(object):
         """ Return the uri of the data store."""
         return self.uri
 
-    def store_sample(self, filename, sample_bytes, type_tag):
+    def store_sample(self, sample_bytes, filename, type_tag):
         """Store a sample into the datastore.
 
         Args:

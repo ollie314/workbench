@@ -88,7 +88,7 @@ class PcapBro(object):
                 output_name = os.path.splitext(output_log)[0] + '_log'
                 with open(output_log, 'rb') as bro_file:
                     raw_bytes = bro_file.read()
-                    my_output[output_name] = self.workbench.store_sample(output_name, raw_bytes, 'bro')
+                    my_output[output_name] = self.workbench.store_sample(raw_bytes, output_name, 'bro')
 
             # Scrape any extracted files
             gsleep()
@@ -104,7 +104,7 @@ class PcapBro(object):
                     else:
                         type_tag = output_name[-3:]
                     raw_bytes = extracted_file.read()
-                    my_output['extracted_files'].append(self.workbench.store_sample(output_name, raw_bytes, type_tag))
+                    my_output['extracted_files'].append(self.workbench.store_sample(raw_bytes, output_name, type_tag))
 
         # Construct back-pointers to the PCAPs
         if 'sample' in input_data:
@@ -159,7 +159,7 @@ def test():
 
     # Generate the input data for this worker
     data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../data/pcap/http.pcap')
-    md5 = workbench.store_sample('http.pcap', open(data_path, 'rb').read(), 'pcap')
+    md5 = workbench.store_sample(open(data_path, 'rb').read(), 'http.pcap', 'pcap')
     input_data = workbench.get_sample(md5)
 
     # Execute the worker (unit test)
@@ -185,7 +185,7 @@ def test():
 
         with open(filename, 'rb') as pcap_file:
             base_name = os.path.basename(filename)
-            pcap_md5s.append(workbench.store_sample(base_name, pcap_file.read(), 'pcap'))
+            pcap_md5s.append(workbench.store_sample(pcap_file.read(), base_name, 'pcap'))
 
     # Now store the sample set
     set_md5 = workbench.store_sample_set(pcap_md5s)

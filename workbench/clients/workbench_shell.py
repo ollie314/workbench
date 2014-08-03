@@ -173,7 +173,7 @@ class WorkbenchShell(object):
         chunk_size = 1*mb # 1 MB
         total_bytes = len(raw_bytes)
         for chunk in self.chunks(raw_bytes, chunk_size):
-            md5_list.append(self.workbench.store_sample(filename, chunk, type_tag))
+            md5_list.append(self.workbench.store_sample(chunk, filename, type_tag))
             sent_bytes += chunk_size
             self.progress_print(sent_bytes, total_bytes)
             # print '\t%s- Sending %.1f MB (%.1f MB)...%s' % (F.YELLOW, sent_bytes/mb, total_bytes/mb, F.RESET)

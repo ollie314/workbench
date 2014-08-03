@@ -22,7 +22,7 @@ def test():
     workbench = zerorpc.Client(timeout=300, heartbeat=60)
     workbench.connect("tcp://127.0.0.1:4242")
 
-    md5 = workbench.store_sample('http.pcap', open('../data/pcap/http.pcap', 'rb').read(), 'pcap')
+    md5 = workbench.store_sample(open('../data/pcap/http.pcap', 'rb').read(), 'http.pcap', 'pcap')
     output = workbench.work_request('view_pcap_meta', md5)
     print 'ViewPcap: '
     import pprint

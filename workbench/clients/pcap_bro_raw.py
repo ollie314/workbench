@@ -27,7 +27,7 @@ def run():
 
         with open(filename,'rb') as f:
             base_name = os.path.basename(filename)
-            md5 = workbench.store_sample(base_name, f.read(), 'pcap')
+            md5 = workbench.store_sample(f.read(), base_name, 'pcap')
             results = workbench.work_request('pcap_bro', md5)
 
             # Results is just a dictionary of Bro log file names and their MD5s in workbench

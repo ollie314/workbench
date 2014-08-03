@@ -91,7 +91,7 @@ class TCPDumpToWorkbench(object):
         storage_name = "streaming_pcap" + str(self.pcap_index)
         print filename, storage_name
         with open(filename,'rb') as f:
-            self.workbench.store_sample(storage_name, f.read(), 'pcap')
+            self.workbench.store_sample(f.read(), storage_name, 'pcap')
         self.pcap_index += 1
 
         # Close workbench client

@@ -190,7 +190,7 @@ class WorkBench(object):
             self.remove_sample(md5)
 
         # Store it
-        return self.store_sample(filename, total_bytes, type_tag)
+        return self.store_sample(total_bytes, filename, type_tag)
 
     def remove_sample(self, md5):
         """Remove the sample from the data store"""
