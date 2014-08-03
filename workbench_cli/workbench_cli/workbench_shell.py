@@ -17,11 +17,11 @@ except ImportError:
     print '\t%sWe recommend installing pandas: %s$ pip install pandas%s' % (F.BLUE, F.RED, F.RESET)
 
 try:
-    from . import client_helper
+    from workbench.workbench_cli import client_helper
 
 # Okay this happens when you're running in a debugger so having this is
 # super handy and we'll keep it even though it hurts coverage score.
-except ValueError:
+except ImportError:
     import client_helper
 
 # These little helpers get around IPython wanting to take the
@@ -101,7 +101,7 @@ class WorkbenchShell(object):
     def __init__(self):
         ''' Workbench CLI Initialization '''
 
-	# Workbench CLI version
+        # Workbench CLI version
         try:
             self.version = sys.modules['workbench_cli'].__version__
         except (AttributeError, KeyError):
