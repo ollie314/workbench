@@ -170,7 +170,7 @@ class WorkbenchShell(object):
         for i in xrange(0, len(data), chunk_size):
             yield data[i:i+chunk_size]
 
-    def file_chunker(self, filename, raw_bytes, type_tag):
+    def file_chunker(self, raw_bytes, filename, type_tag):
         """Split up a large file into chunks and send to Workbench"""
         md5_list = []
         sent_bytes = 0
@@ -178,7 +178,7 @@ class WorkbenchShell(object):
         chunk_size = 1*mb # 1 MB
         total_bytes = len(raw_bytes)
         for chunk in self.chunks(raw_bytes, chunk_size):
-            md5_list.append(self.workbench.store_sample(filename, chunk, type_tag))
+            md5_list.append(self.workbench.store_sample(chunk, filename, 'chunk'))
             sent_bytes += chunk_size
             self.progress_print(sent_bytes, total_bytes)
             # print '\t%s- Sending %.1f MB (%.1f MB)...%s' % (F.YELLOW, sent_bytes/mb, total_bytes/mb, F.RESET)
@@ -204,7 +204,7 @@ class WorkbenchShell(object):
                 if not self.workbench.has_sample(md5):
                     print '%sStreaming Sample...%s' % (F.MAGENTA, F.RESET)
                     basename = os.path.basename(path)
-                    md5 = self.file_chunker(basename, raw_bytes, 'unknown')
+                    md5 = self.file_chunker(raw_bytes, basename, 'unknown')
 
                 print '\n%s  %s%s %sLocked and Loaded...%s\n' % \
                       (self.beer, F.MAGENTA, md5[:6], F.YELLOW, F.RESET)
@@ -270,6 +270,8 @@ class WorkbenchShell(object):
             'help': repr_to_str_decorator(self.workbench.help),
             'load_sample': self.load_sample,
             'reconnect': lambda info=self.server_info: self.connect(info),
+            'version': self.versions,
+            'versions': self.versions,
             'short_md5': self.session.short_md5
         }
         commands.update(general)
@@ -277,14 +279,19 @@ class WorkbenchShell(object):
         # Return the list of workbench commands
         return commands
 
+    def versions(self):
+        """Announce Versions of CLI and Server"""
+        print '%s<<< Workbench CLI Version %s >>>%s' % (F.BLUE, self.version, F.RESET)
+        print self.workbench.help('version')
+
     def run(self):
         ''' Running the workbench CLI '''
 
-        # Announce CLI Version
-        print '%s<<< Workbench CLI Version %s >>>%s' % (F.BLUE, self.version, F.RESET)
+        # Announce versions
+        self.versions()
 
-        # Announce Server Version
-        print self.workbench.help('version')
+        # Help
+        print '\n%s' % self.workbench.help('workbench')
 
         # Now that we have the Workbench connection spun up, we register some stuff
         # with the embedded IPython interpreter and than spin it up
@@ -302,7 +309,7 @@ class WorkbenchShell(object):
 
         # Create the IPython shell
         self.ipshell = IPython.terminal.embed.InteractiveShellEmbed(
-            config=cfg, banner1=self.workbench.help('workbench'), exit_msg='\nWorkbench has SuperCowPowers...')
+            config=cfg, banner1='', exit_msg='\nWorkbench has SuperCowPowers...')
 
         # Register our transformer
         auto_quoter = AutoQuoteTransformer(self.ipshell, self.ipshell.prefilter_manager)
