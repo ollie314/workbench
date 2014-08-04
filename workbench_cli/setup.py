@@ -6,7 +6,7 @@ from setuptools import setup
 
 
 if sys.argv[-1] == 'publish':
-    os.system('python setup_cli.py sdist upload')
+    os.system('python setup.py sdist upload')
     sys.exit()
 
 readme = open('README.rst').read()
@@ -16,14 +16,13 @@ Documentation
 -------------
 
 The full documentation is at http://workbench.rtfd.org. '''
-history = open('HISTORY.rst').read().replace('.. :changelog:', '')
 
 exec(open('workbench_cli/version.py').read())
 setup(
     name='workbench_cli',
     version=__version__,
     description='Command Line Interface for Workbench',
-    long_description=readme + '\n\n' + doclink + '\n\n' + history,
+    long_description=readme + '\n\n' + doclink + '\n\n',
     author='The Workbench Team',
     author_email='support@supercowpowers.com',
     url='http://github.com/SuperCowPowers/workbench',
