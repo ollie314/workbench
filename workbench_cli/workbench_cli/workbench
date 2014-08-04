@@ -8,7 +8,7 @@ try:
 
 # Okay this happens when you're running workbench in a debugger so having
 # this is super handy and we'll keep it even though it hurts coverage score.
-except ImportError:
+except (ImportError, ValueError):
     import workbench_shell
 
 def run():
