@@ -19,14 +19,14 @@ class HelpCLI(object):
         # Worker
         elif type_tag == 'worker':
             output = '%s%s%s%s' % (Style.BRIGHT, Fore.YELLOW, input_data['name'], Style.RESET_ALL)
-            output += '\n %sInput: %s%s%s' % (Fore.BLUE, Fore.GREEN, input_data['dependencies'], Fore.RESET)
-            output += '\n%s%s' % (Fore.GREEN, input_data['docstring'])
+            output += '\n    %sInput: %s%s%s' % (Fore.BLUE, Fore.GREEN, input_data['dependencies'], Fore.RESET)
+            output += '\n    %s%s' % (Fore.GREEN, input_data['docstring'])
 
         # Command
         elif type_tag == 'command':
             output = '%s%s%s%s%s%s' % (Style.BRIGHT, Fore.YELLOW, input_data['command'],
                                              Style.RESET_ALL, Fore.BLUE, input_data['sig'])
-            output += '%s\n%s%s' % (Fore.GREEN, input_data['docstring'], Fore.RESET)
+            output += '\n    %s%s%s' % (Fore.GREEN, input_data['docstring'], Fore.RESET)
 
         # WTF: Alert on unknown type_tag and return a string of the input_data
         else:

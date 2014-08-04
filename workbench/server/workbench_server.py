@@ -558,8 +558,8 @@ class WorkBench(object):
         help =  'Workbench Commands:'
         for command in self.list_all_commands():
             full_help = self.work_request('help_cli', command)['help_cli']['help']
-            compact_help = full_help.split('\n')[:3]
-            help += '\n\t%s' % '\n'.join(compact_help)
+            compact_help = full_help.split('\n')[:2]
+            help += '\n\n%s' % '\n'.join(compact_help)
         return help
 
     def _help_workers(self):
@@ -568,7 +568,7 @@ class WorkBench(object):
         for worker in self.list_all_workers():
             full_help = self.work_request('help_cli', worker)['help_cli']['help']
             compact_help = full_help.split('\n')[:4]
-            help += '\n\t%s' % '\n'.join(compact_help)
+            help += '\n\n%s' % '\n'.join(compact_help)
         return help
 
 
