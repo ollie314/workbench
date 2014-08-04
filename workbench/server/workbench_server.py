@@ -21,6 +21,7 @@ import ConfigParser
 import magic
 from colorama import Fore, Style
 import datetime
+import lz4
 
 # Workbench server imports
 try:
@@ -124,8 +125,12 @@ class WorkBench(object):
                 else:
                     print 'Alert: Failed to Determine Type for %s' % filename
                     exit(1) # Temp
-            
-        # Temp
+
+        # Chunks are compressed so decompress them
+        if type_tag == 'chunk':
+            input_bytes = lz4.loads(input_bytes)
+
+        # Store the sample
         md5 = self.data_store.store_sample(input_bytes, filename, type_tag)
 
         return md5

@@ -32,7 +32,7 @@ setup(
               'workbench.workers.rekall_adapter', 'workbench.clients'],
     package_dir={'workbench': 'workbench', 'workbench_cli': 'workbench_cli/workbench_cli'},
     include_package_data=True,
-    scripts=['workbench/server/workbench_server', 'workbench_cli/workbench_cli/workbench'],
+    scripts=['workbench/server/workbench_server', 'workbench_cli/workbench'],
     tests_require=['tox'],
     install_requires=['cython', 'colorama', 'distorm3>=0', 'elasticsearch',
                       'funcsigs', 'flask', 'filemagic', 'ipython', 'mock', 'pefile',

@@ -10,6 +10,8 @@ from IPython.core.prefilter import PrefilterTransformer
 import functools
 from colorama import Fore as F
 import re
+import lz4
+
 try:
     import pandas as pd
 except ImportError:
@@ -168,7 +170,9 @@ class WorkbenchShell(object):
     def chunks(data, chunk_size):
         """ Yield chunk_size chunks from data."""
         for i in xrange(0, len(data), chunk_size):
-            yield data[i:i+chunk_size]
+            compress = lz4.dumps(data[i:i+chunk_size])
+            print 'compression: %d' % (len(compress)*100/chunk_size)
+            yield compress
 
     def file_chunker(self, raw_bytes, filename, type_tag):
         """Split up a large file into chunks and send to Workbench"""
