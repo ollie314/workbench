@@ -126,8 +126,8 @@ class WorkBench(object):
                     print 'Alert: Failed to Determine Type for %s' % filename
                     exit(1) # Temp
 
-        # Chunks are compressed so decompress them
-        if type_tag == 'chunk':
+        # Do we have a compressed sample? If so decompress it
+        if type_tag == 'lz4':
             input_bytes = lz4.loads(input_bytes)
 
         # Store the sample
