@@ -3,14 +3,13 @@
 
 """Workbench Interactive Shell using IPython"""
 import os, sys
+import re
 import hashlib
 import zerorpc
 import IPython
 from IPython.core.prefilter import PrefilterTransformer
 import functools
 from colorama import Fore as F
-import re
-import lz4
 
 try:
     import pandas as pd
@@ -21,12 +20,14 @@ except ImportError:
 try:
     from . import client_helper
     from . import version
+    from . import file_streamer
 
 # Okay this happens when you're running in a debugger so having this is
 # super handy and we'll keep it even though it hurts coverage score.
 except (ImportError,ValueError):
     import client_helper
     import version
+    import file_streamer
 
 # These little helpers get around IPython wanting to take the
 # __repr__ of string output instead of __str__.
@@ -111,7 +112,7 @@ class WorkbenchShell(object):
         # Grab server arguments
         self.server_info = client_helper.grab_server_args()
 
-        # Spin up workbench server
+        # Spin up workbench server (this sets the self.workbench object)
         self.connect(self.server_info)
 
         # Create a user session
@@ -123,6 +124,9 @@ class WorkbenchShell(object):
 
         # Our Interactive IPython shell
         self.ipshell = None
+
+        # Our File Streamer
+        self.streamer = file_streamer.FileStreamer(self.workbench, self.progress_print)
 
         # What OS/Version do we have?
         self.beer = '\360\237\215\272' if sys.platform == 'darwin' else ' '
@@ -166,28 +170,6 @@ class WorkbenchShell(object):
                          format(F.GREEN, '#'*(percent/2), ' '*(50-percent/2), F.YELLOW, percent, F.RESET))
         sys.stdout.flush()
 
-    @staticmethod
-    def chunks(data, chunk_size):
-        """ Yield chunk_size chunks from data."""
-        for i in xrange(0, len(data), chunk_size):
-            yield lz4.dumps(data[i:i+chunk_size])
-
-    def file_chunker(self, raw_bytes, filename, type_tag):
-        """Split up a large file into chunks and send to Workbench"""
-        md5_list = []
-        sent_bytes = 0
-        mb = 1024*1024
-        chunk_size = 1*mb # 1 MB
-        total_bytes = len(raw_bytes)
-        for chunk in self.chunks(raw_bytes, chunk_size):
-            md5_list.append(self.workbench.store_sample(chunk, filename, 'chunk'))
-            sent_bytes += chunk_size
-            self.progress_print(sent_bytes, total_bytes)
-            # print '\t%s- Sending %.1f MB (%.1f MB)...%s' % (F.YELLOW, sent_bytes/mb, total_bytes/mb, F.RESET)
-
-        # Now we just ask Workbench to combine these
-        return self.workbench.combine_samples(md5_list, filename, type_tag)
-
     def load_sample(self, file_path):
         """Load a sample (or samples) into workbench
            load_sample </path/to/file_or_dir> """
@@ -206,7 +188,7 @@ class WorkbenchShell(object):
                 if not self.workbench.has_sample(md5):
                     print '%sStreaming Sample...%s' % (F.MAGENTA, F.RESET)
                     basename = os.path.basename(path)
-                    md5 = self.file_chunker(raw_bytes, basename, 'unknown')
+                    md5 = self.streamer.stream_to_workbench(raw_bytes, basename, 'unknown')
 
                 print '\n%s  %s%s %sLocked and Loaded...%s\n' % \
                       (self.beer, F.MAGENTA, md5[:6], F.YELLOW, F.RESET)
