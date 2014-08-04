@@ -4,7 +4,7 @@ include HISTORY.rst
 include LICENSE
 include README.rst
 include workbench/server/config.ini
-include workbench_cli/config.ini
+include workbench_cli/workbench_cli/config.ini
 include workbench/clients/config.ini
 include workbench/workers/peid_userdb.txt
 recursive-include workbench/data *
