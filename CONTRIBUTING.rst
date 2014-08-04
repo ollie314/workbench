@@ -80,7 +80,7 @@ Workbench (Server/CLI/All)
 ::
 
     $ make clean
-    # pip install -e .   # Do we need to do this?
+    # pip install -e .
     $ python setup.py sdist
     $ cd dist
     $ tar xzvf workbench-0.x.y.tar.gz
@@ -127,15 +127,16 @@ Workbench CLI (Just CLI)
 
 ::
 
+    $ cd workbench_cli
     $ make clean
-    $ python setup_cli.py sdist
+    $ python setup.py sdist
     $ cd dist
     $ tar xzvf workbench_cli-0.x.y.tar.gz
     $ cd workbench_cli-0.x.y/
-    $ python setup_cli.py install
+    $ python setup.py install
     $ workbench  (play around do at least one load_sample)
-    $ vi workbench_cli/version.py (change version)
-    $ python setup_cli.py publish
+    $ vi workbench_cli/workbench_cli/version.py (change version)
+    $ python setup.py publish
 
 .. important:: Revert the default server in workbench_cli/config.ini to 'server_uri = localhost'
 
