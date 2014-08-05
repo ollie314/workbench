@@ -112,7 +112,8 @@ class WorkbenchShell(object):
         # Grab server arguments
         self.server_info = client_helper.grab_server_args()
 
-        # Spin up workbench server (this sets the self.workbench object)
+        # Spin up workbench server
+        self.workbench = None
         self.connect(self.server_info)
 
         # Create a user session
@@ -157,6 +158,8 @@ class WorkbenchShell(object):
             sys.exit(1)
 
         # Okay do the real connection
+        if self.workbench:
+            self.workbench.close()
         self.workbench = zerorpc.Client(timeout=300, heartbeat=60)
         self.workbench.connect('tcp://'+server_info['server']+':'+server_info['port'])
         print '\n%s<<< Connected: %s:%s >>>%s' % (F.GREEN, server_info['server'], server_info['port'], F.RESET)
