@@ -1,14 +1,9 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 """Workbench Interactive Shell using IPython"""
+
 import os, sys
-import re
 import hashlib
 import zerorpc
 import IPython
-from IPython.core.prefilter import PrefilterTransformer
-import functools
 from colorama import Fore as F
 
 try:
@@ -21,6 +16,8 @@ try:
     from . import client_helper
     from . import version
     from . import file_streamer
+    from . import repr_to_str_decorator
+    from . import auto_quote_xform
 
 # Okay this happens when you're running in a debugger so having this is
 # super handy and we'll keep it even though it hurts coverage score.
@@ -28,77 +25,9 @@ except (ImportError,ValueError):
     import client_helper
     import version
     import file_streamer
+    import repr_to_str_decorator
+    import auto_quote_xform
 
-# These little helpers get around IPython wanting to take the
-# __repr__ of string output instead of __str__.
-def repr_to_str_decorator(func):
-    """Decorator method for Workbench methods returning a str"""
-
-    @functools.wraps(func)
-    def wrapper(*args, **kwargs):
-        """Decorator method for Workbench methods returning a str"""
-
-        class ReprToStr(str):
-            """Replaces a class __repr__ with it's string representation"""
-            def __repr__(self):
-                return str(self)
-        return ReprToStr(func(*args, **kwargs))
-    return wrapper
-
-# Helper Classes
-class AutoQuoteTransformer(PrefilterTransformer):
-    """IPython Transformer for commands to use 'auto-quotes'"""
-
-    def register_command_set(self, command_set):
-        """Register all the Workbench commands"""
-        self.command_set = command_set
-
-    def transform(self, line, _continue_prompt):
-        """IPython Transformer for commands to use 'auto-quotes'"""
-
-        # Capture the original line
-        orig_line = line
-
-        # Very conservative logic (but possibly flawed)
-        # 1) Lines with any of these symbols ; , ' " ( ) aren't touched
-        # 2) Need to have more than one token
-        # 3) First token in line must be in the workbench command set
-        # 4) If first token is 'help' than all other tokens are quoted
-        # 5) Otherwise only tokens that are not in any of the namespace are quoted
-
-
-        # 1) Lines with any of these symbols ; , ' " ( ) aren't touched
-        skip_symbols = [';', ',', '\'', '"', '(', ')']
-        if any([sym in line for sym in skip_symbols]):
-            return line
-
-        # Build up token set and info
-        token_list = re.split(' |;|,|(|)|\'|"', line)
-        num_tokens = len(token_list)
-        first_token = token_list[0]
-        token_set = set(token_list)
-        if None in token_set: # In some cases None creeps in
-            token_set.remove(None)
-
-        # 2) Need to have more than one token
-        # 3) First token in line must be in the workbench command set
-        if num_tokens > 1 and first_token in self.command_set:
-
-            # 4) If first token is 'help' than all other tokens are quoted
-            if first_token == 'help':
-                token_set.remove('help')
-                for token in token_set:
-                    line = line.replace(token, '"'+token+'"')
-
-            # 5) Otherwise only tokens that are not in any of the namespace are quoted
-            else: # Not help
-                ns_token_set = set([token for nspace in self.shell.all_ns_refs for token in nspace])
-                for token in token_set:
-                    if token not in ns_token_set:
-                        line = line.replace(token, '"'+token+'"')
-
-        # Return the processed line
-        return line
 
 class WorkbenchShell(object):
     """Workbench CLI using IPython Interactive Shell"""
@@ -217,7 +146,7 @@ class WorkbenchShell(object):
         try:
             return self.workbench.work_request(worker, md5)
         except zerorpc.exceptions.RemoteError as e:
-            return repr_to_str_decorator(self._data_not_found)(e)
+            return repr_to_str_decorator.r_to_s(self._data_not_found)(e)
 
     def workbench_command(self, command, *args):
         """Wrapper for a command to workbench"""
@@ -229,7 +158,7 @@ class WorkbenchShell(object):
         try:
             return self.workbench[command](*args)
         except zerorpc.exceptions.RemoteError as e:
-            return repr_to_str_decorator(self._data_not_found)(e)
+            return repr_to_str_decorator.r_to_s(self._data_not_found)(e)
 
     def _data_not_found(self, e):
         """Message when you get a DataNotFound exception from the server"""
@@ -254,7 +183,7 @@ class WorkbenchShell(object):
         # for some of the workbench commands
         general = {
             'workbench': self.workbench,
-            'help': repr_to_str_decorator(self.workbench.help),
+            'help': repr_to_str_decorator.r_to_s(self.workbench.help),
             'load_sample': self.load_sample,
             'reconnect': lambda info=self.server_info: self.connect(info),
             'version': self.versions,
@@ -298,8 +227,8 @@ class WorkbenchShell(object):
         self.ipshell = IPython.terminal.embed.InteractiveShellEmbed(
             config=cfg, banner1='', exit_msg='\nWorkbench has SuperCowPowers...')
 
-        # Register our transformer
-        auto_quoter = AutoQuoteTransformer(self.ipshell, self.ipshell.prefilter_manager)
+        # Register our transformer, the shell will use this for 'shortcut' commands
+        auto_quoter = auto_quote_xform.AutoQuoteTransformer(self.ipshell, self.ipshell.prefilter_manager)
         auto_quoter.register_command_set(self.command_set)
 
         # Start up the shell with our set of workbench commands

@@ -1,7 +1,5 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 """File Streaming for Workbench CLI"""
+
 import os, sys
 import lz4
 
