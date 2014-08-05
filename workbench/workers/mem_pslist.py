@@ -21,9 +21,11 @@ class MemoryImagePSList(mem_base.MemoryImageBase):
         output = super(MemoryImagePSList, self).execute(input_data)
 
         # Special processing for Offset (V)
+        '''
         for row in output['sections']['Info']:
             sub_offset = re.search('@ (.*)\n', row['Offset (V)'])
             row['Offset (V)'] = sub_offset.group(1)
+        '''
 
         # Organize the output a bit
         output['tables'] = ['pslist']
