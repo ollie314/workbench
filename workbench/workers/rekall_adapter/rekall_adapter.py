@@ -53,8 +53,13 @@ class MemSession(object):
         # Spin up the logging
         logging.getLogger().setLevel(logging.ERROR)
 
+        # Set up profile path
+        local = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'profiles')
+        remote = 'http://profiles.rekall-forensic.com'
+        profile_path = [local, remote]
+
         # Open up a rekall session
-        s = session.Session(profile_path=["http://profiles.rekall-forensic.com"])
+        s = session.Session(profile_path=profile_path)
 
         # Set up a memory space for our raw memory image
         with s:
