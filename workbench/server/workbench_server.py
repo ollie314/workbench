@@ -713,8 +713,8 @@ class WorkBench(object):
             work_chain_mod_time = self._work_chain_mod_time(worker_name)
             if work_chain_mod_time < work_results[collection]['__time_stamp']:
                 return work_results
-            else:
-                print 'Notice: %s work_chain is newer than data' % (worker_name)
+            elif self.VERBOSE:
+                print 'VERBOSE: %s work_chain is newer than data' % (worker_name)
         except WorkBench.DataNotFound:
             if self.VERBOSE:
                 print 'Verbose: %s data not found generating' % (worker_name)
