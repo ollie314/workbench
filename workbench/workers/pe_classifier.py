@@ -2,15 +2,15 @@
 ''' PE Classify worker (just a placeholder, not a real classifier at this point) '''
 
 class PEFileClassify(object):
-    ''' This worker classifies PEFiles as Evil or Benign  (TOY not a real classifier at this point)'''
+    ''' This worker classifies PEFiles as Evil or AOK  (TOY not a real classifier at this point)'''
     dependencies = ['pe_features', 'pe_indicators']
 
     def __init__(self):
         ''' Initialization '''
-        self.output = {'classification':'Benign'}
+        self.output = {'classification':'Toy/Fake Classifier says AOK!'}
 
     def execute(self, input_data):
-        ''' This worker classifies PEFiles as Evil or Benign  (TOY not a real classifier at this point)'''
+        ''' This worker classifies PEFiles as Evil or AOK  (TOY not a real classifier at this point)'''
 
         # In general you'd do something different with these two outputs
         # for this toy example will just smash them in a big string
@@ -20,7 +20,7 @@ class PEFileClassify(object):
 
         flag = 'Reported Checksum does not match actual checksum'
         if flag in all_input:
-            self.output['classification'] = 'Evil!'
+            self.output['classification'] = 'Toy/Fake Classifier says Evil!'
 
         return self.output
 
