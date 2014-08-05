@@ -10,7 +10,7 @@ import logging
 from rekall import session
 from rekall.plugins.addrspaces import standard
 from rekall.ui.renderer import BaseRenderer
-from rekall.ui.renderer import Formatter
+from rekall.ui.text import Formatter
 import StringIO
 import datetime
 import pprint
@@ -30,10 +30,10 @@ class RekallAdapter(object):
 
         self.MemS = MemSession(raw_bytes)
         gsleep()
-        self.renderer = WorkbenchRenderer()
-        gsleep()
         self.session = self.MemS.get_session()
         gsleep()
+        self.formatter = Formatter(session=self.session)
+        self.renderer = WorkbenchRenderer(self.formatter)
 
     def get_session(self):
         ''' Return the Rekall session object '''
@@ -110,13 +110,13 @@ class WorkbenchRenderer(BaseRenderer):
     """Workbench Renderer: Extends BaseRenderer and simply populates local python
         data structures, not meant to be serialized or sent over the network."""
 
-    def __init__(self):
+    def __init__(self, formatter):
         self.output_data = None
         self.active_section = None
         self.active_headers = None
         self.header_types = None
         self.incoming_section = False
-        self.formatter = Formatter()
+        self.formatter = formatter
         self.start()
 
     def start(self, plugin_name=None, _kwargs=None):
@@ -159,8 +159,12 @@ class WorkbenchRenderer(BaseRenderer):
 
     def table_header(self, columns=None, **kwargs):
         """A new table header"""
-        self.active_headers = [col[0] for col in columns]
-        self.header_types = [col[1] for col in columns]
+        if isinstance(columns[0], tuple):
+            self.active_headers = [col[0] for col in columns]
+            self.header_types = [col[1] for col in columns]
+        else:
+            self.active_headers = [col['cname'] for col in columns]
+            self.header_types = [col['type'] if 'type' in col else 'unknown' for col in columns]
 
     def table_row(self, *args, **kwargs):
         """A new table row"""
@@ -174,6 +178,11 @@ class WorkbenchRenderer(BaseRenderer):
     def flush(self):
         """Just a stub method."""
         print 'Calling flush on WorkbenchRenderer does nothing'
+
+    def open(self, directory=None, filename=None, mode="rb"):
+        """Opens a file for writing or reading."""
+        path = os.path.join(directory, filename)
+        return open(path, mode) # Errr.. we need to close this somewhere...
 
     def render(self, plugin):
         """This method starts the plugin, calls render and returns the plugin output """
