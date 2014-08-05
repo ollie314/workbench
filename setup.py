@@ -34,18 +34,20 @@ setup(
     include_package_data=True,
     scripts=['workbench/server/workbench_server', 'workbench_apps/workbench_cli/workbench'],
     tests_require=['tox'],
-    install_requires=['cython', 'colorama', 'distorm3>=0', 'elasticsearch',
+    install_requires=['cython', 'colorama', 'elasticsearch',
                       'funcsigs', 'flask', 'filemagic', 'ipython', 'lz4', 'mock', 'pefile',
-                      'py2neo', 'pymongo', 'pytest', 'rekall==1.0rc11', 'requests',
+                      'py2neo', 'pymongo', 'pytest', 'rekall', 'requests',
                       'ssdeep==2.9-0.3', 'urllib3', 'yara', 'zerorpc', 'cython'],
     license='MIT',
     zip_safe=False,
     keywords='workbench security python',
     classifiers=[
-        'Development Status :: 2 - Pre-Alpha',
+        'Topic :: Security',
+        'Development Status :: 3 - Alpha',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
+        'Operating System :: MacOS :: POSIX',
         'Natural Language :: English',
-        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 2.7'
     ]
 )
