@@ -12,7 +12,6 @@ import zerorpc
 import zmq
 import logging
 logging.basicConfig()
-import StringIO
 import json
 import hashlib
 import inspect
@@ -22,6 +21,10 @@ import magic
 from colorama import Fore, Style
 import datetime
 import lz4
+try:
+    from cStringIO import StringIO
+except ImportError:
+    from StringIO import StringIO
 
 # Workbench server imports
 try:
@@ -226,7 +229,7 @@ class WorkBench(object):
         type_tag = sample['type_tag']
         if type_tag == 'bro':
             bro_log = bro_log_reader.BroLogReader(convert_datetimes=False)
-            mem_file = StringIO.StringIO(raw_bytes)
+            mem_file = StringIO(raw_bytes)
             generator = bro_log.read_log(mem_file)
             return generator
         elif type_tag == 'els_query':
