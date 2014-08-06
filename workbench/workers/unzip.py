@@ -1,9 +1,12 @@
 
 ''' Unzip worker '''
-import StringIO
 import zipfile
 import zerorpc
 import pprint
+try:
+    from cStringIO import StringIO
+except ImportError:
+    from StringIO import StringIO
 
 class Unzip(object):
     ''' This worker unzips a zipped file '''
@@ -16,7 +19,7 @@ class Unzip(object):
     def execute(self, input_data):
         ''' Execute the Unzip worker '''
         raw_bytes = input_data['sample']['raw_bytes']
-        zipfile_output = zipfile.ZipFile(StringIO.StringIO(raw_bytes))
+        zipfile_output = zipfile.ZipFile(StringIO(raw_bytes))
         payload_md5s = []
         for name in zipfile_output.namelist():
             payload_md5s.append(self.workbench.store_sample(zipfile_output.read(name), name, 'unknown'))

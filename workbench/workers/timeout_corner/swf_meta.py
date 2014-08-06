@@ -2,7 +2,10 @@
                     stuff goes to them, all credit for bad stuff goes to me. :)
 '''
 from swf.movie import SWF
-import StringIO
+try:
+    from cStringIO import StringIO
+except ImportError:
+    from StringIO import StringIO
 
 class SWFMeta():
     ''' This worker computes a bunch of meta-data about a SWF file '''
@@ -17,7 +20,7 @@ class SWFMeta():
         raw_bytes = input_data['sample']['raw_bytes']
         
         # Parse it
-        swf.parse(StringIO.StringIO(raw_bytes))
+        swf.parse(StringIO(raw_bytes))
 
         # Header info
         head = swf.header
