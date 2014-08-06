@@ -7,15 +7,18 @@
 
 import os, sys
 import logging
-from rekall import session
+from rekall import session as rekall_session
 from rekall.plugins.addrspaces import standard
 from rekall.ui.renderer import BaseRenderer
 from rekall.ui.text import Formatter
-import StringIO
 import datetime
 import pprint
 import pytz
 import gevent
+try:
+    from cStringIO import StringIO
+except ImportError:
+    from StringIO import StringIO
 
 def gsleep():
     ''' Convenience method for gevent.sleep '''
@@ -28,10 +31,10 @@ class RekallAdapter(object):
     def __init__(self, raw_bytes):
         """Initialization."""
 
-        self.MemS = MemSession(raw_bytes)
-        gsleep()
-        self.session = self.MemS.get_session()
-        gsleep()
+        # Spin up the logging
+        logging.getLogger().setLevel(logging.ERROR)
+
+        self.session = MemSession(raw_bytes).get_session()
         self.formatter = Formatter(session=self.session)
         self.renderer = WorkbenchRenderer(self.formatter)
 
@@ -48,7 +51,7 @@ class MemSession(object):
     """MemSession: Helps utilize the Rekall Memory Forensic Framework."""
 
     def __init__(self, raw_bytes):
-        """Create a Rekall session from raw_bytes."""
+        """Create a Rekall session for this memory image (raw_bytes)"""
 
         # Spin up the logging
         logging.getLogger().setLevel(logging.ERROR)
@@ -59,57 +62,21 @@ class MemSession(object):
         profile_path = [local, remote]
 
         # Open up a rekall session
-        s = session.Session(profile_path=profile_path)
+        s = rekall_session.JsonSerializableSession(profile_path=profile_path)
 
         # Set up a memory space for our raw memory image
         with s:
-            mem_file = StringIO.StringIO(raw_bytes)
+            mem_file = StringIO(raw_bytes)
             s.physical_address_space = standard.FDAddressSpace(fhandle=mem_file, session=s)
-            _profile = s.GetParameter("profile")
+            s.GetParameter("profile")
 
         # Store session handle
         self.session = s
-
-        # Serialize the session (testing for now)
-        
-        # if self.session.state.dirty or self.session.state.cache.dirty:
-        #     print 'Saving %s' % (str(self.session.state.session_filename))
-        #     print 'Method %s' % (str(self.session.SaveToFile))
-        #     # self.session.SaveToFile(self.session.state.session_filename)        
-        # packed = msgpack.packb(self.session, use_bin_type=True)
-        # print 'Size of packed session %d' % packed.sized
-        # self.session = msgpack.unpackb(packed, encoding='utf-8')
-
-        
+ 
 
     def get_session(self):
         """Get the current session handle."""
         return self.session
-
-    ''' All of this code is currently not used '''
-    '''
-    def SaveToFile(self, filename):
-        with open(filename, "wb") as fd:
-            logging.info("Saving session to %s", filename)
-            json.dump(self.Serialize(), fd)
-
-    def LoadFromFile(self, filename):
-        lexicon, data = json.load(open(filename, "rb"))
-        logging.info("Loaded session from %s", filename)
-
-        self.Unserialize(lexicon, data)
-
-    def Unserialize(self, lexicon, data):
-        decoder = json_renderer.JsonDecoder(self)
-        decoder.SetLexicon(lexicon)
-        self.state = Configuration(**decoder.Decode(data))
-        self.UpdateFromConfigObject()
-
-    def Serialize(self):
-        encoder = json_renderer.JsonEncoder()
-        data = encoder.Encode(self.state)
-        return encoder.GetLexicon(), data
-    '''
 
 class WorkbenchRenderer(BaseRenderer):
     """Workbench Renderer: Extends BaseRenderer and simply populates local python
