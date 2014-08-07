@@ -18,7 +18,7 @@ Scalable Python Framework
     and streaming 'hyperslabs' from server to client.
 * What do you mean by hyperslabs?
     Many of our examples (notebooks) illustrate the streaming generator chains that allow a client (python script, IPython
-    notebook, Node.js, CLI) to stream a filtered subset of the data over to the client.
+    notebook, Node.js, CLI) to efficiently stream a subset of data from the server to the client.
 * Why do you have exploding heads every time you talk about streaming data into a DataFrame?
     Once you efficiently (streaming with zero-copy) populate a Pandas dataframe you have access to a very large set of statistics, analysis,
     and machine learning Python modules (statsmodel, Pandas, Scikit-Learn).
