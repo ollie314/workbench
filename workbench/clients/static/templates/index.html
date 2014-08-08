@@ -12,8 +12,8 @@
     <!-- Bootstrap core CSS -->
     <link href="/css/bootstrap.min.css" rel="stylesheet">
     <style type="text/css">
-    html,
-    body { height:100% }
+    html { height:100%; }
+    body { height:100%; position: relative; }
     </style>
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -23,60 +23,56 @@
     <![endif]-->
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target=".container">
 
     <div class="container">
-      <div class="table-responsive">
-        <table class="table">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Meta Info</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for result in results %}
-            <tr>
-                <td>{{ loop.index }}</td>
-                <td>
-                  <pre>{{ result['meta']|pprint }}</pre>
-                  <a href="#{{result['meta']['md5']}}">See Logs</a>
-                </td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
+      <div class="page-header">
+        <h1>PCAP Report</h1>
       </div>
-      <hr>
       <div class="row">
-        <div class="col-md-1">#</div>
-        <div class="col-md-11">Bro Logs</div>
-      </div>
-      <hr>
-      {% for result in results %}
-      <div class="row" id="{{result['meta']['md5']}}">
-        <div class="col-md-1">{{ loop.index }}</div>
-        <div class="col-md-8">
-          {% for name, md5 in result['view_pcap']['bro_logs'].items() %}  
-          <div class="row">
-            <div class="col-md-5">{{name}}</div>
-            <div class="col-md-7"><a href="/md5/{{md5}}">{{md5}}</a></div>
-          </div>
-          {% endfor %}
-          <br>
-          {% if result['view_pcap']['extracted_files'] %}
-            <h4>Extracted_files</h4>
-            <br>
-            <div class="row">
-              {% for md5 in result['view_pcap']['extracted_files'] %}
-                <div><a href="/md5/{{md5}}">{{md5}}</a></div>
-              {% endfor %}
+        <div class="col-lg-3">
+          <ul class="nav nav-pills nav-stacked" role="tablist">
+            {% for result in results %}
+              <li {% if loop.first %}class="active"{% endif %}>
+                <a role="tab" href="#{{result['filename']|replace('.','')}}" data-toggle="pill">
+                  {{result['filename']}}
+                </a>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+        <div class="col-lg-9 tab-content">
+          {% for result in results %}
+          <div id="{{result['filename']|replace('.','')}}" class="tab-pane {% if loop.first %}active{% endif %}">
+              <div>
+                <pre>{{ result['meta']|pprint }}</pre>
+              </div>
+              
+              <h4>Bro Logs</h4>
+              <div>
+                <ul>
+                  {% for name, md5 in result['view_pcap']['bro_logs'].items() %}  
+                  <li>{{name}}&nbsp;&nbsp;&nbsp;<a href="/md5/{{md5}}">{{md5}}</a></li>
+                  {% endfor %}
+                </ul>
+                <br>
+                {% if result['view_pcap']['extracted_files'] %}
+                <h4>Extracted Files</h4>
+                <br>
+                <div>
+                  <ul>
+                  {% for md5 in result['view_pcap']['extracted_files'] %}
+                    <li><a href="/files/{{md5}}">{{md5}}</a></li>
+                  {% endfor %}
+                  </ul>
+                </div>
+                {% endif %}
+              </div>
+              
             </div>
-          {% endif %}
+          {% endfor %}
         </div>
       </div>
-      <hr>
-      {% endfor %}
       <div class="row">
         <div class="footer">
           <p>&copy; Company 2014</p>
