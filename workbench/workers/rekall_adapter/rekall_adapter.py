@@ -9,8 +9,8 @@ import os, sys
 import logging
 from rekall import session as rekall_session
 from rekall.plugins.addrspaces import standard
-from rekall.ui.renderer import BaseRenderer
-from rekall.ui.text import Formatter
+from rekall.plugins.renderers.data_export import DataExportRenderer
+from rekall.ui.json_renderer import JsonEncoder
 import datetime
 import pprint
 import pytz
@@ -33,10 +33,8 @@ class RekallAdapter(object):
 
         # Spin up the logging
         logging.getLogger().setLevel(logging.ERROR)
-
-        self.session = MemSession(raw_bytes).get_session()
-        self.formatter = Formatter(session=self.session)
-        self.renderer = WorkbenchRenderer(self.formatter)
+        self.session = MemSession(raw_bytes)
+        self.renderer = WorkbenchRenderer(session=self.session)
 
     def get_session(self):
         ''' Return the Rekall session object '''
@@ -47,157 +45,61 @@ class RekallAdapter(object):
         return self.renderer
 
 
-class MemSession(object):
+class MemSession(rekall_session.JsonSerializableSession):
     """MemSession: Helps utilize the Rekall Memory Forensic Framework."""
 
-    def __init__(self, raw_bytes):
+    def __init__(self, raw_bytes, fhandle=None): # Put in a pager later
         """Create a Rekall session for this memory image (raw_bytes)"""
-
-        # Spin up the logging
-        logging.getLogger().setLevel(logging.ERROR)
 
         # Set up profile path
         local = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'profiles')
         remote = 'http://profiles.rekall-forensic.com'
         profile_path = [local, remote]
 
-        # Open up a rekall session
-        s = rekall_session.JsonSerializableSession(profile_path=profile_path)
+        # Call the parent class with the profile_path
+        super(MemSession, self).__init__(profile_path=profile_path)
 
         # Set up a memory space for our raw memory image
-        with s:
-            mem_file = StringIO(raw_bytes)
-            s.physical_address_space = standard.FDAddressSpace(fhandle=mem_file, session=s)
-            s.GetParameter("profile")
+        mem_file = StringIO(raw_bytes) # Change this to a pager later
+        self.physical_address_space = standard.FDAddressSpace(fhandle=mem_file, session=self)
+        self.GetParameter("profile")
+        
+        # Ensure the action's Progress() method is called when Rekall reports progress.
+        # self.progress.Register(id(self), lambda *_, **__: self.progress())
 
-        # Store session handle
-        self.session = s
- 
 
-    def get_session(self):
-        """Get the current session handle."""
-        return self.session
-
-class WorkbenchRenderer(BaseRenderer):
-    """Workbench Renderer: Extends BaseRenderer and simply populates local python
+class WorkbenchRenderer(DataExportRenderer):
+    """Workbench Renderer: Extends DataExportRenderer and simply populates local python
         data structures, not meant to be serialized or sent over the network."""
 
-    def __init__(self, formatter):
+    def __init__(self, session):
+        self.__class__.__name__ = 'DataExportRenderer'  # Errr.. this is a fixme
         self.output_data = None
-        self.active_section = None
-        self.active_headers = None
-        self.header_types = None
-        self.incoming_section = False
-        self.formatter = formatter
-        self.start()
+        self.session = session
+        super(WorkbenchRenderer, self).__init__(session=session)
 
-    def start(self, plugin_name=None, _kwargs=None):
+    def start(self, plugin_name=None, kwargs=None):
         """Start method: initial data structures and store some meta data."""
-        self.output_data = {'sections':{}}
-        self.section('Info')        
-        self.output_data['plugin_name'] = plugin_name
+        super(WorkbenchRenderer, self).start(plugin_name=plugin_name)
+        self.output_data = {'plugin_name': plugin_name}
         return self
 
-    def end(self):
-        """Just a stub method."""
+    '''
+    def table_row(self, *args, **options):
+        result = {}
+        for i, arg in enumerate(args):
+            column_spec = self.table.column_specs[i]
+            object_renderer = self.object_renderers[i]
 
-    def format(self, formatstring, *args):
-        """Presentation Information from the Plugin"""
+            column_name = column_spec.get("cname", column_spec.get("name"))
+            if column_name:
+                result[column_name] = arg
 
-        # Make a new section
-        if self.incoming_section:
-            section_name = self.formatter.format(formatstring, *args).strip()
-            self.section(section_name)
-            self.incoming_section = False
-        else:
-            print 'Format called with %s' % self.formatter.format(formatstring, *args)
+        self.SendMessage(["r", result])
+    '''
 
-    def section(self, name=None, **_kwargs):
-        """Called by the plugin when a new section is output"""
-
-        # Check for weird case where an section call is made wit
-        # no name and then a format call is made
-        if not name:
-            self.incoming_section = True
-            return
-
-        # Create a new section and make it the active one
-        self.active_section = name
-        self.output_data['sections'][self.active_section] = [] 
-
-    def report_error(self, message):
-        """Report an error"""
-        print 'Error Message: %s' % message
-
-    def table_header(self, columns=None, **kwargs):
-        """A new table header"""
-        if isinstance(columns[0], tuple):
-            self.active_headers = [col[0] for col in columns]
-            self.header_types = [col[1] for col in columns]
-        else:
-            self.active_headers = [col['cname'] for col in columns]
-            self.header_types = [col['type'] if 'type' in col else 'unknown' for col in columns]
-
-    def table_row(self, *args, **kwargs):
-        """A new table row"""
-        self.output_data['sections'][self.active_section]. \
-            append(self._cast_row(self.active_headers, args, self.header_types))
-
-    def write_data_stream(self):
-        """Just a stub method."""
-        print 'Calling write_data_stream on WorkbenchRenderer does nothing'
-
-    def flush(self):
-        """Just a stub method."""
-        print 'Calling flush on WorkbenchRenderer does nothing'
-
-    def open(self, directory=None, filename=None, mode="rb"):
-        """Opens a file for writing or reading."""
-        path = os.path.join(directory, filename)
-        return open(path, mode) # Errr.. we need to close this somewhere...
-
-    def render(self, plugin):
-        """This method starts the plugin, calls render and returns the plugin output """
-        self.start(plugin_name=plugin.name)
-        plugin.render(self)
-        return self.output_data
-
-    def _cast_row(self, keys, values, data_types):
-        """Internal method that makes sure that the row elements
-            are properly cast into the correct types, instead of
-            just treating everything like a string from the csv file
-       ."""
-        output_dict = {}
-        for key, value, dtype in zip(keys, values, data_types):
-            output_dict[key] = self._cast_value(value, dtype)
-
-        return output_dict
-
-    def _cast_value(self, value, dtype):
-        """Internal method that makes sure any dictionary elements
-            are properly cast into the correct types, instead of
-            just treating everything like a string from the csv file
-       ."""
-
-        # Try to convert to a datetime
-        if 'time' in dtype:
-            date_time = value.as_datetime()
-            if date_time == datetime.datetime(1970, 1, 1, 0, 0, tzinfo=pytz.utc): # Special case
-                return '-'
-            return date_time
-
-        # Rekall puts a bunch of data_modeling semantics that we're just ignoring for now :(
-        value = str(value)
-
-        # Try conversion to basic types
-        tests = (int, float, str)
-        for test in tests:
-            try:
-                return test(value)
-            except (AttributeError, ValueError):
-                continue
-        return value
-
+    def SendMessage(self, statement):
+        print statement
 
 # Unit test: Create the class, the proper input and run the execute() method for a test
 import pytest
@@ -225,23 +127,18 @@ def test():
     renderer = adapter.get_renderer()
 
     # Create any kind of plugin supported by this session
-    output = renderer.render(session.plugins.imageinfo())
-    pprint.pprint(output.keys())
+    output = session.RunPlugin('imageinfo', renderer=renderer)
+    pprint.pprint(output)
     assert 'Error' not in output
 
-    output = renderer.render(session.plugins.pslist())
-    pprint.pprint(output.keys())
+    output = session.RunPlugin('pslist', renderer=renderer)
+    pprint.pprint(output)
     assert 'Error' not in output
 
-    output = renderer.render(session.plugins.dlllist())
-    pprint.pprint(output.keys())
+    output = session.RunPlugin('dlllist', renderer=renderer)
+    pprint.pprint(output)
     assert 'Error' not in output
 
-
-    # Code coverage: These calls are simply for code coverage
-    renderer.format('foo')
-    renderer.section()
-    renderer.format('foo')
 
 if __name__ == "__main__":
     test()
