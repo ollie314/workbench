@@ -16,13 +16,18 @@ class MemoryImageDllList(object):
     def __init__(self):
         ''' Initialization '''
         self.plugin_name = 'dlllist'
-        self.current_table_name = 'dllist'
+        self.current_table_name = 'dlllist'
         self.output = {'tables': collections.defaultdict(list)}
         self.column_map = {}
 
     @staticmethod
     def safe_key(key):
         return key.replace('.','_')
+
+    def parse_base(self, base_data):
+        """Parse the Base object we get from some rekall output"""
+        base = base_data['Base']['target']
+        return {'Base': base}
 
     def execute(self, input_data):
         ''' Execute method '''
@@ -37,17 +42,24 @@ class MemoryImageDllList(object):
 
             if line['type'] == 'm':  # Meta
                 self.output['meta'] = line['data']
+            elif line['type'] == 'f': # Format line (I want to slowly die by ant bites...)
+                pass
             elif line['type'] == 's': # New Session (Table)
-                self.current_table_name = self.safe_key(line['data']['name'][1] if line['data']['name'] else 'unknown')
+                self.current_table_name = line['data']['name'][1] if line['data']['name'] else self.current_table_name
             elif line['type'] == 't': # New Table Headers (column names)
                 self.column_map = {item['cname']: item['name'] if 'name' in item else item['cname'] for item in line['data']}
             elif line['type'] == 'r': # Row
-                
+
                 # Add the row to our current table
                 row = RekallAdapter.process_row(line['data'], self.column_map)
                 self.output['tables'][self.current_table_name].append(row)
+
+                # Process Base entries
+                if 'Base' in row:
+                    base_info = self.parse_base(row)
+                    row.update(base_info)
             else:
-                print 'Note: Ignoring rekall message of type %s: %s' % (line['type'], line['data'])
+                print 'Got unknown line %s: %s' % (line['type'], line['data'])
 
         # All done
         return self.output
