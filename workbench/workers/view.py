@@ -12,19 +12,21 @@ class View(object):
 
     def execute(self, input_data):
 
-        # Grab the mime_type from the input and switch view types
+        # Grab the tag from the input and switch view types
         md5 = input_data['meta']['md5']
-        mime_type = input_data['meta']['mime_type']
-        if mime_type == 'application/x-dosexec':
-            result = self.workbench.work_request('view_pe', md5)
-        elif mime_type == 'application/pdf':
-            result = self.workbench.work_request('view_pdf', md5)
-        elif mime_type == 'application/zip':
-            result = self.workbench.work_request('view_zip', md5)
-        elif mime_type == 'application/vnd.tcpdump.pcap':
-            result = self.workbench.work_request('view_pcap', md5)
-        elif mime_type == 'application/x-shockwave-flash':
-            result = self.workbench.work_request('swf_meta', md5)
+        tag = input_data['meta']['type_tag']
+        if tag == 'exe':
+            result = self.workbench.work_request('view_pe', md5)['view_pe']
+        elif tag == 'pdf':
+            result = self.workbench.work_request('view_pdf', md5)['view_pdf']
+        elif tag == 'zip':
+            result = self.workbench.work_request('view_zip', md5)['view_zip']
+        elif tag == 'pcap':
+            result = self.workbench.work_request('view_pcap', md5)['view_pcap']
+        elif tag == 'swf':
+            result = self.workbench.work_request('swf_meta', md5)['swf_meta']
+        elif tag == 'mem':
+            result = self.workbench.work_request('view_memory', md5)['view_memory']
         else:
             # In the case of an unsupported MIME type just return the meta data
             result = input_data

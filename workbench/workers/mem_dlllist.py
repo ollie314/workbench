@@ -5,41 +5,63 @@
 '''
 import os
 import hashlib
-import mem_base
+import collections
+import pprint
+from rekall_adapter.rekall_adapter import RekallAdapter
 
-class MemoryImageDllList(mem_base.MemoryImageBase):
+class MemoryImageDllList(object):
     ''' This worker computes dlllist for memory image files. '''
     dependencies = ['sample']
 
     def __init__(self):
         ''' Initialization '''
-        super(MemoryImageDllList, self).__init__()
-        self.set_plugin_name('dlllist')
+        self.plugin_name = 'dlllist'
+        self.current_table_name = 'dlllist'
+        self.output = {'tables': collections.defaultdict(list)}
+        self.column_map = {}
 
     @staticmethod
     def safe_key(key):
         return key.replace('.','_')
 
+    def parse_base(self, base_data):
+        """Parse the Base object we get from some rekall output"""
+        base = base_data['Base']['target']
+        return {'Base': base}
+
     def execute(self, input_data):
-        output = super(MemoryImageDllList, self).execute(input_data)
+        ''' Execute method '''
 
-        # Organize the output a bit
-        # This worker has 'keys' for each process and the value is a list of dlls
-        # The 'Info' section has nothing for this worker so we're going to remove it.
-        processes = output['sections'].keys()
-        processes.remove('Info')
+        # Spin up the rekall adapter
+        adapter = RekallAdapter()
+        adapter.set_plugin_name(self.plugin_name)
+        rekall_output = adapter.execute(input_data)
 
-        # The 'safe_key' call is because Mongo can't have keys with a period in them so
-        # when the data gets saved into Mongo the '.' will be replaced with a '_' so
-        # doing that replacment now explicitly so it doesn't bite us later on.
-        output['tables'] = [self.safe_key(process) for process in processes]
-        for process in processes:
-            output[self.safe_key(process)] = output['sections'][process]
+        # Process the output data
+        for line in rekall_output:
 
-        # No longer need the sections data
-        del output['sections']
+            if line['type'] == 'm':  # Meta
+                self.output['meta'] = line['data']
+            elif line['type'] == 's': # New Session (Table)
+                if line['data']['name']:
+                    self.current_table_name = str(line['data']['name'][1].v())
+            elif line['type'] == 't': # New Table Headers (column names)
+                self.column_map = {item['cname']: item['name'] if 'name' in item else item['cname'] for item in line['data']}
+            elif line['type'] == 'r': # Row
 
-        return output
+                # Add the row to our current table
+                row = RekallAdapter.process_row(line['data'], self.column_map)
+                self.output['tables'][self.current_table_name].append(row)
+
+                # Process Base entries
+                if 'Base' in row:
+                    base_info = self.parse_base(row)
+                    row.update(base_info)
+            else:
+                print 'Got unknown line %s: %s' % (line['type'], line['data'])
+
+        # All done
+        return self.output
 
 # Unit test: Create the class, the proper input and run the execute() method for a test
 import pytest
@@ -64,13 +86,19 @@ def test():
     worker = MemoryImageDllList()
     output = worker.execute({'sample':{'raw_bytes':raw_bytes}})
     print '\n<<< Unit Test >>>'
-    print 'dlllist(truncated): %s' % str(output)[:1000]
+    print 'Meta: %s' % output['meta']
+    for name, table in output['tables'].iteritems():
+        print '\nTable: %s' % name
+        pprint.pprint(table)
     assert 'Error' not in output
 
     # Execute the worker (server test)
-    output = workbench.work_request('mem_dlllist', md5)
+    output = workbench.work_request('mem_dlllist', md5)['mem_dlllist']
     print '\n<<< Server Test >>>'
-    print 'dlllist(truncated): %s' % str(output)[:1000]
+    print 'Meta: %s' % output['meta']
+    for name, table in output['tables'].iteritems():
+        print '\nTable: %s' % name
+        pprint.pprint(table)
     assert 'Error' not in output
 
 

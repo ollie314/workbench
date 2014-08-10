@@ -4,7 +4,6 @@
     All credit for good stuff goes to them, all credit for bad stuff goes to us. :)
 '''
 
-from rekall_adapter.rekall_adapter import RekallAdapter
 import zerorpc
 import contextlib
 import tempfile
@@ -12,6 +11,8 @@ import shutil
 import glob, os
 import hashlib
 import pprint
+import collections
+from rekall_adapter.rekall_adapter import RekallAdapter
 
 class MemoryImageProcDump(object):
     ''' This worker dumps process pe files from memory image files. '''
@@ -19,15 +20,66 @@ class MemoryImageProcDump(object):
 
     def __init__(self):
         ''' Initialization '''
-        self.output = {}
         self.plugin_name = 'procdump'
+        self.current_table_name = 'dumped_files'
+        self.output = {'tables': collections.defaultdict(list)}
+        self.column_map = {}
 
         # Spin up workbench connection
         self.c = zerorpc.Client(timeout=300, heartbeat=60)
-        self.c.connect("tcp://127.0.0.1:4242")        
+        self.c.connect("tcp://127.0.0.1:4242")  
 
     def execute(self, input_data):
         ''' Execute method '''
+
+        # Spin up the rekall adapter
+        adapter = RekallAdapter()
+        adapter.set_plugin_name(self.plugin_name)
+        
+        # Create a temporary directory and run this plugin from there
+        with self.goto_temp_directory():
+
+            # Run the procdump plugin
+            rekall_output = adapter.execute(input_data)
+    
+            # Process the output data
+            for line in rekall_output:
+    
+                if line['type'] == 'm':  # Meta
+                    self.output['meta'] = line['data']
+                elif line['type'] == 't': # New Table Headers (column names)
+                    self.column_map = {item['cname']: item['name'] if 'name' in item else item['cname'] for item in line['data']}
+                elif line['type'] == 'r': # Row
+                    
+                    # Add the row to our current table
+                    row = RekallAdapter.process_row(line['data'], self.column_map)
+                    self.output['tables'][self.current_table_name].append(row)
+    
+            # Scrape any extracted files
+            print 'mem_procdump: Scraping dumped files...'
+            for output_file in glob.glob('*'):
+    
+                # Store the output into workbench, put md5s in the 'dumped_files' field
+                output_name = os.path.basename(output_file)
+                output_name = output_name.replace('executable.', '')
+                with open(output_file, 'rb') as dumped_file:
+                    raw_bytes = dumped_file.read()
+                    md5 = self.c.store_sample(raw_bytes, output_name, 'exe')
+    
+                    # Remove some columns from meta data
+                    meta = self.c.work_request('meta', md5)['meta']
+                    del meta['customer']
+                    del meta['encoding']
+                    del meta['import_time']
+                    del meta['mime_type']
+                    self.output['tables'][self.current_table_name].append(meta)
+    
+            # All done
+            return self.output
+
+    '''
+    def execute(self, input_data):
+        
 
         # Grab the raw bytes of the sample
         raw_bytes = input_data['sample']['raw_bytes']
@@ -73,6 +125,7 @@ class MemoryImageProcDump(object):
         # Organize the output a bit
         self.output['tables'] = ['dumped_files']
         return self.output
+        '''
 
     @contextlib.contextmanager
     def goto_temp_directory(self):
