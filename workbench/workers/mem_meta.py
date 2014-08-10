@@ -19,7 +19,7 @@ class MemoryImageMeta(object):
     def __init__(self):
         ''' Initialization '''
         self.plugin_name = 'imageinfo'
-        self.current_table_name = 'General'
+        self.current_table_name = 'info'
         self.output = {'tables': collections.defaultdict(list)}
         self.column_map = {}
 

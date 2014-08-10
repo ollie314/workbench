@@ -17,7 +17,7 @@ class MemoryImagePSList(object):
     def __init__(self):
         ''' Initialization '''
         self.plugin_name = 'pslist'
-        self.current_table_name = 'General'
+        self.current_table_name = 'pslist'
         self.output = {'tables': collections.defaultdict(list)}
         self.column_map = {}
 

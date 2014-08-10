@@ -16,7 +16,7 @@ class MemoryImageConnScan(object):
     def __init__(self):
         ''' Initialization '''
         self.plugin_name = 'connscan'
-        self.current_table_name = 'General'
+        self.current_table_name = 'connscan'
         self.output = {'tables': collections.defaultdict(list)}
         self.column_map = {}
 

@@ -16,7 +16,7 @@ class MemoryImageDllList(object):
     def __init__(self):
         ''' Initialization '''
         self.plugin_name = 'dlllist'
-        self.current_table_name = 'General'
+        self.current_table_name = 'dllist'
         self.output = {'tables': collections.defaultdict(list)}
         self.column_map = {}
 
