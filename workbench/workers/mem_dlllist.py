@@ -42,10 +42,9 @@ class MemoryImageDllList(object):
 
             if line['type'] == 'm':  # Meta
                 self.output['meta'] = line['data']
-            elif line['type'] == 'f': # Format line (I want to slowly die by ant bites...)
-                pass
             elif line['type'] == 's': # New Session (Table)
-                self.current_table_name = line['data']['name'][1] if line['data']['name'] else self.current_table_name
+                if line['data']['name']:
+                    self.current_table_name = str(line['data']['name'][1].v())
             elif line['type'] == 't': # New Table Headers (column names)
                 self.column_map = {item['cname']: item['name'] if 'name' in item else item['cname'] for item in line['data']}
             elif line['type'] == 'r': # Row
