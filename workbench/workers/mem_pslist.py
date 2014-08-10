@@ -46,12 +46,18 @@ class MemoryImagePSList(object):
             elif line['type'] == 't': # New Table Headers (column names)
                 self.column_map = {item['cname']: item['name'] if 'name' in item else item['cname'] for item in line['data']}
             elif line['type'] == 'r': # Row
-                
-                # Add the row to our current table
+
+                # Standard processing on the rekall row data
                 row = RekallAdapter.process_row(line['data'], self.column_map)
+
+                # Process _EPROCESS entries
+                if '_EPROCESS' in row:
+                    eprocess_info = self.parse_eprocess(row)
+                    row.update(eprocess_info)
+                    del row['_EPROCESS']
+
+                # Add the row to our current table
                 self.output['tables'][self.current_table_name].append(row)
-            else:
-                print 'Note: Ignoring rekall message of type %s: %s' % (line['type'], line['data'])
 
         # All done
         return self.output
