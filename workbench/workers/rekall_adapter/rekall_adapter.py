@@ -35,8 +35,6 @@ class RekallAdapter(object):
         # Spin up the logging
         logging.getLogger().setLevel(logging.ERROR)
         self.plugin_name = 'imageinfo'
-        self.session = None
-        self.renderer = None
 
     def set_plugin_name(self, name):
         ''' Set the name of the plugin to be used '''
@@ -49,22 +47,33 @@ class RekallAdapter(object):
         raw_bytes = input_data['sample']['raw_bytes']
 
         # Spin up the rekall session and render components
-        self.session = MemSession(raw_bytes)
-        self.renderer = WorkbenchRenderer(session=self.session)
+        session = MemSession(raw_bytes)
+        renderer = WorkbenchRenderer(session=session)
 
         # Run the plugin
-        self.session.RunPlugin(self.plugin_name, renderer=self.renderer)
+        session.RunPlugin(self.plugin_name, renderer=renderer)
 
-        return self.renderer.get_output()
+        return renderer.get_output()
 
-    def _get_session(self):
-        ''' Return the Rekall session object '''
-        return self.session
+    @classmethod
+    def process_row(cls, data, column_map):
+        """Process the row data from Rekall"""
+        row = {}
+        for key,value in data.iteritems():
+            if not value:
+                value = '-'                
+            elif isinstance(value, list):
+                value = value[1]
+            elif isinstance(value, dict):
+                if 'type_name' in value:
+                    if 'UnixTimeStamp' in value['type_name']:
+                        value = datetime.datetime.utcfromtimestamp(value['epoch'])
+                        if value == datetime.datetime(1970, 1, 1, 0, 0):
+                            value = '-'
 
-    def _get_renderer(self):
-        ''' Return the Rekall renderer object '''
-        return self.renderer
-
+            # Assume the value is somehow well formed when we get here
+            row[column_map[key]] = value
+        return row
 
 class MemSession(rekall_session.JsonSerializableSession):
     """MemSession: Helps utilize the Rekall Memory Forensic Framework."""
@@ -93,7 +102,7 @@ class WorkbenchRenderer(DataExportRenderer):
     def __init__(self, session):
         """Initialize the WorkbenchRenderer class"""
         self.__class__.__name__ = 'DataExportRenderer'  # Errr.. this is a fixme
-        self.output = None
+        self.output = []
         self.session = session
         self.column_map = {}
         self.current_table_name = 'unknown'
@@ -105,16 +114,9 @@ class WorkbenchRenderer(DataExportRenderer):
 
     def start(self, plugin_name=None, kwargs=None):
         """Start method: initial data structures and store some meta data."""
-        self.output = {'tables': collections.defaultdict(list)} # Start basically resets the output data
+        self.output = [] # Start basically resets the output data
         super(WorkbenchRenderer, self).start(plugin_name=plugin_name)
         return self
-
-    def parse_eprocess(self, eprocess_data):
-        """Parse the EProcess object we get from some rekall output"""
-        Name = eprocess_data['_EPROCESS']['Cybox']['Name']
-        PID = eprocess_data['_EPROCESS']['Cybox']['PID']
-        PPID = eprocess_data['_EPROCESS']['Cybox']['Parent_PID']
-        return {'Name': Name, 'PID': PID, 'PPID': PPID}
 
     def SendMessage(self, statement):
         """Here we're actually capturing messages and putting them into our output"""
@@ -122,45 +124,8 @@ class WorkbenchRenderer(DataExportRenderer):
         # The way messages are 'encapsulated' by Rekall is questionable, 99% of the
         # time it's way better to have a dictionary...shrug...
         message_type = statement[0]
-        message_data = statement[1]
-        if message_type == 'm':  # Meta
-            self.output['meta'] = message_data
-
-        elif message_type == 's': # New Session (Table)
-            # I love magic shit like this...
-            self.current_table_name = message_data['name'][1] if message_data['name'] else 'unknown'
-
-        elif message_type == 't': # New Table Headers (column names)
-            self.column_map = {item['cname']: item['name'] if 'name' in item else item['cname'] for item in message_data}
-
-        elif message_type == 'r': # Row
-            # Okay do some dorky stuff based on Rekall having it's own type system
-            row = {}
-            for key,value in message_data.iteritems():
-                # Yea.. this is fun... like toothpicks in my eyeballs...
-                if not value:
-                    value = '-'                
-                elif isinstance(value, list):
-                    value = value[1] # Yeah, cause this make sense.. holy shit...
-                elif isinstance(value, dict):
-                    if 'type_name' in value:
-                        if 'UnixTimeStamp' in value['type_name']:
-                            value = datetime.datetime.utcfromtimestamp(value['epoch'])
-                            if value == datetime.datetime(1970, 1, 1, 0, 0):
-                                value = '-'
-
-                # Assume the value is somehow well formed when we get here
-                row[self.column_map[key]] = value
-
-            # _EPROCESS processing
-            if '_EPROCESS' in message_data:
-                row.update(self.parse_eprocess(message_data))
-                del row['_EPROCESS']
-
-            # Add the row to our current table
-            self.output['tables'][self.current_table_name].append(row)
-        elif self.verbose:
-            print 'Verbose: Ignoring rekall message of type %s: %s' % (message_type, statement)
+        message_data = statement[1]        
+        self.output.append({'type': message_type, 'data': message_data})
 
 
 # Unit test: Create the class, the proper input and run the execute() method for a test
@@ -193,27 +158,20 @@ def test():
     # Unit test stuff
     input_data = c.get_sample(md5)
 
-    # Execute the worker (unit test)
-    worker = RekallAdapter()
+    # Execute the adapter (unit test)
+    adapter = RekallAdapter()
     print '\n<<< Unit Test >>>'
-    worker.set_plugin_name('imageinfo')
-    output = worker.execute(input_data)    
-    pprint.pprint(output['meta'])
-    for name, table in output['tables'].iteritems():
-        print '\nTable: %s' % name
-        pprint.pprint(table)
-    worker.set_plugin_name('pslist')
-    output = worker.execute(input_data)    
-    pprint.pprint(output['meta'])
-    for name, table in output['tables'].iteritems():
-        print '\nTable: %s' % name
-        pprint.pprint(table)
-    worker.set_plugin_name('dlllist')
-    output = worker.execute(input_data)    
-    pprint.pprint(output['meta'])
-    for name, table in output['tables'].iteritems():
-        print '\nTable: %s' % name
-        pprint.pprint(table)    
+    adapter.set_plugin_name('imageinfo')
+    output = adapter.execute(input_data)
+    pprint.pprint(output)
+
+    adapter.set_plugin_name('pslist')
+    output = adapter.execute(input_data)
+    pprint.pprint(output)
+
+    adapter.set_plugin_name('dlllist')
+    output = adapter.execute(input_data)
+    pprint.pprint(output)  
 
 
 if __name__ == "__main__":

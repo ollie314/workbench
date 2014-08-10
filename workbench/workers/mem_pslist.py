@@ -8,6 +8,13 @@ import hashlib
 import mem_base
 import re
 
+def parse_eprocess(self, eprocess_data):
+    """Parse the EProcess object we get from some rekall output"""
+    Name = eprocess_data['_EPROCESS']['Cybox']['Name']
+    PID = eprocess_data['_EPROCESS']['Cybox']['PID']
+    PPID = eprocess_data['_EPROCESS']['Cybox']['Parent_PID']
+    return {'Name': Name, 'PID': PID, 'PPID': PPID}
+
 class MemoryImagePSList(mem_base.MemoryImageBase):
     ''' This worker computes pslist-data for memory image files. '''
     dependencies = ['sample']
