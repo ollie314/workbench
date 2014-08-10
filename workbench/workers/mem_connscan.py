@@ -59,6 +59,19 @@ def test():
     workbench = zerorpc.Client(timeout=300, heartbeat=60)
     workbench.connect("tcp://127.0.0.1:4242")
 
+    # Do we have the memory forensics file?
+    data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../data/memory_images/exemplar4.vmem')
+    if not os.path.isfile(data_path):
+        print 'Not finding exemplar4.mem... Downloading now...'
+        import urllib
+        urllib.urlretrieve('http://s3-us-west-2.amazonaws.com/workbench-data/memory_images/exemplar4.vmem', data_path)
+
+    # Did we properly download the memory file?
+    if not os.path.isfile(data_path):
+        print 'Downloading failed, try it manually...'
+        print 'wget http://s3-us-west-2.amazonaws.com/workbench-data/memory_images/exemplar4.vmem'
+        exit(1)
+
     # Store the sample
     data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../data/memory_images/exemplar4.vmem')
     with open(data_path, 'rb') as mem_file:
