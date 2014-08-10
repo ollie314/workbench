@@ -36,19 +36,15 @@ class MemoryImageMeta(object):
 
             if line['type'] == 'm':  # Meta
                 self.output['meta'] = line['data']
-    
             elif line['type'] == 's': # New Session (Table)
                 self.current_table_name = line['data']['name'][1]
-    
             elif line['type'] == 't': # New Table Headers (column names)
                 self.column_map = {item['cname']: item['name'] if 'name' in item else item['cname'] for item in line['data']}
-    
             elif line['type'] == 'r': # Row
                 
                 # Add the row to our current table
                 row = RekallAdapter.process_row(line['data'], self.column_map)
                 self.output['tables'][self.current_table_name].append(row)
-
             else:
                 print 'Note: Ignoring rekall message of type %s: %s' % (line['type'], line['data'])
 

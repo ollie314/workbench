@@ -127,6 +127,11 @@ class WorkbenchRenderer(DataExportRenderer):
         message_data = statement[1]        
         self.output.append({'type': message_type, 'data': message_data})
 
+    def open(self, directory=None, filename=None, mode="rb"):
+        """Opens a file for writing or reading."""
+        path = os.path.join(directory, filename)
+        return open(path, mode) # Errr.. we need to close this somewhere...
+
 
 # Unit test: Create the class, the proper input and run the execute() method for a test
 import pytest

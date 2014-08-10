@@ -5,40 +5,56 @@
 '''
 import os
 import hashlib
-import mem_base
-import re
+import collections
+import pprint
+from rekall_adapter.rekall_adapter import RekallAdapter
 
-def parse_eprocess(self, eprocess_data):
-    """Parse the EProcess object we get from some rekall output"""
-    Name = eprocess_data['_EPROCESS']['Cybox']['Name']
-    PID = eprocess_data['_EPROCESS']['Cybox']['PID']
-    PPID = eprocess_data['_EPROCESS']['Cybox']['Parent_PID']
-    return {'Name': Name, 'PID': PID, 'PPID': PPID}
 
-class MemoryImagePSList(mem_base.MemoryImageBase):
+class MemoryImagePSList(object):
     ''' This worker computes pslist-data for memory image files. '''
     dependencies = ['sample']
 
     def __init__(self):
         ''' Initialization '''
-        super(MemoryImagePSList, self).__init__()
-        self.set_plugin_name('pslist')
+        self.plugin_name = 'pslist'
+        self.current_table_name = 'General'
+        self.output = {'tables': collections.defaultdict(list)}
+        self.column_map = {}
+
+    def parse_eprocess(self, eprocess_data):
+        """Parse the EProcess object we get from some rekall output"""
+        Name = eprocess_data['_EPROCESS']['Cybox']['Name']
+        PID = eprocess_data['_EPROCESS']['Cybox']['PID']
+        PPID = eprocess_data['_EPROCESS']['Cybox']['Parent_PID']
+        return {'Name': Name, 'PID': PID, 'PPID': PPID}
 
     def execute(self, input_data):
-        output = super(MemoryImagePSList, self).execute(input_data)
+        ''' Execute method '''
 
-        # Special processing for Offset (V)
-        '''
-        for row in output['sections']['Info']:
-            sub_offset = re.search('@ (.*)\n', row['Offset (V)'])
-            row['Offset (V)'] = sub_offset.group(1)
-        '''
+        # Spin up the rekall adapter
+        adapter = RekallAdapter()
+        adapter.set_plugin_name(self.plugin_name)
+        rekall_output = adapter.execute(input_data)
 
-        # Organize the output a bit
-        output['tables'] = ['pslist']
-        output['pslist'] = output['sections']['Info']
-        del output['sections']
-        return output
+        # Process the output data
+        for line in rekall_output:
+
+            if line['type'] == 'm':  # Meta
+                self.output['meta'] = line['data']
+            elif line['type'] == 's': # New Session (Table)
+                self.current_table_name = line['data']['name'][1]
+            elif line['type'] == 't': # New Table Headers (column names)
+                self.column_map = {item['cname']: item['name'] if 'name' in item else item['cname'] for item in line['data']}
+            elif line['type'] == 'r': # Row
+                
+                # Add the row to our current table
+                row = RekallAdapter.process_row(line['data'], self.column_map)
+                self.output['tables'][self.current_table_name].append(row)
+            else:
+                print 'Note: Ignoring rekall message of type %s: %s' % (line['type'], line['data'])
+
+        # All done
+        return self.output
 
 # Unit test: Create the class, the proper input and run the execute() method for a test
 import pytest
@@ -63,13 +79,19 @@ def test():
     worker = MemoryImagePSList()
     output = worker.execute({'sample':{'raw_bytes':raw_bytes}})
     print '\n<<< Unit Test >>>'
-    print 'pslist(truncated): %s' % str(output)[:500]
+    print 'Meta: %s' % output['meta']
+    for name, table in output['tables'].iteritems():
+        print '\nTable: %s' % name
+        pprint.pprint(table)
     assert 'Error' not in output
 
     # Execute the worker (server test)
-    output = workbench.work_request('mem_pslist', md5)
+    output = workbench.work_request('mem_pslist', md5)['mem_pslist']
     print '\n<<< Server Test >>>'
-    print 'pslist(truncated): %s' % str(output)[:500]
+    print 'Meta: %s' % output['meta']
+    for name, table in output['tables'].iteritems():
+        print '\nTable: %s' % name
+        pprint.pprint(table)
     assert 'Error' not in output
 
 
