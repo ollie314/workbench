@@ -107,6 +107,7 @@ class WorkbenchRenderer(DataExportRenderer):
         self.column_map = {}
         self.current_table_name = 'unknown'
         self.verbose = False
+        self.incoming_section = False
         super(WorkbenchRenderer, self).__init__(session=session)
 
     def get_output(self):
@@ -117,6 +118,22 @@ class WorkbenchRenderer(DataExportRenderer):
         self.output = [] # Start basically resets the output data
         super(WorkbenchRenderer, self).start(plugin_name=plugin_name)
         return self
+
+    def format(self, formatstring, *args):
+        """Presentation Information from the Plugin"""
+
+        # Make a new section
+        if self.incoming_section:
+            self.SendMessage(['s', {'name': args}])
+            self.incoming_section = False
+
+    def section(self, name=None, **_kwargs):
+        """Called by the plugin when a new section is output"""
+
+        # Check for weird case where an section call is made with
+        # no name and then a format call is made
+        if not name:
+            self.incoming_section = True
 
     def SendMessage(self, statement):
         """Here we're actually capturing messages and putting them into our output"""
