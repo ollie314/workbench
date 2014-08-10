@@ -11,14 +11,11 @@ class ViewMemory(object):
     def execute(self, input_data):
         ''' Execute the ViewMemory worker '''
 
-        # Aggregate the output from all the memory workers and place
-        # their results into named tables in the output.
-        output = {'tables': ['connscan', 'meta_info', 'meta_layout', 'procdump', 'pslist']}
-        output.update({'connscan': input_data['mem_connscan']['connscan']})
-        output.update({'meta_info': input_data['mem_meta']['meta_info']})
-        output.update({'meta_layout': input_data['mem_meta']['meta_layout']})
-        output.update({'procdump': input_data['mem_procdump']['dumped_files']})
-        output.update({'pslist': input_data['mem_pslist']['pslist']})
+        # Aggregate the output from all the memory workers, clearly this could be kewler
+        output = {'tables': {}}
+        for data in [input_data[key] for key in ViewMemory.dependencies]:
+            for name,table in data['tables'].iteritems():
+                output['tables'].update({name: table})
         return output
 
 # Unit test: Create the class, the proper input and run the execute() method for a test
