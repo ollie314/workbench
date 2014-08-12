@@ -24,7 +24,7 @@ class View(object):
         elif tag == 'pcap':
             result = self.workbench.work_request('view_pcap', md5)['view_pcap']
         elif tag == 'swf':
-            result = self.workbench.work_request('swf_meta', md5)['swf_meta']
+            result = self.workbench.work_request('view_swf', md5)['view_swf']
         elif tag == 'mem':
             result = self.workbench.work_request('view_memory', md5)['view_memory']
         else:

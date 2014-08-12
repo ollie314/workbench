@@ -16,8 +16,8 @@ class ViewZip(object):
         ''' Execute the ViewZip worker '''
 
         # Just a small check to make sure we haven't been called on the wrong file type
-        if (input_data['meta']['mime_type'] != 'application/zip'):
-            return {'error': self.__class__.__name__+': called on '+input_data['meta']['mime_type']}
+        if (input_data['meta']['type_tag'] != 'zip'):
+            return {'error': self.__class__.__name__+': called on '+input_data['meta']['type_tag']}
 
         view = {}
         view['payload_md5s'] = input_data['unzip']['payload_md5s']

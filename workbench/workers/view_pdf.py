@@ -1,17 +1,17 @@
 
-''' view_pdffile worker '''
+''' view_pdf worker '''
 import pprint
 
-class ViewPDFFile(object):
-    ''' ViewPDFFile: Generates a view for PDF files '''
+class ViewPDF(object):
+    ''' ViewPDF: Generates a view for PDF files '''
     dependencies = ['meta', 'strings']
 
     def execute(self, input_data):
         ''' Execute the ViewPDF worker '''
 
         # Just a small check to make sure we haven't been called on the wrong file type
-        if (input_data['meta']['mime_type'] != 'application/pdf'):
-            return {'error': self.__class__.__name__+': called on '+input_data['meta']['mime_type']}
+        if (input_data['meta']['type_tag'] != 'pdf'):
+            return {'error': self.__class__.__name__+': called on '+input_data['meta']['type_tag']}
 
         view = {}
         view['strings'] = input_data['strings']['string_list'][:5]
@@ -35,7 +35,7 @@ def test():
     input_data.update(workbench.work_request('strings', md5))
 
     # Execute the worker (unit test)
-    worker = ViewPDFFile()
+    worker = ViewPDF()
     output = worker.execute(input_data)
     print '\n<<< Unit Test >>>'
     pprint.pprint(output)

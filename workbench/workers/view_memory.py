@@ -3,6 +3,7 @@
 import os
 import hashlib
 import pprint
+import re
 
 class ViewMemory(object):
     ''' ViewMemory: Generates a view for meta data on the sample '''
@@ -11,12 +12,20 @@ class ViewMemory(object):
     def execute(self, input_data):
         ''' Execute the ViewMemory worker '''
 
-        # Aggregate the output from all the memory workers, clearly this could be kewler
-        output = {'tables': {}}
-        for data in [input_data[key] for key in ViewMemory.dependencies]:
-            for name,table in data['tables'].iteritems():
-                output['tables'].update({name: table})
+        # Aggregate the output from all the memory workers into concise summary info
+        output = {'meta': input_data['mem_meta']['tables']['info']}
+        output['connscan'] = list(set([item['Remote Address'] for item in input_data['mem_connscan']['tables']['connscan']]))
+        pslist_md5s = {self.file_to_pid(item['filename']): item['md5'] for item in input_data['mem_procdump']['tables']['dumped_files']}
+        output['pslist'] = ['PPID: %d PID: %d Name: %s - %s' % (item['PPID'], item['PID'], item['Name'], pslist_md5s[item['PID']])
+                            for item in input_data['mem_pslist']['tables']['pslist']]
         return output
+
+    @staticmethod
+    def file_to_pid(filename):       
+        for s in re.split('_|\.', filename):
+            if s.isdigit():
+                return int(s)
+        return None
 
 # Unit test: Create the class, the proper input and run the execute() method for a test
 def test():

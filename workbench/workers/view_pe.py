@@ -2,20 +2,21 @@
 ''' view_pe worker '''
 import pprint
 
-class ViewPEFile(object):
+class ViewPE(object):
     ''' Generates a high level summary view for PE files that incorporates a large set of workers '''
-    dependencies = ['meta', 'strings', 'pe_peid', 'pe_indicators', 'pe_classifier']
+    dependencies = ['meta', 'strings', 'pe_peid', 'pe_indicators', 'pe_classifier', 'yara_sigs']
 
     def execute(self, input_data):
-        ''' Execute the ViewPEFile worker '''
+        ''' Execute the ViewPE worker '''
 
         # Just a small check to make sure we haven't been called on the wrong file type
-        if (input_data['meta']['mime_type'] != 'application/x-dosexec'):
-            return {'error': self.__class__.__name__+': called on '+input_data['meta']['mime_type']}
+        if (input_data['meta']['type_tag'] != 'exe'):
+            return {'error': self.__class__.__name__+': called on '+input_data['meta']['type_tag']}
 
         view = {}
-        view['indicators']     = input_data['pe_indicators']['indicator_list']
-        view['peid_Matches']   = input_data['pe_peid']['match_list']
+        view['indicators']     = list(set([item['category'] for item in input_data['pe_indicators']['indicator_list']]))
+        view['peid_matches']   = input_data['pe_peid']['match_list']
+        view['yara_sigs']      = input_data['yara_sigs']['matches']
         view['classification'] = input_data['pe_classifier']['classification']
         view['disass'] = self.safe_get(input_data, ['pe_disass', 'decode'])[:15]
         view.update(input_data['meta'])
@@ -49,9 +50,10 @@ def test():
     input_data.update(workbench.work_request('pe_peid', md5))
     input_data.update(workbench.work_request('pe_indicators', md5))
     input_data.update(workbench.work_request('pe_classifier', md5))
+    input_data.update(workbench.work_request('yara_sigs', md5))
 
     # Execute the worker (unit test)
-    worker = ViewPEFile()
+    worker = ViewPE()
     output = worker.execute(input_data)
     print '\n<<< Unit Test >>>'
     pprint.pprint(output)
