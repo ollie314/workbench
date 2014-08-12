@@ -344,6 +344,26 @@ class DataStore(object):
             cursor = self.database[self.sample_collection].find({}, {'md5': 1, '_id': 0})
         return [match.values()[0] for match in cursor]
 
+    def clear_worker_output(self):
+        """Drops all of the worker output collections"""
+        
+        print 'Dropping all of the worker output collections... Whee!'
+        # Get all the collections in the workbench database
+        all_c = self.database.collection_names()
+
+        # Remove collections that we don't want to cap
+        try:
+            all_c.remove('system.indexes')
+            all_c.remove('fs.chunks')
+            all_c.remove('fs.files')
+            all_c.remove('info')
+            all_c.remove(self.sample_collection)
+        except ValueError:
+            print 'Catching a benign exception thats expected...'
+
+        for collection in all_c:
+            self.database.drop_collection(collection)
+
     def clear_db(self):
         """Drops the entire workbench database."""
         

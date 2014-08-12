@@ -384,7 +384,16 @@ class WorkBench(object):
         self.plugin_manager.load_all_plugins()
 
         # Store information about commands and workbench
-        self._store_information()        
+        self._store_information()
+
+    def clear_worker_output(self):
+        """Drops all of the worker output collections
+            Args:
+                None
+            Returns:
+                Nothing
+        """
+        self.data_store.clear_worker_output()
 
 
     #######################
@@ -451,13 +460,11 @@ class WorkBench(object):
 
         # Loop through all the md5s and return a generator with yield
         for md5 in md5_list:
-            try:
-                if subkeys:
-                    yield self.work_request(worker_name, md5, subkeys)
-                else:
-                    yield self.work_request(worker_name, md5)[worker_name]
-            except KeyError:
-                continue
+            if subkeys:
+                yield self.work_request(worker_name, md5, subkeys)
+            else:
+                yield self.work_request(worker_name, md5)[worker_name]
+
 
     def store_sample_set(self, md5_list):
         """ Store a sample set (which is just a list of md5s).
