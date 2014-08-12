@@ -11,6 +11,30 @@ Subpackages
 Submodules
 ----------
 
+workbench.workers.evel_knievel_all module
+-----------------------------------------
+
+.. automodule:: workbench.workers.evel_knievel_all
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+workbench.workers.evel_knievel_key module
+-----------------------------------------
+
+.. automodule:: workbench.workers.evel_knievel_key
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+workbench.workers.evel_knievel_type module
+------------------------------------------
+
+.. automodule:: workbench.workers.evel_knievel_type
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 workbench.workers.help_base module
 ----------------------------------
 
