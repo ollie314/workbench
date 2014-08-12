@@ -1,6 +1,22 @@
 Installing Workbench
 ====================
 
+
+Workbench Command Line Interface (CLI)
+--------------------------------------
+
+::
+
+    $ pip install workbench_cli
+    $ workbench (this runs the Workbench CLI)
+
+That's it! 
+
+If you have a workbench server setup (somewhere) you can start using the workbench CLI client,
+or any of the existing clients (in workbench/clients) or even start writing your own clients
+against that server (see :ref:`MakingClient`)
+
+
 Workbench Server (Minimum Install)
 ----------------------------------
 The workbench server is extremely robust to worker failure. In fact it can run without many of the dependencies
@@ -32,20 +48,6 @@ Workbench Python Modules
 
 That's it, the workbench server will come up and is ready to start servicing requests.
 Note: Some workers will fail to load but that is fine, to have all workers run see 'Full Install'.
-
-
-Workbench Client(s)
--------------------
-
-::
-
-    $ workbench (this runs the Workbench CLI)
-
-That's it! 
-
-If you have a workbench server setup (somewhere) you can now start the workbench CLI client,
-or any of the existing clients (in workbench/clients) or even start writing your own clients
-against that server (see :ref:`MakingClient`)
 
 
 Workbench Server (Full Install)
@@ -179,3 +181,21 @@ Dependency Installation Errors
         $ git checkout bfb6589 Library/Formula/libmagic.rb
         $ brew uninstall libmagic
         $ brew install libmagic
+
+Workbench CLI (on Windozes)
+---------------------------
+
+- Visual Studio Express 2008: (yes 2008 python 2.7 requires those libs)
+    - http://go.microsoft.com/?linkid=7729279
+- Python: https://www.python.org/download/releases/2.7.8/
+- Pip: http://pip.readthedocs.org/en/latest/installing.html
+- Install Greenlet: http://www.lfd.uci.edu/~gohlke/pythonlibs/#greenlet
+- Install Gevent: http://www.lfd.uci.edu/~gohlke/pythonlibs/#gevent
+- pip install workbench_cli
+
+::
+
+    > cd c:\python27\lib\site-packages\workbench_cli
+    > python workbench   (use -s to specify alternative server if you want)
+
+This should spin up the workbench CLI interface, the colors will be messed up (we’re working on that)

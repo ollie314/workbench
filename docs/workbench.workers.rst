@@ -43,14 +43,6 @@ workbench.workers.log_meta module
     :undoc-members:
     :show-inheritance:
 
-workbench.workers.mem_base module
----------------------------------
-
-.. automodule:: workbench.workers.mem_base
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 workbench.workers.mem_connscan module
 -------------------------------------
 
