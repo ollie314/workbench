@@ -72,6 +72,7 @@ Workbench Videos
 ------------------
 -  `Getting Started with Workbench <http://youtu.be/v4zXhZINdDQ>`_
 -  `Workbench Command Interface <http://youtu.be/MvSa7aklWTI>`_
+-  `Workbench Robust Client/Server <http://youtu.be/RxSaJuC6t1k>`_
 
 Workbench Examples
 ------------------
