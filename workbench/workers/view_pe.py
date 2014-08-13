@@ -16,7 +16,7 @@ class ViewPE(object):
         view = {}
         view['indicators']     = list(set([item['category'] for item in input_data['pe_indicators']['indicator_list']]))
         view['peid_matches']   = input_data['pe_peid']['match_list']
-        view['yara_sigs']      = input_data['yara_sigs']['matches']
+        view['yara_sigs']      = input_data['yara_sigs']['matches'].keys()
         view['classification'] = input_data['pe_classifier']['classification']
         view['disass'] = self.safe_get(input_data, ['pe_disass', 'decode'])[:15]
         view.update(input_data['meta'])
@@ -43,7 +43,7 @@ def test():
     # Generate input for the worker
     import os
     data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 
-                             '../data/pe/bad/033d91aae8ad29ed9fbb858179271232')     
+                             '../data/pe/bad/cc113aa59c04b17e7cb832fc417f104d')     
     md5 = workbench.store_sample(open(data_path, 'rb').read(), 'bad_pe', 'exe')
     input_data = workbench.work_request('meta', md5)
     input_data.update(workbench.work_request('strings', md5))
