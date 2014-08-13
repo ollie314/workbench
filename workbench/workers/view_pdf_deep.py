@@ -1,13 +1,13 @@
 
-''' view_pdf worker '''
+''' view_pdf_deep worker '''
 import pprint
 
-class ViewPDF(object):
-    ''' ViewPDF: Generates a view for PDF files '''
+class ViewPDFDeep(object):
+    ''' ViewPDFDeep: Generates a view for PDF files '''
     dependencies = ['meta', 'strings']
 
     def execute(self, input_data):
-        ''' Execute the ViewPDF worker '''
+        ''' Execute the ViewPDFDeep worker '''
 
         # Just a small check to make sure we haven't been called on the wrong file type
         if (input_data['meta']['type_tag'] != 'pdf'):
@@ -20,7 +20,7 @@ class ViewPDF(object):
 
 # Unit test: Create the class, the proper input and run the execute() method for a test
 def test():
-    '''' view_pdf.py: Unit test'''
+    '''' view_pdf_deep.py: Unit test'''
     # This worker test requires a local server running
     import zerorpc
     workbench = zerorpc.Client(timeout=300, heartbeat=60)
@@ -35,13 +35,13 @@ def test():
     input_data.update(workbench.work_request('strings', md5))
 
     # Execute the worker (unit test)
-    worker = ViewPDF()
+    worker = ViewPDFDeep()
     output = worker.execute(input_data)
     print '\n<<< Unit Test >>>'
     pprint.pprint(output)
     
     # Execute the worker (server test)
-    output = workbench.work_request('view_pdf', md5)
+    output = workbench.work_request('view_pdf_deep', md5)
     print '\n<<< Server Test >>>'
     pprint.pprint(output)
 

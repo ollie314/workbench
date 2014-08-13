@@ -1,11 +1,11 @@
 
-''' view_zip worker '''
+''' view_zip_deep worker '''
 import os
 import zerorpc
 import pprint
 
-class ViewZip(object):
-    ''' ViewZip: Generates a view for Zip files '''
+class ViewZipDeep(object):
+    ''' ViewZipDeep: Generates a view for Zip files '''
     dependencies = ['meta', 'unzip']
 
     def __init__(self):
@@ -13,7 +13,7 @@ class ViewZip(object):
         self.workbench.connect("tcp://127.0.0.1:4242")
 
     def execute(self, input_data):
-        ''' Execute the ViewZip worker '''
+        ''' Execute the ViewZipDeep worker '''
 
         # Just a small check to make sure we haven't been called on the wrong file type
         if (input_data['meta']['type_tag'] != 'zip'):
@@ -34,7 +34,7 @@ class ViewZip(object):
 
 # Unit test: Create the class, the proper input and run the execute() method for a test
 def test():
-    ''' -- view_zip.py test -- '''
+    ''' -- view_zip_deep.py test -- '''
 
     # This worker test requires a local server running
     workbench = zerorpc.Client(timeout=300, heartbeat=60)
@@ -47,13 +47,13 @@ def test():
     input_data.update(workbench.work_request('unzip', md5))
 
     # Execute the worker (unit test)
-    worker = ViewZip()
+    worker = ViewZipDeep()
     output = worker.execute(input_data)
     print '\n<<< Unit Test >>>'
     pprint.pprint(output)
 
     # Execute the worker (server test)
-    output = workbench.work_request('view_zip', md5)
+    output = workbench.work_request('view_zip_deep', md5)
     print '\n<<< Server Test >>>'
     pprint.pprint(output)
 

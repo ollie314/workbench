@@ -1,6 +1,6 @@
 include "pe.yar"
 
-rule process_manip
+rule anti_debug
 {
     meta:                                        
         description = "Anti-Debug Imports"

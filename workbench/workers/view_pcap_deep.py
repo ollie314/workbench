@@ -1,19 +1,19 @@
-''' view_pcap_details worker '''
+''' view_pcap_deep worker '''
 import zerorpc
 import pprint
 
 
-class ViewPcapDetails(object):
-    ''' ViewPcapDetails: Generates a view for a pcap sample (depends on Bro)'''
+class ViewPcapDeep(object):
+    ''' ViewPcapDeep: Generates a view for a pcap sample (depends on Bro)'''
     dependencies = ['view_pcap']
 
     def __init__(self):
-        ''' Initialization of ViewPcapDetails '''
+        ''' Initialization of ViewPcapDeep '''
         self.workbench = zerorpc.Client(timeout=300, heartbeat=60)
         self.workbench.connect("tcp://127.0.0.1:4242")
 
     def execute(self, input_data):
-        ''' ViewPcapDetails execute method '''
+        ''' ViewPcapDeep execute method '''
 
         # Copy info from input
         view = input_data['view_pcap']
@@ -38,7 +38,7 @@ class ViewPcapDetails(object):
 
 # Unit test: Create the class, the proper input and run the execute() method for a test
 def test():
-    ''' view_pcap_details.py: Unit test'''
+    ''' view_pcap_deep.py: Unit test'''
 
     # This worker test requires a local server running
     import zerorpc
@@ -53,13 +53,13 @@ def test():
     input_data = workbench.work_request('view_pcap', md5)
 
     # Execute the worker (unit test)
-    worker = ViewPcapDetails()
+    worker = ViewPcapDeep()
     output = worker.execute(input_data)
     print '\n<<< Unit Test >>>'
     pprint.pprint(output)
 
     # Execute the worker (server test)
-    output = workbench.work_request('view_pcap_details', md5)
+    output = workbench.work_request('view_pcap_deep', md5)
     print '\n<<< Server Test >>>'
     pprint.pprint(output)
 

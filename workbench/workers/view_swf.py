@@ -1,26 +1,25 @@
 
-''' view_pdf worker '''
+''' view_swf worker '''
 import pprint
 
-class ViewPDF(object):
-    ''' ViewPDF: Generates a view for PDF files '''
-    dependencies = ['meta', 'strings']
+class ViewSWF(object):
+    ''' ViewSWF: Generates a view for SWF files '''
+    dependencies = ['swf_meta', 'strings']
 
     def execute(self, input_data):
-        ''' Execute the ViewPDF worker '''
+        ''' Execute the ViewSWF worker '''
 
         # Just a small check to make sure we haven't been called on the wrong file type
-        if (input_data['meta']['type_tag'] != 'pdf'):
-            return {'error': self.__class__.__name__+': called on '+input_data['meta']['type_tag']}
+        if (input_data['swf_meta']['type_tag'] != 'swf'):
+            return {'error': self.__class__.__name__+': called on '+input_data['swf_meta']['type_tag']}
 
-        view = {}
+        view = input_data['swf_meta']
         view['strings'] = input_data['strings']['string_list'][:5]
-        view.update(input_data['meta'])
         return view
 
 # Unit test: Create the class, the proper input and run the execute() method for a test
 def test():
-    '''' view_pdf.py: Unit test'''
+    '''' view_swf.py: Unit test'''
     # This worker test requires a local server running
     import zerorpc
     workbench = zerorpc.Client(timeout=300, heartbeat=60)
@@ -28,20 +27,19 @@ def test():
 
     # Generate input for the worker
     import os
-    data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                             '../data/pdf/bad/067b3929f096768e864f6a04f04d4e54')
-    md5 = workbench.store_sample(open(data_path, 'rb').read(), 'bad_pdf', 'pdf')
-    input_data = workbench.work_request('meta', md5)
+    data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../data/swf/unknown.swf')
+    md5 = workbench.store_sample(open(data_path, 'rb').read(), 'unknown.swf', 'swf')
+    input_data = workbench.work_request('swf_meta', md5)
     input_data.update(workbench.work_request('strings', md5))
 
     # Execute the worker (unit test)
-    worker = ViewPDF()
+    worker = ViewSWF()
     output = worker.execute(input_data)
     print '\n<<< Unit Test >>>'
     pprint.pprint(output)
     
     # Execute the worker (server test)
-    output = workbench.work_request('view_pdf', md5)
+    output = workbench.work_request('view_swf', md5)
     print '\n<<< Server Test >>>'
     pprint.pprint(output)
 
