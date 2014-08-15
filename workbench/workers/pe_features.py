@@ -262,10 +262,11 @@ class PEFileWorker(object):
             # Take out any weird characters in section names
             secname = convert_to_ascii_null_term(sec.Name).lower()
             secname = secname.replace('.', '')
-            extracted_dense['sec_entropy_%s' % secname] = sec.get_entropy()
-            extracted_dense['sec_rawptr_%s' % secname] = sec.PointerToRawData
-            extracted_dense['sec_rawsize_%s' % secname] = sec.SizeOfRawData
-            extracted_dense['sec_vasize_%s' % secname] = sec.Misc_VirtualSize
+            if secname in std_sections:
+                extracted_dense['sec_entropy_%s' % secname] = sec.get_entropy()
+                extracted_dense['sec_rawptr_%s' % secname] = sec.PointerToRawData
+                extracted_dense['sec_rawsize_%s' % secname] = sec.SizeOfRawData
+                extracted_dense['sec_vasize_%s' % secname] = sec.Misc_VirtualSize
 
         extracted_dense['sec_va_execsize'] = vaexecsize
         extracted_dense['sec_raw_execsize'] = rawexecsize
