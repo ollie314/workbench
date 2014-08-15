@@ -5,6 +5,8 @@ import hashlib
 import zerorpc
 import IPython
 import lz4
+import matplotlib.pyplot as plt
+plt.ion()
 from colorama import Fore as F
 
 try:
