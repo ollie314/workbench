@@ -1,7 +1,7 @@
 
-''' PE Classify worker (just a placeholder, not a real classifier at this point) '''
+''' PEClassifier worker (just a placeholder, not a real classifier at this point) '''
 
-class PEFileClassify(object):
+class PEClassifier(object):
     ''' This worker classifies PEFiles as Evil or AOK  (TOY not a real classifier at this point)'''
     dependencies = ['pe_features', 'pe_indicators']
 
@@ -43,7 +43,7 @@ def test():
     input_data.update(workbench.work_request('pe_indicators', md5))
 
     # Execute the worker (unit test)
-    worker = PEFileClassify()
+    worker = PEClassifier()
     output = worker.execute(input_data)
     print '\n<<< Unit Test >>>'
     pprint.pprint(output)
