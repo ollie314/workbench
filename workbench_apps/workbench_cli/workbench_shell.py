@@ -4,6 +4,7 @@ import os, sys
 import hashlib
 import zerorpc
 import IPython
+import lz4
 from colorama import Fore as F
 
 try:
@@ -133,6 +134,24 @@ class WorkbenchShell(object):
                 self.ipshell.push({'md5': self.session.md5})
                 self.ipshell.push({'short_md5': self.session.short_md5})
 
+    def pull_df(self, md5):
+        """Wrapper for the get_dataframe workbench method"""
+        try:
+            _packed_df = self.workbench.get_dataframe(md5)
+            _df = pd.read_msgpack(lz4.loads(_packed_df))
+            return _df
+        except zerorpc.exceptions.RemoteError as e:
+            return repr_to_str_decorator.r_to_s(self._data_not_found)(e)
+
+    def search_samples(self, tag=None):
+        """Wrapper for the list_samples workbench method"""
+        
+        # Fixme: This needs to be improved to handle arbitrary predicates (MongoDB predicates)
+        if not tag:
+            return [item['md5'] for item in self.workbench.list_samples()]
+        else:
+            return [item['md5'] for item in self.workbench.list_samples({'type_tag': tag})]
+
     def work_request(self, worker, md5=None):
         """Wrapper for a work_request to workbench"""
 
@@ -183,8 +202,11 @@ class WorkbenchShell(object):
         # for some of the workbench commands
         general = {
             'workbench': self.workbench,
+            'phelp': help,
             'help': repr_to_str_decorator.r_to_s(self.workbench.help),
             'load_sample': self.load_sample,
+            'pull_df': self.pull_df,
+            'search_samples': self.search_samples,
             'reconnect': lambda info=self.server_info: self.connect(info),
             'version': self.versions,
             'versions': self.versions,
@@ -230,6 +252,10 @@ class WorkbenchShell(object):
         # Register our transformer, the shell will use this for 'shortcut' commands
         auto_quoter = auto_quote_xform.AutoQuoteTransformer(self.ipshell, self.ipshell.prefilter_manager)
         auto_quoter.register_command_set(self.command_set)
+
+        # Setting up some Pandas options
+        pd.set_option('display.width', 140)
+        pd.set_option('max_colwidth', 15)
 
         # Start up the shell with our set of workbench commands
         self.ipshell(local_ns=self.command_dict)
