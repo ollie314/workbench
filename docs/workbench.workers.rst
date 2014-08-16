@@ -171,6 +171,14 @@ workbench.workers.pe_features module
     :undoc-members:
     :show-inheritance:
 
+workbench.workers.pe_features_df module
+---------------------------------------
+
+.. automodule:: workbench.workers.pe_features_df
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 workbench.workers.pe_indicators module
 --------------------------------------
 
@@ -235,6 +243,14 @@ workbench.workers.view_customer module
     :undoc-members:
     :show-inheritance:
 
+workbench.workers.view_deep module
+----------------------------------
+
+.. automodule:: workbench.workers.view_deep
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 workbench.workers.view_log_meta module
 --------------------------------------
 
@@ -251,10 +267,10 @@ workbench.workers.view_memory module
     :undoc-members:
     :show-inheritance:
 
-workbench.workers.view_meta module
-----------------------------------
+workbench.workers.view_memory_deep module
+-----------------------------------------
 
-.. automodule:: workbench.workers.view_meta
+.. automodule:: workbench.workers.view_memory_deep
     :members:
     :undoc-members:
     :show-inheritance:
@@ -267,10 +283,10 @@ workbench.workers.view_pcap module
     :undoc-members:
     :show-inheritance:
 
-workbench.workers.view_pcap_details module
-------------------------------------------
+workbench.workers.view_pcap_deep module
+---------------------------------------
 
-.. automodule:: workbench.workers.view_pcap_details
+.. automodule:: workbench.workers.view_pcap_deep
     :members:
     :undoc-members:
     :show-inheritance:
@@ -283,6 +299,14 @@ workbench.workers.view_pdf module
     :undoc-members:
     :show-inheritance:
 
+workbench.workers.view_pdf_deep module
+--------------------------------------
+
+.. automodule:: workbench.workers.view_pdf_deep
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 workbench.workers.view_pe module
 --------------------------------
 
@@ -291,10 +315,42 @@ workbench.workers.view_pe module
     :undoc-members:
     :show-inheritance:
 
+workbench.workers.view_pe_deep module
+-------------------------------------
+
+.. automodule:: workbench.workers.view_pe_deep
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+workbench.workers.view_swf module
+---------------------------------
+
+.. automodule:: workbench.workers.view_swf
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+workbench.workers.view_swf_deep module
+--------------------------------------
+
+.. automodule:: workbench.workers.view_swf_deep
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 workbench.workers.view_zip module
 ---------------------------------
 
 .. automodule:: workbench.workers.view_zip
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+workbench.workers.view_zip_deep module
+--------------------------------------
+
+.. automodule:: workbench.workers.view_zip_deep
     :members:
     :undoc-members:
     :show-inheritance:
