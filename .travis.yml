@@ -16,7 +16,7 @@ before_install:
     - sudo dpkg -i Bro-2.2-Linux-x86_64_flex.deb
     - export PATH=/opt/bro/bin:$PATH
     - wget https://s3-us-west-2.amazonaws.com/workbench-data/memory_images/exemplar4.vmem -o workbench/data/memory_images/exemplar4.vmem
-    - wget https://s3-us-west-2.amazonaws.com/workbench-wheels/numpy-1.8.2-cp27-none-linux_x86_64.whl -o numpy-1.8.2-cp27-none-linux_x86_64.whl
+    - wget https://s3.amazonaws.com/workbench-wheels/py27/numpy-1.8.2-cp27-none-linux_x86_64.whl
 install:
     - pip install tox
     - pip install coveralls
