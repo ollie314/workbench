@@ -103,18 +103,16 @@ class WorkBench(object):
     #######################
     # Sample Methods
     #######################
-    def store_sample(self, input_bytes, filename, type_tag):
+    def store_sample(self, input_bytes, filename, type_tag, tags=None):
         """ Store a sample into the DataStore.
             Args:
                 input_bytes: the actual bytes of the sample e.g. f.read()
                 filename: name of the file (used purely as meta data not for lookup)
                 type_tag: ('exe','pcap','pdf','json','swf', or ...)
+                tags: optional list of tags ['bad','aptz13']
             Returns:
                 the md5 of the sample.
         """
-
-        # Store the sample
-        # md5 = self.data_store.store_sample(input_bytes, filename, type_tag)
 
         # If the sample comes in with an unknown type_tag try to determine it
         if type_tag == 'unknown':
@@ -134,7 +132,7 @@ class WorkBench(object):
             input_bytes = lz4.loads(input_bytes)
 
         # Store the sample
-        md5 = self.data_store.store_sample(input_bytes, filename, type_tag)
+        md5 = self.data_store.store_sample(input_bytes, filename, type_tag, tags)
 
         return md5
 
@@ -180,11 +178,11 @@ class WorkBench(object):
                 predicate: Match samples against this predicate (or all if not specified)
 
             Returns:
-                List of dictionaries with matching samples {'md5':md5, 'filename': 'foo.exe', 'type_tag': 'exe'}
+                List of dictionaries with matching samples {'md5':md5, 'filename': 'foo.exe', 'tags': ['evil'], 'type_tag': 'exe'}
         """
         return self.data_store.list_samples(predicate)
 
-    def combine_samples(self, md5_list, filename, type_tag):
+    def combine_samples(self, md5_list, filename, type_tag, tags=None):
         """Combine samples together. This may have various use cases the most significant 
            involving a bunch of sample 'chunks' got uploaded and now we combine them together
 
@@ -192,6 +190,7 @@ class WorkBench(object):
                 md5_list: The list of md5s to combine, order matters!
                 filename: name of the file (used purely as meta data not for lookup)
                 type_tag: ('exe','pcap','pdf','json','swf', or ...)
+                tags: optional list of tags ['bad','aptz13']
             Returns:
                 the computed md5 of the combined samples
         """
@@ -201,7 +200,7 @@ class WorkBench(object):
             self.remove_sample(md5)
 
         # Store it
-        return self.store_sample(total_bytes, filename, type_tag)
+        return self.store_sample(total_bytes, filename, type_tag, tags)
 
     def remove_sample(self, md5):
         """Remove the sample from the data store"""

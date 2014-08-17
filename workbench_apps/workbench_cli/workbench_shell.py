@@ -105,9 +105,14 @@ class WorkbenchShell(object):
                          format(F.GREEN, '#'*(percent/2), ' '*(50-percent/2), F.YELLOW, percent, F.RESET))
         sys.stdout.flush()
 
-    def load_sample(self, file_path):
+    def load_sample(self, file_path, tags=None):
         """Load a sample (or samples) into workbench
-           load_sample </path/to/file_or_dir> """
+           load_sample </path/to/file_or_dir> [tags]"""
+
+        # Recommend a tag
+        if not tags:
+            print '\n%sRecommended: Add a list of tags when you load samples. \
+                   \n\t%sExamples: [\'bad\'], [\'good\'], [\'bad\',\'aptz13\']%s' % (F.YELLOW, F.GREEN, F.RESET)
 
         # Do they want everything under a directory?
         if os.path.isdir(file_path):
@@ -123,7 +128,7 @@ class WorkbenchShell(object):
                 if not self.workbench.has_sample(md5):
                     print '%sStreaming Sample...%s' % (F.MAGENTA, F.RESET)
                     basename = os.path.basename(path)
-                    md5 = self.streamer.stream_to_workbench(raw_bytes, basename, 'unknown')
+                    md5 = self.streamer.stream_to_workbench(raw_bytes, basename, 'unknown', tags)
 
                 print '\n%s  %s%s %sLocked and Loaded...%s\n' % \
                       (self.beer, F.MAGENTA, md5[:6], F.YELLOW, F.RESET)
@@ -145,14 +150,15 @@ class WorkbenchShell(object):
         except zerorpc.exceptions.RemoteError as e:
             return repr_to_str_decorator.r_to_s(self._data_not_found)(e)
 
-    def search_samples(self, tag=None):
+    def search_samples(self, tags=None):
         """Wrapper for the list_samples workbench method"""
         
         # Fixme: This needs to be improved to handle arbitrary predicates (MongoDB predicates)
-        if not tag:
+        if not tags:
             return [item['md5'] for item in self.workbench.list_samples()]
-        else:
-            return [item['md5'] for item in self.workbench.list_samples({'type_tag': tag})]
+        elif isinstance(tags, str):
+            tags = [tags]
+        return [item['md5'] for item in self.workbench.list_samples({'tags': {'$in': tags}})]
 
     def work_request(self, worker, md5=None):
         """Wrapper for a work_request to workbench"""
@@ -208,7 +214,7 @@ class WorkbenchShell(object):
             'help': repr_to_str_decorator.r_to_s(self.workbench.help),
             'load_sample': self.load_sample,
             'pull_df': self.pull_df,
-            'search_samples': self.search_samples,
+            'search': self.search_samples, # Note: This overwrites Workbench search
             'reconnect': lambda info=self.server_info: self.connect(info),
             'version': self.versions,
             'versions': self.versions,

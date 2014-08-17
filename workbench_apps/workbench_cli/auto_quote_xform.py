@@ -19,6 +19,17 @@ class AutoQuoteTransformer(PrefilterTransformer):
         # Capture the original line
         orig_line = line
 
+        # Get tokens from all the currently active namespace
+        ns_token_set = set([token for nspace in self.shell.all_ns_refs for token in nspace])
+
+        # Build up token set and info out of the incoming line
+        token_list = re.split(' |;|,|(|)|\'|"', line)
+        token_list = [item for item in token_list if item != None]
+        num_tokens = len(token_list)
+        first_token = token_list[0]
+        token_set = set(token_list)       
+        
+
         # Very conservative logic (but possibly flawed)
         # 1) Lines with any of these symbols ; , ' " ( ) aren't touched
         # 2) Need to have more than one token
@@ -27,18 +38,25 @@ class AutoQuoteTransformer(PrefilterTransformer):
         # 5) Otherwise only tokens that are not in any of the namespace are quoted
 
 
+        # Fixme: Horse shit temp hack for load_sample
+        # 0) If load_sample do special processing
+        if first_token == 'load_sample':
+            # If the second arg isn't in namespace quote it
+            if token_list[1] not in ns_token_set:
+                line = line.replace(token_list[1], '"'+token_list[1]+'",')
+            '''
+            # Put the third arg in a dictionary (zeroRPC default arg issue)
+            if len(token_list) > 2:
+                line = line.replace('[', '{\'tags\': [')
+                line = line.replace(']', ']}')
+            '''
+            
+            return line
+
         # 1) Lines with any of these symbols ; , ' " ( ) aren't touched
         skip_symbols = [';', ',', '\'', '"', '(', ')']
         if any([sym in line for sym in skip_symbols]):
             return line
-
-        # Build up token set and info
-        token_list = re.split(' |;|,|(|)|\'|"', line)
-        num_tokens = len(token_list)
-        first_token = token_list[0]
-        token_set = set(token_list)
-        if None in token_set: # In some cases None creeps in
-            token_set.remove(None)
 
         # 2) Need to have more than one token
         # 3) First token in line must be in the workbench command set
@@ -52,7 +70,6 @@ class AutoQuoteTransformer(PrefilterTransformer):
 
             # 5) Otherwise only tokens that are not in any of the namespace are quoted
             else: # Not help
-                ns_token_set = set([token for nspace in self.shell.all_ns_refs for token in nspace])
                 for token in token_set:
                     if token not in ns_token_set:
                         line = line.replace(token, '"'+token+'"')

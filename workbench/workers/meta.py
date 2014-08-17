@@ -16,6 +16,7 @@ class MetaData(object):
         ''' This worker computes meta data for any file type. '''
         raw_bytes = input_data['sample']['raw_bytes']
         self.meta['md5'] = hashlib.md5(raw_bytes).hexdigest()
+        self.meta['tags'] = input_data['sample']['tags']
         self.meta['type_tag'] = input_data['sample']['type_tag']
         with magic.Magic() as mag:
             self.meta['file_type'] = mag.id_buffer(raw_bytes[:1024])

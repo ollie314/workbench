@@ -26,15 +26,15 @@ class FileStreamer(object):
         for i in xrange(0, len(data), chunk_size):
             yield self.compressor(data[i:i+chunk_size])
 
-    def stream_to_workbench(self, raw_bytes, filename, type_tag):
+    def stream_to_workbench(self, raw_bytes, filename, type_tag, tags):
         """Split up a large file into chunks and send to Workbench"""
         md5_list = []
         sent_bytes = 0
         total_bytes = len(raw_bytes)
         for chunk in self._file_chunks(raw_bytes, self.chunk_size):
-            md5_list.append(self.workbench.store_sample(chunk, filename, self.compress_ident))
+            md5_list.append(self.workbench.store_sample(chunk, filename, self.compress_ident, tags))
             sent_bytes += self.chunk_size
             self.progress(sent_bytes, total_bytes)
 
         # Now we just ask Workbench to combine these
-        return self.workbench.combine_samples(md5_list, filename, type_tag)
+        return self.workbench.combine_samples(md5_list, filename, type_tag, tags)

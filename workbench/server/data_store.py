@@ -48,19 +48,20 @@ class DataStore(object):
         """ Return the uri of the data store."""
         return self.uri
 
-    def store_sample(self, sample_bytes, filename, type_tag):
+    def store_sample(self, sample_bytes, filename, type_tag, tags=None):
         """Store a sample into the datastore.
 
         Args:
             filename: Name of the file.
             sample_bytes: Actual bytes of sample. 
             type_tag: Type of sample ('exe','pcap','pdf','json','swf', or ...).
+            tags: optional list of tags ['bad','aptz13']
 
         Returns:
-            Digest md5 digest of the sample.
+            md5 digest of the sample.
         """
 
-        # Temp sanity
+        # Temp sanity check for old clients
         if len(filename) > 100:
             print 'switched bytes/filename... %s %s' % (sample_bytes[:100], filename[:100])
             exit(1)
@@ -86,6 +87,8 @@ class DataStore(object):
         sample_info['length'] = len(sample_bytes)
         sample_info['import_time'] = datetime.datetime.utcnow()
         sample_info['type_tag'] = type_tag
+        sample_info['tags'] = [type_tag]
+        sample_info['tags'].append(tags)
 
         # Random customer for now
         import random
@@ -284,9 +287,9 @@ class DataStore(object):
             predicate: Match samples against this predicate (or all if not specified)
 
         Returns:
-            List of dictionaries with matching samples {'md5':md5, 'filename': 'foo.exe', 'type_tag': 'exe'}
+            List of dictionaries with matching samples {'md5':md5, 'filename': 'foo.exe', 'tags': ['evil'], 'type_tag': 'exe'}
         """
-        cursor = self.database[self.sample_collection].find(predicate, {'_id':0, 'md5':1, 'filename':1, 'type_tag':1})
+        cursor = self.database[self.sample_collection].find(predicate, {'_id':0, 'md5':1, 'filename':1, 'tags':1, 'type_tag':1})
         return list(cursor)
 
     def store_work_results(self, results, collection, md5):
@@ -407,8 +410,9 @@ class DataStore(object):
         for collection in all_c:
             self.database[collection].ensure_index('md5')
 
-        # Add required index for samples collection
+        # Add required indexes for samples collection
         self.database[self.sample_collection].create_index('import_time')
+        self.database[self.sample_collection].create_index('tags')
 
     # Helper functions
     def to_unicode(self, s):
