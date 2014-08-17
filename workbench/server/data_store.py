@@ -356,7 +356,7 @@ class DataStore(object):
             all_c.remove('system.indexes')
             all_c.remove('fs.chunks')
             all_c.remove('fs.files')
-            all_c.remove('info')
+            all_c.remove('sample_set')
             all_c.remove(self.sample_collection)
         except ValueError:
             print 'Catching a benign exception thats expected...'

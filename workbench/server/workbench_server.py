@@ -249,6 +249,28 @@ class WorkBench(object):
         else:
             raise RuntimeError('Cannot stream file %s with type_tag:%s' % (md5, type_tag))
 
+    def get_dataframe(self, md5, compress='lz4'):
+        """Return a dataframe from the DataStore. This is just a convenience method
+           that uses get_sample internally. 
+            Args:
+                md5: the md5 of the dataframe
+                compress: compression to use: (defaults to 'lz4' but can be set to None)
+            Returns:
+                A msgpack'd Pandas DataFrame
+            Raises:
+                Workbench.DataNotFound if the dataframe is not found.
+        """
+        # First we try a sample, if we can't find one we try getting a sample_set.
+        sample = self.data_store.get_sample(md5)
+        if not sample:
+            raise WorkBench.DataNotFound("Could not find %s in the data store", md5)
+        if not compress:
+            return sample['raw_bytes']
+        else:
+            compress_df = lz4.dumps(sample['raw_bytes'])
+            print 'Info: DataFrame compression %.0f%%' % (len(compress_df)*100.0/float(len(sample['raw_bytes'])))
+            return compress_df
+
     def guess_type_tag(self, input_bytes):
         """ Try to guess the type_tag for this sample """
         mime_to_type = {'application/jar': 'jar',
@@ -395,6 +417,12 @@ class WorkBench(object):
         """
         self.data_store.clear_worker_output()
 
+        # Have the plugin manager reload all the plugins
+        self.plugin_manager.load_all_plugins()
+
+        # Store information about commands and workbench
+        self._store_information()
+
 
     #######################
     # Work Request Methods
@@ -475,8 +503,12 @@ class WorkBench(object):
                 md5_list: a list of the md5s in this set (all must exist in data store)
 
             Returns:
-                The md5 of the set (the actual md5 of the set
+                The md5 of the set (the actual md5 of the set)
         """
+        
+        # Remove any duplicates
+        md5_list = list(set(md5_list))
+
         for md5 in md5_list:
             if not self.has_sample(md5):
                 raise RuntimeError('Sample not found all items in sample_set\
@@ -486,15 +518,15 @@ class WorkBench(object):
         return set_md5
 
     def get_sample_set(self, md5):
-        """ Store a sample set (which is just a list of md5s).
+        """ Retrieve a sample set (which is just a list of md5s).
 
             Args:
-                md5_list: a list of the md5s in this set (all must exist in data store)
+                md5: the md5 of the sample_set (returned with the 'store_sample_set' call)
 
             Returns:
-                The md5 of the set (the actual md5 of the set
+                The list of md5s that comprise the sample_set
         """
-        return self._get_work_results('sample_set', md5)
+        return self.data_store.clean_for_serialization(self._get_work_results('sample_set', md5))
 
     @zerorpc.stream
     def stream_sample_set(self, md5):

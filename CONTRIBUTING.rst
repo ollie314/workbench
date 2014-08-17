@@ -127,7 +127,7 @@ Workbench CLI (Just CLI)
 
 ::
 
-    $ cd workbench_cli
+    $ cd workbench_apps
     $ make clean
     $ python setup.py sdist
     $ cd dist
