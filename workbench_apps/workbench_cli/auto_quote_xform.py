@@ -44,13 +44,7 @@ class AutoQuoteTransformer(PrefilterTransformer):
             # If the second arg isn't in namespace quote it
             if token_list[1] not in ns_token_set:
                 line = line.replace(token_list[1], '"'+token_list[1]+'",')
-            '''
-            # Put the third arg in a dictionary (zeroRPC default arg issue)
-            if len(token_list) > 2:
-                line = line.replace('[', '{\'tags\': [')
-                line = line.replace(']', ']}')
-            '''
-            
+
             return line
 
         # 1) Lines with any of these symbols ; , ' " ( ) aren't touched
