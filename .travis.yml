@@ -16,7 +16,6 @@ before_install:
     - wget https://s3-us-west-2.amazonaws.com/workbench-data/packages/Bro-2.2-Linux-x86_64_flex.deb
     - sudo dpkg -i Bro-2.2-Linux-x86_64_flex.deb
     - export PATH=/opt/bro/bin:$PATH
-    - wget https://s3-us-west-2.amazonaws.com/workbench-data/memory_images/exemplar4.vmem -o workbench/data/memory_images/exemplar4.vmem
     - wget https://s3.amazonaws.com/workbench-wheels/py27/wheelhouse.tar.gz
     - tar xvfz wheelhouse.tar.gz
 install:
