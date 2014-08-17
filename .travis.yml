@@ -22,7 +22,7 @@ install:
     - pip install tox
     - pip install coveralls
 script: 
-    - tox -e $TOX_ENV
+    - tox -v -e $TOX_ENV
 after_success:
     - coveralls
 notifications:
