@@ -64,7 +64,7 @@ class PEFileWorker(object):
         dense_features, sparse_features = self.extract_features_using_pefile(pefile_handle)
 
         # Okay set my response
-        return {'dense_features': dense_features, 'sparse_features': sparse_features}
+        return {'dense_features': dense_features, 'sparse_features': sparse_features, 'tags': input_data['sample']['tags']}
 
     def set_dense_features(self, dense_feature_list):
         ''' Set the dense feature list that the Python pefile module should extract.

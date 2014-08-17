@@ -25,12 +25,12 @@ class PEFeaturesDF(object):
 
         # Dense Features
         dense_features = self.workbench.batch_work_request('pe_features', 
-            {'md5_list': self.samples, 'subkeys':['md5', 'dense_features']})
+            {'md5_list': self.samples, 'subkeys':['md5', 'tags', 'dense_features']})
 
         # Fixme: There's probably a nicer/better way to do this
         flat_features = []
         for feat in dense_features:
-            feat['dense_features'].update({'md5': feat['md5']})
+            feat['dense_features'].update({'md5': feat['md5'], 'tags': feat['tags']})
             flat_features.append(feat['dense_features'])
         dense_df = pd.DataFrame(flat_features)
         df_packed = dense_df.to_msgpack()
@@ -38,12 +38,12 @@ class PEFeaturesDF(object):
         
         # Sparse Features
         sparse_features = self.workbench.batch_work_request('pe_features', 
-            {'md5_list': self.samples, 'subkeys':['md5', 'sparse_features']})
+            {'md5_list': self.samples, 'subkeys':['md5', 'tags', 'sparse_features']})
 
         # Fixme: There's probably a nicer/better way to do this
         flat_features = []
         for feat in sparse_features:
-            feat['sparse_features'].update({'md5': feat['md5']})
+            feat['sparse_features'].update({'md5': feat['md5'], 'tags': feat['tags']})
             flat_features.append(feat['sparse_features'])
         sparse_df = pd.DataFrame(flat_features)
         df_packed = sparse_df.to_msgpack()
