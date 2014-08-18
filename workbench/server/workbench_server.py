@@ -570,8 +570,8 @@ class WorkBench(object):
             # Okay this is a bit tricky we want to give the user a nice error
             # message that has both the md5 of what they were looking for and
             # a nice informative message that explains what might have happened
-            sample_md5 = e.args[0]['md5']
-            return '%s%s not found:\n\t%s' % (Fore.YELLOW, sample_md5, e.message())
+            sample_md5 = e.args[0]
+            return '%s%s\n\t%s%s%s' % (Fore.YELLOW, sample_md5, Fore.GREEN, e.message(), Fore.RESET)
 
     # Fixme: These are internal methods that basically just provide help text
     def _help_workbench(self):

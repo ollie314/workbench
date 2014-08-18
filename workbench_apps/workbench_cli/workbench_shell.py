@@ -5,6 +5,8 @@ import hashlib
 import zerorpc
 import IPython
 import lz4
+import inspect
+import funcsigs
 import matplotlib.pyplot as plt
 plt.ion()
 from colorama import Fore as F
@@ -46,7 +48,7 @@ class WorkbenchShell(object):
 
         # Spin up workbench server
         self.workbench = None
-        self.connect(self.server_info)
+        self._connect(self.server_info)
 
         # Create a user session
         self.session = self.Session()
@@ -59,55 +61,26 @@ class WorkbenchShell(object):
         self.ipshell = None
 
         # Our File Streamer
-        self.streamer = file_streamer.FileStreamer(self.workbench, self.progress_print)
+        self.streamer = file_streamer.FileStreamer(self.workbench, self._progress_print)
+
+        # Register infomation (for help and other stuff) with Workbench
+        self._register_info()
+
+        # Help decorator
+        self.help_deco = repr_to_str_decorator.r_to_s(self.workbench.help)
 
         # What OS/Version do we have?
         self.beer = '\360\237\215\272' if sys.platform == 'darwin' else ' '
 
-    # Internal Classes
-    class Session(object):
-        """Store information specific to the user session"""
-        def __init__(self):
-            """Initialization of Session object"""
-            self.filename = None
-            self.md5 = None
-            self.short_md5 = '-'
-            self.server = 'localhost'
-
-    # Helper Methods
-    def connect(self, server_info):
-
-        # First we do a temp connect with a short heartbeat
-        _tmp_connect = zerorpc.Client(timeout=300, heartbeat=2)
-        _tmp_connect.connect('tcp://'+server_info['server']+':'+server_info['port'])
-        try:
-            _tmp_connect._zerorpc_name()
-            _tmp_connect.close()
-            del _tmp_connect
-        except zerorpc.exceptions.LostRemote:
-            print '%sError: Could not connect to Workbench Server at %s:%s%s' % \
-                  (F.RED, server_info['server'], server_info['port'], F.RESET)
-            sys.exit(1)
-
-        # Okay do the real connection
-        if self.workbench:
-            self.workbench.close()
-        self.workbench = zerorpc.Client(timeout=300, heartbeat=60)
-        self.workbench.connect('tcp://'+server_info['server']+':'+server_info['port'])
-        print '\n%s<<< Connected: %s:%s >>>%s' % (F.GREEN, server_info['server'], server_info['port'], F.RESET)
-
-    def progress_print(self, sent, total):
-        """Progress print show the progress of the current upload with a neat progress bar
-           Credits: http://redino.net/blog/2013/07/display-a-progress-bar-in-console-using-python/
-        """
-        percent = min(int(sent*100.0/total), 100)
-        sys.stdout.write('\r{0}[{1}{2}] {3}{4}%{5}'.
-                         format(F.GREEN, '#'*(percent/2), ' '*(50-percent/2), F.YELLOW, percent, F.RESET))
-        sys.stdout.flush()
 
     def load_sample(self, file_path, tags=None):
         """Load a sample (or samples) into workbench
-           load_sample </path/to/file_or_dir> [tags]"""
+            Args:
+                file_path: path to a file or directory
+                tags (optional): a list of tags for the sample/samples ['bad','aptz13']
+            Returns:
+                The list of md5s for all samples
+        """
 
         # Recommend a tag
         if not tags:
@@ -142,7 +115,12 @@ class WorkbenchShell(object):
                 self.ipshell.push({'short_md5': self.session.short_md5})
 
     def pull_df(self, md5):
-        """Wrapper for the get_dataframe workbench method"""
+        """Wrapper for the Workbench get_dataframe method
+            Args:
+                md5: pull the dataframe identified by this md5
+            Returns:
+                The uncompressed/unserialized dataframe
+        """
         try:
             _packed_df = self.workbench.get_dataframe(md5)
             _df = pd.read_msgpack(lz4.loads(_packed_df))
@@ -150,83 +128,27 @@ class WorkbenchShell(object):
         except zerorpc.exceptions.RemoteError as e:
             return repr_to_str_decorator.r_to_s(self._data_not_found)(e)
 
-    def search_samples(self, tags=None):
-        """Wrapper for the list_samples workbench method"""
-        
+    def search(self, tags):
+        """Wrapper for the Workbench search method
+            Args:
+                tags: a list of tags to search for ['bad','aptz13']
+            Returns:
+                The list of md5s for all matching samples
+        """
+
         # Fixme: This needs to be improved to handle arbitrary predicates (MongoDB predicates)
-        if not tags:
+        if tags == 'all':
             return [item['md5'] for item in self.workbench.list_samples()]
         elif isinstance(tags, str):
             tags = [tags]
         return [item['md5'] for item in self.workbench.list_samples({'tags': {'$in': tags}})]
 
-    def work_request(self, worker, md5=None):
-        """Wrapper for a work_request to workbench"""
-
-        # I'm sure there's a better way to do this
-        if not md5 and not self.session.md5:
-            return 'Must call worker with an md5 argument...'
-        elif not md5:
-            md5 = self.session.md5
-
-        # Make the work_request with worker and md5 args
-        try:
-            return self.workbench.work_request(worker, md5)
-        except zerorpc.exceptions.RemoteError as e:
-            return repr_to_str_decorator.r_to_s(self._data_not_found)(e)
-
-    def workbench_command(self, command, *args):
-        """Wrapper for a command to workbench"""
-
-        # Temp debug
-        print 'Executing %s %s' % (command, args)
-
-        # Run the workbench command with args
-        try:
-            return self.workbench[command](*args)
-        except zerorpc.exceptions.RemoteError as e:
-            return repr_to_str_decorator.r_to_s(self._data_not_found)(e)
-
-    def _data_not_found(self, e):
-        """Message when you get a DataNotFound exception from the server"""
-        return '%s%s%s' % (F.RED, e.msg, F.RESET)
-
-    def _generate_command_dict(self):
-        """Create a customized namespace for Workbench with a bunch of shortcuts
-            and helper/alias functions that will make using the shell MUCH easier.
-        """
-
-        # First add all the workers
-        commands = {}
-        for worker in self.workbench.list_all_workers():
-            commands[worker] = lambda md5=None, worker=worker: self.work_request(worker, md5)
-
-        # Next add all the commands
-        for command in self.workbench.list_all_commands():
-            # Fixme: is there a better way to get the lambda function from ZeroRPC
-            commands[command] = self.workbench.__getattr__(command)
-
-        # Now the general commands which are often overloads
-        # for some of the workbench commands
-        general = {
-            'workbench': self.workbench,
-            'phelp': help,
-            'help': repr_to_str_decorator.r_to_s(self.workbench.help),
-            'load_sample': self.load_sample,
-            'pull_df': self.pull_df,
-            'search': self.search_samples, # Note: This overwrites Workbench search
-            'reconnect': lambda info=self.server_info: self.connect(info),
-            'version': self.versions,
-            'versions': self.versions,
-            'short_md5': self.session.short_md5
-        }
-        commands.update(general)
-
-        # Return the list of workbench commands
-        return commands
-
     def versions(self):
-        """Announce Versions of CLI and Server"""
+        """Announce Versions of CLI and Server
+            Args: None
+            Returns:
+                The running versions of both the CLI and the Workbench Server
+        """
         print '%s<<< Workbench CLI Version %s >>>%s' % (F.BLUE, self.version, F.RESET)
         print self.workbench.help('version')
 
@@ -267,6 +189,134 @@ class WorkbenchShell(object):
 
         # Start up the shell with our set of workbench commands
         self.ipshell(local_ns=self.command_dict)
+
+    def _connect(self, server_info):
+        """Connect to the workbench server"""
+
+        # First we do a temp connect with a short heartbeat
+        _tmp_connect = zerorpc.Client(timeout=300, heartbeat=2)
+        _tmp_connect.connect('tcp://'+server_info['server']+':'+server_info['port'])
+        try:
+            _tmp_connect._zerorpc_name()
+            _tmp_connect.close()
+            del _tmp_connect
+        except zerorpc.exceptions.LostRemote:
+            print '%sError: Could not connect to Workbench Server at %s:%s%s' % \
+                  (F.RED, server_info['server'], server_info['port'], F.RESET)
+            sys.exit(1)
+
+        # Okay do the real connection
+        if self.workbench:
+            self.workbench.close()
+        self.workbench = zerorpc.Client(timeout=300, heartbeat=60)
+        self.workbench.connect('tcp://'+server_info['server']+':'+server_info['port'])
+        print '\n%s<<< Connected: %s:%s >>>%s' % (F.GREEN, server_info['server'], server_info['port'], F.RESET)
+
+    def _progress_print(self, sent, total):
+        """Progress print show the progress of the current upload with a neat progress bar
+           Credits: http://redino.net/blog/2013/07/display-a-progress-bar-in-console-using-python/
+        """
+        percent = min(int(sent*100.0/total), 100)
+        sys.stdout.write('\r{0}[{1}{2}] {3}{4}%{5}'.
+                         format(F.GREEN, '#'*(percent/2), ' '*(50-percent/2), F.YELLOW, percent, F.RESET))
+        sys.stdout.flush()
+
+    def _work_request(self, worker, md5=None):
+        """Wrapper for a work_request to workbench"""
+
+        # I'm sure there's a better way to do this
+        if not md5 and not self.session.md5:
+            return 'Must call worker with an md5 argument...'
+        elif not md5:
+            md5 = self.session.md5
+
+        # Make the work_request with worker and md5 args
+        try:
+            return self.workbench.work_request(worker, md5)
+        except zerorpc.exceptions.RemoteError as e:
+            return repr_to_str_decorator.r_to_s(self._data_not_found)(e)
+
+    def _workbench_command(self, command, *args):
+        """Wrapper for a command to workbench"""
+
+        # Temp debug
+        print 'Executing %s %s' % (command, args)
+
+        # Run the workbench command with args
+        try:
+            return self.workbench[command](*args)
+        except zerorpc.exceptions.RemoteError as e:
+            return repr_to_str_decorator.r_to_s(self._data_not_found)(e)
+
+    def _data_not_found(self, e):
+        """Message when you get a DataNotFound exception from the server"""
+        return '%s%s%s' % (F.RED, e.msg, F.RESET)
+
+    def _generate_command_dict(self):
+        """Create a customized namespace for Workbench with a bunch of shortcuts
+            and helper/alias functions that will make using the shell MUCH easier.
+        """
+
+        # First add all the workers
+        commands = {}
+        for worker in self.workbench.list_all_workers():
+            commands[worker] = lambda md5=None, worker=worker: self.work_request(worker, md5)
+
+        # Next add all the commands
+        for command in self.workbench.list_all_commands():
+            # Fixme: is there a better way to get the lambda function from ZeroRPC
+            commands[command] = self.workbench.__getattr__(command)
+
+        # Now the general commands which are often overloads
+        # for some of the workbench commands
+        general = {
+            'workbench': self.workbench,
+            'help': self._help,
+            'load_sample': self.load_sample,
+            'pull_df': self.pull_df,
+            'search': self.search, # Note: This overwrites Workbench search
+            'reconnect': lambda info=self.server_info: self._connect(info),
+            'version': self.versions,
+            'versions': self.versions,
+            'short_md5': self.session.short_md5
+        }
+        commands.update(general)
+
+        # Return the list of workbench commands
+        return commands
+
+    # Internal Class
+    class Session(object):
+        """Store information specific to the user session"""
+        def __init__(self):
+            """Initialization of Session object"""
+            self.filename = None
+            self.md5 = None
+            self.short_md5 = '-'
+            self.server = 'localhost'
+    
+    def _register_info(self):
+        """Register local methods in the Workbench Information system"""
+        # Stores information on Workbench commands and signatures
+        for name, meth in inspect.getmembers(self, predicate=inspect.isroutine):
+            if not name.startswith('_') and name != 'run':
+                info = {'command': name, 'sig': str(funcsigs.signature(meth)), 'docstring': meth.__doc__}
+                self.workbench.store_info(info, name, 'command')
+        '''
+        help_txt =  '\n%sload_sample' % (F.YELLOW)
+        help_txt += '\n\t%s%s%s' % (F.GREEN, self.load_sample.__doc__, F.RESET)
+        self.workbench.store_info({'help': help_txt}, 'load_sample', 'help')
+        help_txt =  '\n%ssearch' % (F.YELLOW)
+        help_txt += '\n\t%s%s%s' % (F.GREEN, self.search.__doc__, F.RESET)
+        self.workbench.store_info({'help': help_txt}, 'search', 'help')
+        help_txt =  '\n%spull_df' % (F.YELLOW)
+        help_txt += '\n\t%s%s%s' % (F.GREEN, self.pull_df.__doc__, F.RESET)
+        self.workbench.store_info({'help': help_txt}, 'pull_df', 'help')
+        '''
+        
+    def _help(self, topic=None):
+        """Help wrapper for Workbench CLI"""
+        return self.help_deco(topic)
 
 import pytest
 @pytest.mark.exclude
