@@ -379,8 +379,8 @@ class DataStore(object):
         Operations like making sure collections are capped and indexes are set up.
         """
 
-        # Only run every 5 minutes
-        if (time.time() - self.last_ops_run) < 300:
+        # Only run every 30 seconds
+        if (time.time() - self.last_ops_run) < 30:
             return
 
         # Reset last ops run
@@ -401,10 +401,14 @@ class DataStore(object):
             print 'Catching a benign exception thats expected...'
 
         # Convert collections to capped if desired
-        if self.worker_cap:
-            size = self.worker_cap * pow(1024, 2)  # MegaBytes per collection
-            for collection in all_c:
-                self.database.command('convertToCapped', collection, size=size)
+        try:
+            if self.worker_cap:
+                size = self.worker_cap * pow(1024, 2)  # MegaBytes per collection
+                for collection in all_c:
+                    self.database.command('convertToCapped', collection, size=size)
+        except pymongo.errors.AutoReconnect, e:
+            print 'Warning: MongoDB raised an AutoReconnect...', e
+            time.sleep(5)
 
         # Loop through all collections ensuring they have an index on MD5s
         for collection in all_c:
