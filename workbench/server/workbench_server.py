@@ -18,7 +18,7 @@ import inspect
 import funcsigs
 import ConfigParser
 import magic
-from colorama import Fore, Style
+from colorama import Fore as F, Style
 import datetime
 import lz4
 try:
@@ -337,7 +337,7 @@ class WorkBench(object):
         # Okay now index the data
         self.indexer.index_data(data, index_name=index_name, doc_type='unknown')
 
-    def search(self, index_name, query):
+    def search_index(self, index_name, query):
         """ Search a particular index in the Indexer
             Args:
                 index_name: the name of the index
@@ -571,27 +571,27 @@ class WorkBench(object):
             # message that has both the md5 of what they were looking for and
             # a nice informative message that explains what might have happened
             sample_md5 = e.args[0]
-            return '%s%s\n\t%s%s%s' % (Fore.YELLOW, sample_md5, Fore.GREEN, e.message(), Fore.RESET)
+            return '%s%s\n\t%s%s%s' % (F.YELLOW, sample_md5, F.GREEN, e.message(), F.RESET)
 
     # Fixme: These are internal methods that basically just provide help text
     def _help_workbench(self):
         """ Help on Workbench """
-        help = '%sWelcome to Workbench Help:%s' % (Fore.YELLOW, Fore.RESET)
-        help += '\n\t%s- workbench.help(topic) %s where topic can be a help, command or worker' % (Fore.GREEN, Fore.BLUE)
-        help += '\n\t%s- workbench.help(\'basic\') %s for getting started help' % (Fore.GREEN, Fore.BLUE)
-        help += '\n\t%s- workbench.help(\'commands\') %s for help on workbench commands' % (Fore.GREEN, Fore.BLUE)
-        help += '\n\t%s- workbench.help(\'workers\') %s for help on available workers' % (Fore.GREEN, Fore.BLUE)
-        help += '\n\n%sSee http://github.com/SuperCowPowers/workbench for more information\n%s' % (Fore.YELLOW, Fore.RESET)
+        help = '%sWelcome to Workbench Help:%s' % (F.YELLOW, F.RESET)
+        help += '\n\t%s- workbench.help(\'basic\') %s for getting started help' % (F.GREEN, F.BLUE)
+        help += '\n\t%s- workbench.help(\'workers\') %s for help on available workers' % (F.GREEN, F.BLUE)
+        help += '\n\t%s- workbench.help(\'commands\') %s for help on workbench commands' % (F.GREEN, F.BLUE)
+        help += '\n\t%s- workbench.help(topic) %s where topic can be a help, command or worker' % (F.GREEN, F.BLUE)
+        help += '\n\n%sSee http://github.com/SuperCowPowers/workbench for more information\n%s' % (F.YELLOW, F.RESET)
         return help
 
     def _help_basic(self):
         """ Help for Workbench Basics """
-        help =  '%sWorkbench: Getting started...' % (Fore.YELLOW)
-        help += '\n%sLoad in a sample:'  % (Fore.GREEN)
-        help += '\n\t%s$ load_sample /path/to/file' % (Fore.BLUE)
-        help += '\n\n%sNotice the prompt now shows the md5 of the sample...'% (Fore.YELLOW)
-        help += '\n%sRun workers on the sample:'  % (Fore.GREEN)
-        help += '\n\t%s$ meta or view or whatever... %s' % (Fore.BLUE, Fore.RESET)
+        help =  '%sWorkbench: Getting started...' % (F.YELLOW)
+        help += '\n%sStore a sample into Workbench:'  % (F.GREEN)
+        help += '\n\t%s$ workbench.store_sample(raw_bytes, filename, type_tag, tags)' % (F.BLUE)
+        help += '\n\n%sNotice store_sample returns an md5 of the sample...'% (F.YELLOW)
+        help += '\n%sRun workers on the sample (view, meta, whatever...):'  % (F.GREEN)
+        help += '\n\t%s$ workbench.work_request(\'view\', md5)%s' % (F.BLUE, F.RESET)
         return help
 
     def _help_commands(self):

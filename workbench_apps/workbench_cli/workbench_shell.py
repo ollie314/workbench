@@ -128,7 +128,7 @@ class WorkbenchShell(object):
         except zerorpc.exceptions.RemoteError as e:
             return repr_to_str_decorator.r_to_s(self._data_not_found)(e)
 
-    def search(self, tags):
+    def search(self, tags='all'):
         """Wrapper for the Workbench search method
             Args:
                 tags: a list of tags to search for ['bad','aptz13']
@@ -159,7 +159,7 @@ class WorkbenchShell(object):
         self.versions()
 
         # Help
-        print '\n%s' % self.workbench.help('workbench')
+        print '\n%s' % self.workbench.help('cli')
 
         # Now that we have the Workbench connection spun up, we register some stuff
         # with the embedded IPython interpreter and than spin it up
@@ -236,18 +236,6 @@ class WorkbenchShell(object):
         except zerorpc.exceptions.RemoteError as e:
             return repr_to_str_decorator.r_to_s(self._data_not_found)(e)
 
-    def _workbench_command(self, command, *args):
-        """Wrapper for a command to workbench"""
-
-        # Temp debug
-        print 'Executing %s %s' % (command, args)
-
-        # Run the workbench command with args
-        try:
-            return self.workbench[command](*args)
-        except zerorpc.exceptions.RemoteError as e:
-            return repr_to_str_decorator.r_to_s(self._data_not_found)(e)
-
     def _data_not_found(self, e):
         """Message when you get a DataNotFound exception from the server"""
         return '%s%s%s' % (F.RED, e.msg, F.RESET)
@@ -260,7 +248,7 @@ class WorkbenchShell(object):
         # First add all the workers
         commands = {}
         for worker in self.workbench.list_all_workers():
-            commands[worker] = lambda md5=None, worker=worker: self.work_request(worker, md5)
+            commands[worker] = lambda md5=None, worker=worker: self._work_request(worker, md5)
 
         # Next add all the commands
         for command in self.workbench.list_all_commands():
@@ -274,7 +262,7 @@ class WorkbenchShell(object):
             'help': self._help,
             'load_sample': self.load_sample,
             'pull_df': self.pull_df,
-            'search': self.search, # Note: This overwrites Workbench search
+            'search': self.search,
             'reconnect': lambda info=self.server_info: self._connect(info),
             'version': self.versions,
             'versions': self.versions,
@@ -302,20 +290,36 @@ class WorkbenchShell(object):
             if not name.startswith('_') and name != 'run':
                 info = {'command': name, 'sig': str(funcsigs.signature(meth)), 'docstring': meth.__doc__}
                 self.workbench.store_info(info, name, 'command')
-        '''
-        help_txt =  '\n%sload_sample' % (F.YELLOW)
-        help_txt += '\n\t%s%s%s' % (F.GREEN, self.load_sample.__doc__, F.RESET)
-        self.workbench.store_info({'help': help_txt}, 'load_sample', 'help')
-        help_txt =  '\n%ssearch' % (F.YELLOW)
-        help_txt += '\n\t%s%s%s' % (F.GREEN, self.search.__doc__, F.RESET)
-        self.workbench.store_info({'help': help_txt}, 'search', 'help')
-        help_txt =  '\n%spull_df' % (F.YELLOW)
-        help_txt += '\n\t%s%s%s' % (F.GREEN, self.pull_df.__doc__, F.RESET)
-        self.workbench.store_info({'help': help_txt}, 'pull_df', 'help')
-        '''
+
+        # Register help information
+        self.workbench.store_info({'help': self._help_cli()}, 'cli', 'help')
+        self.workbench.store_info({'help': self._help_cli_basic()}, 'cli_basic', 'help')
+
+    def _help_cli(self):
+        """ Help on Workbench CLI """
+        help = '%sWelcome to Workbench CLI Help:%s' % (F.YELLOW, F.RESET)
+        help += '\n\t%s> help cli_basic %s for getting started help' % (F.GREEN, F.BLUE)
+        help += '\n\t%s> help workers %s for help on available workers' % (F.GREEN, F.BLUE)
+        help += '\n\t%s> help commands %s for help on workbench commands' % (F.GREEN, F.BLUE)
+        help += '\n\t%s> help topic %s where topic can be a help, command or worker' % (F.GREEN, F.BLUE)
+        help += '\n\n%sNote: cli commands are transformed into python calls' % (F.YELLOW)
+        help += '\n\t%s> help cli_basic --> help("cli_basic")%s' % (F.GREEN, F.RESET)
+        return help
+
+    def _help_cli_basic(self):
+        """ Help for Workbench CLI Basics """
+        help =  '%sWorkbench: Getting started...' % (F.YELLOW)
+        help += '\n%sLoad in a sample:'  % (F.GREEN)
+        help += '\n\t%s> load_sample /path/to/file' % (F.BLUE)
+        help += '\n\n%sNotice the prompt now shows the md5 of the sample...'% (F.YELLOW)
+        help += '\n%sRun workers on the sample:'  % (F.GREEN)
+        help += '\n\t%s> view or meta or whatever... %s' % (F.BLUE, F.RESET)
+        return help
         
     def _help(self, topic=None):
         """Help wrapper for Workbench CLI"""
+        if not topic:
+            topic = 'cli'
         return self.help_deco(topic)
 
 import pytest

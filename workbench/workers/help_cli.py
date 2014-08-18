@@ -24,7 +24,7 @@ class HelpCLI(object):
 
         # Command
         elif type_tag == 'command':
-            output = '%s%s%s%s%s%s' % (Style.BRIGHT, Fore.YELLOW, input_data['command'],
+            output = '%s%s%s%s%s %s' % (Style.BRIGHT, Fore.YELLOW, input_data['command'],
                                              Style.RESET_ALL, Fore.BLUE, input_data['sig'])
             output += '\n    %s%s%s' % (Fore.GREEN, input_data['docstring'], Fore.RESET)
 
