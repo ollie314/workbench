@@ -88,7 +88,7 @@ class DataStore(object):
         sample_info['import_time'] = datetime.datetime.utcnow()
         sample_info['type_tag'] = type_tag
         sample_info['tags'] = [type_tag]
-        sample_info['tags'].append(tags)
+        sample_info['tags'] += [tags]
 
         # Random customer for now
         import random

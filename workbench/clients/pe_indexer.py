@@ -41,7 +41,7 @@ def run():
     # Now actually do something interesing with our ELS index
     # ES Facets are kewl (http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-facets.html)
     facet_query = '{"facets" : {"tag" : {"terms" : {"field" : "string_list"}}}}'
-    results = workbench.search('strings', facet_query)
+    results = workbench.search_index('strings', facet_query)
     try:
         print '\nQuery: %s' % facet_query
         print 'Number of hits: %d' % results['hits']['total']
@@ -53,7 +53,7 @@ def run():
     # Fuzzy is kewl (http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-fuzzy-query.html)
     fuzzy_query = '{"fields":["md5","sparse_features.imported_symbols"],' \
         '"query": {"fuzzy" : {"sparse_features.imported_symbols" : "loadlibrary"}}}'
-    results = workbench.search('pe_features', fuzzy_query)
+    results = workbench.search_index('pe_features', fuzzy_query)
     try:
         print '\nQuery: %s' % fuzzy_query
         print 'Number of hits: %d' % results['hits']['total']

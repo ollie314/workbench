@@ -62,6 +62,8 @@ def all_files_in_directory(path):
     return file_list
 
 # Unit test: Create the class, the proper input and run the execute() method for a test
+import pytest
+@pytest.mark.xfail
 def test():
     ''' pe_features_df.py: Unit test'''
     import pprint
