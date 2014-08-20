@@ -89,7 +89,7 @@ class DataStore(object):
         sample_info['type_tag'] = type_tag
         sample_info['tags'] = [type_tag]
         if tags:
-            sample_info['tags'] += [tags]
+            sample_info['tags'] += tags
 
         # Random customer for now
         import random
