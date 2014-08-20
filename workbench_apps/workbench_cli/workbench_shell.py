@@ -106,6 +106,9 @@ class WorkbenchShell(object):
                 print '\n%s  %s%s %sLocked and Loaded...%s\n' % \
                       (self.beer, F.MAGENTA, md5[:6], F.YELLOW, F.RESET)
 
+                # Call meta on the sample (might want to think about this)
+                self.workbench.work_request('meta', md5)
+
                 # Store information about the sample into the sesssion
                 basename = os.path.basename(path)
                 self.session.filename = basename
@@ -128,6 +131,12 @@ class WorkbenchShell(object):
         except zerorpc.exceptions.RemoteError as e:
             return repr_to_str_decorator.r_to_s(self._data_not_found)(e)
 
+    def flatten_tags(self, my_df):
+        """Flatten(vectorize) the tags column in the dataframe"""
+        tags_df = my_df['tags'].str.join(sep='-').str.get_dummies(sep='-')
+        my_df['tags'] = [', '.join(tag_list) for tag_list in my_df['tags']]
+        return my_df.join(tags_df)
+
     def search(self, tags='all'):
         """Wrapper for the Workbench search method
             Args:
@@ -138,10 +147,10 @@ class WorkbenchShell(object):
 
         # Fixme: This needs to be improved to handle arbitrary predicates (MongoDB predicates)
         if tags == 'all':
-            return [item['md5'] for item in self.workbench.list_samples()]
+            return self.workbench.generate_sample_set()
         elif isinstance(tags, str):
             tags = [tags]
-        return [item['md5'] for item in self.workbench.list_samples({'tags': {'$in': tags}})]
+        return self.workbench.generate_sample_set({'tags': {'$in': tags}})
 
     def versions(self):
         """Announce Versions of CLI and Server
@@ -230,6 +239,10 @@ class WorkbenchShell(object):
         elif not md5:
             md5 = self.session.md5
 
+        # Is the md5 a sample_set?
+        if self.workbench.is_sample_set(md5):
+            return self.workbench.set_work_request(worker, md5)
+
         # Make the work_request with worker and md5 args
         try:
             return self.workbench.work_request(worker, md5)
@@ -262,6 +275,7 @@ class WorkbenchShell(object):
             'help': self._help,
             'load_sample': self.load_sample,
             'pull_df': self.pull_df,
+            'flatten_tags': self.flatten_tags,
             'search': self.search,
             'reconnect': lambda info=self.server_info: self._connect(info),
             'version': self.versions,
