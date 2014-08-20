@@ -17,6 +17,7 @@ def gsleep():
 class PcapBro(object):
     ''' This worker runs Bro scripts on a pcap file '''
     dependencies = ['sample']
+    sample_set_input = True
 
     def __init__(self):
         self.workbench = zerorpc.Client(timeout=300, heartbeat=60)

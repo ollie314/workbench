@@ -95,24 +95,25 @@ def run():
     # First throw them into workbench and add them as nodes into the graph
     all_md5s = add_it(workbench, bad_files, ['exe', 'bad']) + add_it(workbench, good_files, ['exe', 'good'])
 
+    # Make a sample set
+    sample_set = workbench.store_sample_set(all_md5s)
+
     # Compute pe_features on all files of type pe, just pull back the sparse features
-    import_gen = workbench.batch_work_request('pe_features',
-        {'md5_list': all_md5s, 'subkeys':['md5', 'sparse_features.imported_symbols']})
+    import_gen = workbench.set_work_request('pe_features', sample_set, ['md5', 'sparse_features.imported_symbols'])
     imports = [{'md5': r['md5'], 'features': r['imported_symbols']} for r in import_gen]
 
     # Compute pe_features on all files of type pe, just pull back the sparse features
-    warning_gen = workbench.batch_work_request('pe_features',
-        {'md5_list': all_md5s, 'subkeys':['md5', 'sparse_features.pe_warning_strings']})
+    warning_gen = workbench.set_work_request('pe_features', sample_set, ['md5', 'sparse_features.pe_warning_strings'])
     warnings = [{'md5': r['md5'], 'features': r['pe_warning_strings']} for r in warning_gen]
 
     # Compute strings on all files of type pe, just pull back the string_list
-    string_gen = workbench.batch_work_request('strings', {'md5_list': all_md5s, 'subkeys':['md5', 'string_list']})
+    string_gen = workbench.set_work_request('strings', sample_set, ['md5', 'string_list'])
     strings = [{'md5': r['md5'], 'features': r['string_list']} for r in string_gen]
 
     # Compute pe_peid on all files of type pe, just pull back the match_list
     # Fixme: commenting this out until we figure out why peid is SO slow
     '''
-    peid_gen = workbench.batch_work_request('pe_peid', {'md5_list': all_md5s, 'subkeys':['md5', 'match_list']})
+    peid_gen = workbench.set_work_request('pe_peid', sample_set, ['md5', 'match_list']})
     peids = [{'md5': r['md5'], 'features': r['match_list']} for r in peid_gen]
     '''
 
@@ -140,7 +141,7 @@ def run():
     '''
 
     # Compute pe_deep_sim on all files of type pe
-    results = workbench.batch_work_request('pe_deep_sim', {'type_tag': 'exe'})
+    results = workbench.set_work_request('pe_deep_sim', sample_set)
 
     # Store the ssdeep sims as relationships
     for result in list(results):
