@@ -149,8 +149,21 @@ class WorkBench(object):
         # First we try a sample, if we can't find one we try getting a sample_set.
         sample = self.data_store.get_sample(md5)
         if not sample:
-            return self.get_sample_set(md5)
+            return {'sample_set': {'md5_list': self.get_sample_set(md5)}}
         return {'sample': sample}
+
+    def is_sample_set(self, md5):
+        """ Does the md5 represent a sample_set?
+            Args:
+                md5: the md5 of the sample_set
+            Returns:
+                True/False
+        """
+        try:
+            self.get_sample_set(md5)
+            return True
+        except WorkBench.DataNotFound:
+            return False
 
     def get_sample_window(self, type_tag, size):
         """ Get a sample from the DataStore.
@@ -158,9 +171,10 @@ class WorkBench(object):
                 type_tag: the type of samples ('pcap','exe','pdf')
                 size: the size of the window in MegaBytes (10 = 10MB)
             Returns:
-                A list of md5s representing the newest samples within the size window
+                A sample_set handle which represents the newest samples within the size window
         """
-        return self.data_store.get_sample_window(type_tag, size)
+        md5_list = self.data_store.get_sample_window(type_tag, size)
+        return self.store_sample_set(md5_list)
 
     def has_sample(self, md5):
         """ Do we have this sample in the DataStore.
@@ -170,17 +184,6 @@ class WorkBench(object):
                 True or False
         """
         return self.data_store.has_sample(md5)
-
-    def list_samples(self, predicate=None):
-        """List all samples that meet the predicate or all if predicate is not specified.
-
-            Args:
-                predicate: Match samples against this predicate (or all if not specified)
-
-            Returns:
-                List of dictionaries with matching samples {'md5':md5, 'filename': 'foo.exe', 'tags': ['evil'], 'type_tag': 'exe'}
-        """
-        return self.data_store.list_samples(predicate)
 
     def combine_samples(self, md5_list, filename, type_tag, tags=None):
         """Combine samples together. This may have various use cases the most significant 
@@ -430,19 +433,13 @@ class WorkBench(object):
         """ Make a work request for an existing stored sample.
             Args:
                 worker_name: 'strings', 'pe_features', whatever
-                md5: the md5 of the sample
-                subkeys: just return a subfield e.g. 'foo' or 'foo.bar' (None for all) 
+                md5: the md5 of the sample (or sample_set!)
+                subkeys: just get a subkey of the output: 'foo' or 'foo.bar' (None for all) 
             Returns:
-                The output of the worker or just the subfield of the worker output
+                The output of the worker.
         """
 
-        # Check valid
-        if worker_name not in self.plugin_meta.keys():
-            raise RuntimeError('Invalid work request for class %s (not found)' % (worker_name))
-
-        # Get results (even if we have to wait for them)
-        # Note: Yes, we're going to wait. Gevent concurrent execution will mean this
-        #       code gets spawned off and new requests can be handled without issue.
+        # Pull the worker output
         work_results = self._recursive_work_resolver(worker_name, md5)
 
         # Subkeys? (Fixme this is super klutzy)
@@ -459,39 +456,30 @@ class WorkBench(object):
                 raise RuntimeError('Could not get one or more subkeys for: %s' % (work_results))
 
         # Clean it and ship it
-        work_results = self.data_store.clean_for_serialization(work_results)
-        return work_results
+        return self.data_store.clean_for_serialization(work_results)
 
     @zerorpc.stream
-    def batch_work_request(self, worker_name, kwargs=None):
-        """Make a batch work request for an existing set of stored samples.
-
-        A subset of sample can be specified with kwargs.
-
-        Args:
-            worker_name: 'strings', 'pe_features', whatever
-            kwargs: a way of specifying subsets of samples ({} for all)
-                type_tag: subset based on sample type (e.g. type_tag='exe')
-                md5_list: subset just the samples in this list
-                subkeys: return just this subkey (e.g. 'foo' or 'foo.bar')
-        Returns:
-            A generator that yields rows of worker output or subfields of the worker output
+    def set_work_request(self, worker_name, sample_set, subkeys=None):
+        """ Make a work request for an existing stored sample (or sample_set).
+            Args:
+                worker_name: 'strings', 'pe_features', whatever
+                sample_set: the md5 of a sample_set in the Workbench data store
+                subkeys: just get a subkey of the output: 'foo' or 'foo.bar' (None for all) 
+            Returns:
+                The output is a generator of the results of the worker output for the sample_set
         """
-        type_tag = kwargs.get('type_tag',None) if kwargs else None
-        md5_list = kwargs.get('md5_list',None) if kwargs else None
-        subkeys = kwargs.get('subkeys',None) if kwargs else None
 
-        # If no md5_list specified put all samples (of type type_tag if not None)
-        if not md5_list:
-            md5_list = self.data_store.all_sample_md5s(type_tag) 
-
+        # Does worker support sample_set_input?
+        if self.plugin_meta[worker_name]['sample_set_input']:
+            yield self.work_request(worker_name, sample_set, subkeys)
+                
         # Loop through all the md5s and return a generator with yield
+        md5_list = self.get_sample_set(sample_set)
         for md5 in md5_list:
             if subkeys:
                 yield self.work_request(worker_name, md5, subkeys)
             else:
                 yield self.work_request(worker_name, md5)[worker_name]
-
 
     def store_sample_set(self, md5_list):
         """ Store a sample set (which is just a list of md5s).
@@ -516,6 +504,18 @@ class WorkBench(object):
         self._store_work_results({'md5_list':md5_list}, 'sample_set', set_md5)
         return set_md5
 
+    def generate_sample_set(self, predicate=None):
+        """Generate a sample_set that meets the predicate or all if predicate is not specified.
+
+            Args:
+                predicate: Match samples against this predicate (or all if not specified)
+
+            Returns:
+                The sample_set of those samples matching the predicate
+        """
+        md5_list = self.data_store.list_samples(predicate)
+        return self.store_sample_set(md5_list)
+
     def get_sample_set(self, md5):
         """ Retrieve a sample set (which is just a list of md5s).
 
@@ -525,7 +525,7 @@ class WorkBench(object):
             Returns:
                 The list of md5s that comprise the sample_set
         """
-        return self.data_store.clean_for_serialization(self._get_work_results('sample_set', md5))
+        return self.data_store.clean_for_serialization(self._get_work_results('sample_set', md5))['sample_set']['md5_list']
 
     @zerorpc.stream
     def stream_sample_set(self, md5):
@@ -541,7 +541,7 @@ class WorkBench(object):
             yield md5
 
     def get_datastore_uri(self):
-        """ Gives you the current datastore URL.
+        """ Gives you the current datastore URI.
 
             Args:
                 None
