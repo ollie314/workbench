@@ -69,7 +69,8 @@ def test():
     pprint.pprint(output)
 
     # Execute the worker (server test)
-    output = workbench.batch_work_request('yara_sigs', {'md5_list': md5_list})
+    sample_set = workbench.store_sample_set(md5_list)
+    output = workbench.set_work_request('yara_sigs', sample_set)
     get_all_output = list(output)
     print '\n<<< Server Test >>>'
     pprint.pprint(get_all_output)

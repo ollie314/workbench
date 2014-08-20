@@ -21,7 +21,8 @@ class PEDeepSim(object):
         my_md5 = input_data['meta_deep']['md5']
 
         # For every PE sample in the database compute my ssdeep fuzzy match
-        results = self.workbench.batch_work_request('meta_deep', {'type_tag':'exe','subkeys':['md5','ssdeep']})
+        sample_set = self.workbench.generate_sample_set({'type_tag': 'exe'})
+        results = self.workbench.set_work_request('meta_deep', sample_set, ['md5','ssdeep'])
         sim_list = []
         for result in results:
             if result['md5'] != my_md5:

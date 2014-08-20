@@ -52,15 +52,19 @@ def run():
                 print 'Filename %s uploaded: type_tag %s, md5 %s' % (filename, 'unknown', md5)
 
     # Okay now explode any container types
-    _foo = workbench.batch_work_request('unzip', {'type_tag': 'zip'}); list(_foo) # See Issue #306
-    _foo = workbench.batch_work_request('pcap_bro', {'type_tag': 'pcap'}); list(_foo) # See Issue #306
-    _foo = workbench.batch_work_request('mem_procdump', {'type_tag': 'mem'}); list(_foo) # See Issue #306
+    zip_files = workbench.generate_sample_set({'type_tag': 'zip'})
+    _foo = workbench.set_work_request('unzip', zip_files); list(_foo) # See Issue #306
+    pcap_files = workbench.generate_sample_set({'type_tag': 'pcap'})
+    _foo = workbench.set_work_request('pcap_bro', pcap_files); list(_foo) # See Issue #306
+    mem_files = workbench.generate_sample_set({'type_tag': 'pcap'})
+    _foo = workbench.set_work_request('mem_procdump', mem_files); list(_foo) # See Issue #306
 
 
     # Make sure all files are properly identified
     print 'Info: Ensuring File Identifications...'
     type_tag_set = set()
-    meta_all = workbench.batch_work_request('meta')
+    all_files = workbench.generate_sample_set()
+    meta_all = workbench.set_work_request('meta', all_files)
     for meta in meta_all:
         type_tag_set.add(meta['type_tag'])
         if meta['type_tag'] in ['unknown', 'own']:

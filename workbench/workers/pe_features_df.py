@@ -8,6 +8,7 @@ import zerorpc
 class PEFeaturesDF(object):
     """This worker puts the output of pe_features into a dictionary of dataframes"""
     dependencies = ['sample']
+    sample_set_input = True
 
     def __init__(self):
         """Initialization"""
@@ -21,11 +22,13 @@ class PEFeaturesDF(object):
             print 'Warning: PEFeaturesDF is supposed to be called on a sample_set'
             self.samples.append(input_data['sample']['md5'])
         else:
-            self.samples = list(set([md5 for md5 in input_data['sample_set']['md5_list']]))
+            self.samples = input_data['sample_set']['md5_list']
 
-        # Dense Features
-        dense_features = self.workbench.batch_work_request('pe_features', 
-            {'md5_list': self.samples, 'subkeys':['md5', 'tags', 'dense_features']})
+        # Make a sample set
+        sample_set = self.workbench.store_sample_set(self.samples)
+
+        # Dense Features               
+        dense_features = self.workbench.set_work_request('pe_features', sample_set, ['md5', 'tags', 'dense_features'])
 
         # Fixme: There's probably a nicer/better way to do this
         flat_features = []
@@ -37,8 +40,7 @@ class PEFeaturesDF(object):
         dense_df_md5 = self.workbench.store_sample(df_packed, 'pe_features_dense_df', 'dataframe')
         
         # Sparse Features
-        sparse_features = self.workbench.batch_work_request('pe_features', 
-            {'md5_list': self.samples, 'subkeys':['md5', 'tags', 'sparse_features']})
+        sparse_features = self.workbench.set_work_request('pe_features', sample_set, ['md5', 'tags', 'sparse_features'])
 
         # Fixme: There's probably a nicer/better way to do this
         flat_features = []
@@ -104,11 +106,10 @@ def test():
 
     # Store the sample_set
     set_md5 = workbench.store_sample_set(md5_list)
-    sample_set = workbench.get_sample_set(set_md5)
 
     # Execute the worker (unit test)
     worker = PEFeaturesDF()
-    output = worker.execute(sample_set)
+    output = worker.execute({'sample_set': {'md5_list': workbench.get_sample_set(set_md5)}})
     print '\n<<< Unit Test >>>'
     pprint.pprint(output)
 

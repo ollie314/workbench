@@ -14,7 +14,8 @@ def run():
     workbench = zerorpc.Client(timeout=300, heartbeat=60)
     workbench.connect('tcp://'+args['server']+':'+args['port'])
 
-    results = workbench.batch_work_request('view_customer')
+    all_set = workbench.generate_sample_set()
+    results = workbench.set_work_request('view_customer', all_set)
     for customer in results:
         print customer['customer']
 
