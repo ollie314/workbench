@@ -442,16 +442,30 @@ class WorkBench(object):
         # Pull the worker output
         work_results = self._recursive_work_resolver(worker_name, md5)
 
-        # Subkeys? (Fixme this is super klutzy)
+        # Subkeys (Fixme this is super klutzy)
         if subkeys:
+            if isinstance(subkeys, str):
+                subkeys = [subkeys]
             try:
                 sub_results = {}
                 for subkey in subkeys:
                     tmp = work_results[worker_name]
-                    for key in subkey.split('.'):
+
+                    # Traverse any subkeys
+                    for key in subkey.split('.')[:-1]:
                         tmp = tmp[key]
-                        sub_results[key] = tmp
+
+                    # Last subkey
+                    key = subkey.split('.')[-1]
+                    if key == '*':
+                        for key in tmp.keys():
+                            sub_results[key] = tmp[key]
+                    else:
+                        sub_results[key] = tmp[key]
+
+                # Set the output
                 work_results = sub_results
+
             except (KeyError, TypeError):
                 raise RuntimeError('Could not get one or more subkeys for: %s' % (work_results))
 
