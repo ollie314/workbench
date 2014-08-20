@@ -486,14 +486,15 @@ class WorkBench(object):
         # Does worker support sample_set_input?
         if self.plugin_meta[worker_name]['sample_set_input']:
             yield self.work_request(worker_name, sample_set, subkeys)
-                
+ 
         # Loop through all the md5s and return a generator with yield
-        md5_list = self.get_sample_set(sample_set)
-        for md5 in md5_list:
-            if subkeys:
-                yield self.work_request(worker_name, md5, subkeys)
-            else:
-                yield self.work_request(worker_name, md5)[worker_name]
+        else:
+            md5_list = self.get_sample_set(sample_set)
+            for md5 in md5_list:
+                if subkeys:
+                    yield self.work_request(worker_name, md5, subkeys)
+                else:
+                    yield self.work_request(worker_name, md5)[worker_name]
 
     def store_sample_set(self, md5_list):
         """ Store a sample set (which is just a list of md5s).
