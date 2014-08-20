@@ -124,6 +124,14 @@ class PluginManager(object):
                 plugin['dependencies'] = plugin['class'].dependencies
                 plugin['docstring'] = plugin['class'].__doc__
                 plugin['mod_time'] = datetime.utcfromtimestamp(os.path.getmtime(f))
+
+                # Plugin may accept sample_sets as input
+                try:
+                    plugin['sample_set_input'] = getattr(plugin['class'], 'sample_set_input')
+                except AttributeError:
+                    plugin['sample_set_input'] = False
+
+                # Now pass the plugin back to workbench
                 self.plugin_callback(plugin)
 
     def validate(self, handler):
