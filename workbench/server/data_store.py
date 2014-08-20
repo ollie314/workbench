@@ -287,10 +287,10 @@ class DataStore(object):
             predicate: Match samples against this predicate (or all if not specified)
 
         Returns:
-            List of dictionaries with matching samples {'md5':md5, 'filename': 'foo.exe', 'tags': ['evil'], 'type_tag': 'exe'}
+            List of the md5s for the matching samples
         """
-        cursor = self.database[self.sample_collection].find(predicate, {'_id':0, 'md5':1, 'filename':1, 'tags':1, 'type_tag':1})
-        return list(cursor)
+        cursor = self.database[self.sample_collection].find(predicate, {'_id':0, 'md5':1})
+        return [item['md5'] for item in cursor]
 
     def store_work_results(self, results, collection, md5):
         """Store the output results of the worker.
