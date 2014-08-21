@@ -171,14 +171,6 @@ workbench.workers.pe_features module
     :undoc-members:
     :show-inheritance:
 
-workbench.workers.pe_features_df module
----------------------------------------
-
-.. automodule:: workbench.workers.pe_features_df
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 workbench.workers.pe_indicators module
 --------------------------------------
 
