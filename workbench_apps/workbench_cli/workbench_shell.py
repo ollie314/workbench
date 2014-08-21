@@ -19,6 +19,7 @@ except ImportError:
 
 try:
     from . import client_helper
+    from . import help_content
     from . import version
     from . import file_streamer
     from . import repr_to_str_decorator
@@ -28,6 +29,7 @@ try:
 # super handy and we'll keep it even though it hurts coverage score.
 except (ImportError,ValueError):
     import client_helper
+    import help_content
     import version
     import file_streamer
     import repr_to_str_decorator
@@ -42,6 +44,9 @@ class WorkbenchShell(object):
 
         # Workbench CLI version
         self.version = version.__version__
+
+        # Workbench CLI Help
+        self.help = help_content.WorkbenchShellHelp()
 
         # Grab server arguments
         self.server_info = client_helper.grab_server_args()
@@ -140,9 +145,9 @@ class WorkbenchShell(object):
     def search(self, tags='all'):
         """Wrapper for the Workbench search method
             Args:
-                tags: a list of tags to search for ['bad','aptz13']
+                tags: a single tag 'pcap' or a list of tags to search for ['bad','aptz13']
             Returns:
-                The list of md5s for all matching samples
+                A sample_set that contains the md5s for all matching samples
         """
 
         # Fixme: This needs to be improved to handle arbitrary predicates (MongoDB predicates)
@@ -306,30 +311,13 @@ class WorkbenchShell(object):
                 self.workbench.store_info(info, name, 'command')
 
         # Register help information
-        self.workbench.store_info({'help': self._help_cli()}, 'cli', 'help')
-        self.workbench.store_info({'help': self._help_cli_basic()}, 'cli_basic', 'help')
-
-    def _help_cli(self):
-        """ Help on Workbench CLI """
-        help = '%sWelcome to Workbench CLI Help:%s' % (F.YELLOW, F.RESET)
-        help += '\n\t%s> help cli_basic %s for getting started help' % (F.GREEN, F.BLUE)
-        help += '\n\t%s> help workers %s for help on available workers' % (F.GREEN, F.BLUE)
-        help += '\n\t%s> help commands %s for help on workbench commands' % (F.GREEN, F.BLUE)
-        help += '\n\t%s> help topic %s where topic can be a help, command or worker' % (F.GREEN, F.BLUE)
-        help += '\n\n%sNote: cli commands are transformed into python calls' % (F.YELLOW)
-        help += '\n\t%s> help cli_basic --> help("cli_basic")%s' % (F.GREEN, F.RESET)
-        return help
-
-    def _help_cli_basic(self):
-        """ Help for Workbench CLI Basics """
-        help =  '%sWorkbench: Getting started...' % (F.YELLOW)
-        help += '\n%sLoad in a sample:'  % (F.GREEN)
-        help += '\n\t%s> load_sample /path/to/file' % (F.BLUE)
-        help += '\n\n%sNotice the prompt now shows the md5 of the sample...'% (F.YELLOW)
-        help += '\n%sRun workers on the sample:'  % (F.GREEN)
-        help += '\n\t%s> view or meta or whatever... %s' % (F.BLUE, F.RESET)
-        return help
-        
+        self.workbench.store_info({'help': self.help.help_cli()}, 'cli', 'help')
+        self.workbench.store_info({'help': self.help.help_cli_basic()}, 'cli_basic', 'help')
+        self.workbench.store_info({'help': self.help.help_cli_search()}, 'search', 'help')
+        self.workbench.store_info({'help': self.help.help_dataframe()}, 'dataframe', 'help')
+        self.workbench.store_info({'help': self.help.help_dataframe_memory()}, 'dataframe_memory', 'help')
+        self.workbench.store_info({'help': self.help.help_dataframe_pe()}, 'dataframe_pe', 'help')
+ 
     def _help(self, topic=None):
         """Help wrapper for Workbench CLI"""
         if not topic:
