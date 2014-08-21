@@ -81,14 +81,17 @@ class WorkbenchShellHelp(object):
         help =  '%sMaking a DataFrame: %s how to make a dataframe from pe files' % (F.YELLOW, F.GREEN)
         help += '\n\n%sPE Files Example (loading a directory):'  % (F.GREEN)
         help += '\n\t%s> load_sample /path/to/pe/bad [\'bad\', \'case_69\']' % (F.BLUE)
-        help += '\n\n\t%sSearch for all samples in the database that are known bad pe files,'  % (F.GREEN)
+        help += '\n\n\t%sSearch for all samples in the database that are pe files,'  % (F.GREEN)
         help += '\n\t%sthis command returns the sample_set containing the matching items'% (F.GREEN)
-        help += '\n\t%s> my_bad_exes = search([\'bad\', \'exe\'])' % (F.BLUE)
+        help += '\n\t%s> my_exes = search([\'exe\'])' % (F.BLUE)
         help += '\n\n\t%sRun workers on this sample_set:'  % (F.GREEN)
-        help += '\n\t%s> pe_outputs = pe_features(my_bad_exes, [\'dense_features\'])' % (F.BLUE)
-        help += '\n\n\t%sLoop on the generator (or make a DataFrame see > help dataframe'  % (F.GREEN)
+        help += '\n\t%s> pe_outputs = set_work_request(\'pe_features\', my_exes, [\'md5\', \'dense_features.*\', \'tags\'])' % (F.BLUE)
+        help += '\n\n\t%sMake a DataFrame:'  % (F.GREEN)
         help += '\n\t%s> pe_df = pd.DataFrame(pe_outputs) %s' % (F.BLUE, F.RESET)
         help += '\n\t%s> pe_df.head() %s' % (F.BLUE, F.RESET)
+        help += '\n\t%s> pe_df = flatten_tags(pe_df) %s' % (F.BLUE, F.RESET)
+        help += '\n\t%s> pe_df.hist(\'check_sum\',\'tags\') %s' % (F.BLUE, F.RESET)
+        help += '\n\t%s> pe_df.hist(\'bloxplot\',\'tags\') %s' % (F.BLUE, F.RESET)
         return help
 
     ##################
