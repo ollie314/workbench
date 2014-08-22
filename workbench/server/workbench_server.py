@@ -550,11 +550,13 @@ class WorkBench(object):
         """Generate a sample_set that maches the tags or all if tags are not specified.
 
             Args:
-                tags: Match samples against this tag set (or all if not specified)
+                tags: Match samples against this tag list (or all if not specified)
 
             Returns:
                 The sample_set of those samples matching the tags
         """
+        if isinstance(tags, str):
+            tags = [tags]
         md5_list = self.data_store.tag_match(tags)
         return self.store_sample_set(md5_list)
 
@@ -758,8 +760,8 @@ class WorkBench(object):
                 The newest modification time of any worker in the work chain. 
         """
 
-        # Bottom out on sample or info
-        if worker_name=='sample' or worker_name=='info':
+        # Bottom out on sample, info or tags
+        if worker_name=='sample' or worker_name=='info' or worker_name=='tags':
             return datetime.datetime(1970, 1, 1)
 
         my_mod_time = self._get_work_results('info', worker_name)['info']['mod_time']
@@ -783,6 +785,10 @@ class WorkBench(object):
         # Looking for info?
         if worker_name == 'info':
             return self._get_work_results('info', md5)
+
+        # Looking for tags?
+        if worker_name == 'tags':
+            return self._get_work_results('tags', md5)
 
         # Do I actually have this plugin? (might have failed, etc)
         if (worker_name not in self.plugin_meta):
