@@ -307,6 +307,7 @@ class WorkBench(object):
 
     def add_tags(self, md5, tags):
         """Add tags to this sample"""
+        if not tags: return
         tag_set = set(self.get_tags(md5)) if self.get_tags(md5) else set()
         if isinstance(tags, str):
             tags = [tags]

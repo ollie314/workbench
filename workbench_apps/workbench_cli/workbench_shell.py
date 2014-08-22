@@ -114,8 +114,7 @@ class WorkbenchShell(object):
                       (self.beer, F.MAGENTA, md5[:6], F.YELLOW, F.RESET)
 
                 # Add tags to the sample
-                if tags:
-                    self.workbench.add_tags(md5, tags)
+                self.workbench.add_tags(md5, tags)
 
                 # Store information about the sample into the sesssion
                 basename = os.path.basename(path)
