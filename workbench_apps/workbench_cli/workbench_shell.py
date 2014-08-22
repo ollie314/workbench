@@ -134,8 +134,9 @@ class WorkbenchShell(object):
         del tag_df['tags']
         tag_freq = tag_df.sum().to_dict()
         tag_freq = sorted(tag_freq.iteritems(), key=operator.itemgetter(1), reverse=True)
+        print '\n%sSamples in Database%s' % (F.MAGENTA, F.RESET)
         for (tag, count) in tag_freq:
-            print '%s%s: %s%s%s' % (F.BLUE, tag, F.GREEN, count, F.RESET)
+            print '  %s%s: %s%s%s' % (F.GREEN, tag, F.BLUE, count, F.RESET)
 
     def pull_df(self, md5):
         """Wrapper for the Workbench get_dataframe method
@@ -183,8 +184,9 @@ class WorkbenchShell(object):
         # Announce versions
         self.versions()
 
-        # Help
+        # Help and Sample/Tag info
         print '\n%s' % self.workbench.help('cli')
+        self.tag_info()
 
         # Now that we have the Workbench connection spun up, we register some stuff
         # with the embedded IPython interpreter and than spin it up
