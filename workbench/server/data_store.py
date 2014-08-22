@@ -438,9 +438,8 @@ class DataStore(object):
         # Add required indexes for samples collection
         self.database[self.sample_collection].create_index('import_time')
 
-        # If the tags collection exists create an index on tags
-        if 'tags' in all_c:
-            self.database['tags'].create_index('tags')
+        # Create an index on tags
+        self.database['tags'].create_index('tags')
 
     # Helper functions
     def to_unicode(self, s):
