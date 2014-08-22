@@ -51,6 +51,7 @@ def test():
                              '../data/pe/bad/033d91aae8ad29ed9fbb858179271232')
     md5 = workbench.store_sample(open(data_path, 'rb').read(), 'bad_pe', 'exe')
     input_data = workbench.get_sample(md5)
+    input_data.update(workbench.work_request('tags', md5))
 
     # Execute the worker (unit test)
     worker = MetaData()
