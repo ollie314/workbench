@@ -7,9 +7,11 @@ import IPython
 import lz4
 import inspect
 import funcsigs
+import operator
 import matplotlib.pyplot as plt
 plt.ion()
 from colorama import Fore as F
+import pprint
 
 try:
     import pandas as pd
@@ -121,6 +123,19 @@ class WorkbenchShell(object):
                 self.session.short_md5 = md5[:6]
                 self.ipshell.push({'md5': self.session.md5})
                 self.ipshell.push({'short_md5': self.session.short_md5})
+
+        # Dump out tag information
+        self.tag_info()
+
+    def tag_info(self):
+        tag_df = pd.DataFrame(self.workbench.get_all_tags())
+        tag_df = self.flatten_tags(tag_df)
+        del tag_df['md5']
+        del tag_df['tags']
+        tag_freq = tag_df.sum().to_dict()
+        tag_freq = sorted(tag_freq.iteritems(), key=operator.itemgetter(1), reverse=True)
+        for (tag, count) in tag_freq:
+            print '%s%s: %s%s%s' % (F.BLUE, tag, F.GREEN, count, F.RESET)
 
     def pull_df(self, md5):
         """Wrapper for the Workbench get_dataframe method
@@ -277,6 +292,7 @@ class WorkbenchShell(object):
             'load_sample': self.load_sample,
             'pull_df': self.pull_df,
             'flatten_tags': self.flatten_tags,
+            'tag_info': self.tag_info,
             'search': self.search,
             'reconnect': lambda info=self.server_info: self._connect(info),
             'version': self.versions,
