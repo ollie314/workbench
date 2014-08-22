@@ -328,8 +328,7 @@ class WorkBench(object):
 
     def get_all_tags(self):
         """Get tags for this sample"""
-        tag_data = self.data_store.get_all_tags()
-        return tag_data['tags'] if tag_data else None
+        return self.data_store.tags_all()
 
 
     #######################
