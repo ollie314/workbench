@@ -48,14 +48,13 @@ class DataStore(object):
         """ Return the uri of the data store."""
         return self.uri
 
-    def store_sample(self, sample_bytes, filename, type_tag, tags=None):
+    def store_sample(self, sample_bytes, filename, type_tag):
         """Store a sample into the datastore.
 
         Args:
             filename: Name of the file.
             sample_bytes: Actual bytes of sample. 
-            type_tag: Type of sample ('exe','pcap','pdf','json','swf', or ...).
-            tags: optional list of tags ['bad','aptz13']
+            type_tag: Type of sample ('exe','pcap','pdf','json','swf', or ...)
 
         Returns:
             md5 digest of the sample.
@@ -87,9 +86,6 @@ class DataStore(object):
         sample_info['length'] = len(sample_bytes)
         sample_info['import_time'] = datetime.datetime.utcnow()
         sample_info['type_tag'] = type_tag
-        sample_info['tags'] = [type_tag]
-        if tags:
-            sample_info['tags'] += tags
 
         # Random customer for now
         import random
@@ -197,11 +193,11 @@ class DataStore(object):
                     data[k] = [self.clean_for_storage(item) for item in data[k]]
         return data
 
-    def get_full_md5(self, partial_md5):
+    def get_full_md5(self, partial_md5, collection):
         """Support partial/short md5s, return the full md5 with this method"""
-        print 'Warning: Performing slow md5 search...'
+        # print 'Notice: Performing slow md5 search...'
         starts_with = '%s.*' % partial_md5
-        sample_info = self.database[self.sample_collection].find_one({'md5': {'$regex' : starts_with}},{'md5':1})
+        sample_info = self.database[collection].find_one({'md5': {'$regex' : starts_with}},{'md5':1})
         return sample_info['md5'] if sample_info else None
 
     def get_sample(self, md5):
@@ -219,7 +215,7 @@ class DataStore(object):
 
         # Support 'short' md5s but don't waste performance if the full md5 is provided
         if len(md5) < 32:
-            md5 = self.get_full_md5(md5)
+            md5 = self.get_full_md5(md5, self.sample_collection)
 
         # Grab the sample
         sample_info = self.database[self.sample_collection].find_one({'md5': md5})
@@ -281,7 +277,7 @@ class DataStore(object):
         sample = self.get_sample(md5)
         return True if sample else False
 
-    def list_samples(self, predicate=None):
+    def _list_samples(self, predicate=None):
         """List all samples that meet the predicate or all if predicate is not specified.
 
         Args:
@@ -291,6 +287,24 @@ class DataStore(object):
             List of the md5s for the matching samples
         """
         cursor = self.database[self.sample_collection].find(predicate, {'_id':0, 'md5':1})
+        return [item['md5'] for item in cursor]
+
+    def tag_match(self, tags=None):
+        """List all samples that match the tags or all if tags are not specified.
+
+        Args:
+            tags: Match samples against these tags (or all if not specified)
+
+        Returns:
+            List of the md5s for the matching samples
+        """
+        if 'tags' not in self.database.collection_names():
+            print 'Warning: Searching on non-existance tags collection'
+            return None
+        if not tags:
+            cursor = self.database['tags'].find({}, {'_id':0, 'md5':1})
+        else:
+            cursor = self.database['tags'].find({'tags': {'$in': tags}}, {'_id':0, 'md5':1})
         return [item['md5'] for item in cursor]
 
     def store_work_results(self, results, collection, md5):
@@ -317,7 +331,8 @@ class DataStore(object):
         try:
             self.database[collection].update({'md5':md5}, self.clean_for_storage(results), True)
         except pymongo.errors.OperationFailure:
-            print 'Not updating exising object in capped collection...(upgrade to mongodb 2.6)'
+            self.database[collection].insert({'md5':md5}, self.clean_for_storage(results), True)
+            print 'Could not update exising object in capped collection, doing an insert...'
 
     def get_work_results(self, collection, md5):
         """Get the results of the worker.
@@ -329,6 +344,10 @@ class DataStore(object):
         Returns:
             Dictionary of the worker result.
         """
+
+        # Support 'short' md5s but don't waste performance if the full md5 is provided
+        if len(md5) < 32:
+            md5 = self.get_full_md5(md5, collection)
 
         return self.database[collection].find_one({'md5':md5})
 
@@ -361,6 +380,7 @@ class DataStore(object):
             all_c.remove('fs.chunks')
             all_c.remove('fs.files')
             all_c.remove('sample_set')
+            all_c.remove('tags')
             all_c.remove(self.sample_collection)
         except ValueError:
             print 'Catching a benign exception thats expected...'
@@ -417,7 +437,10 @@ class DataStore(object):
 
         # Add required indexes for samples collection
         self.database[self.sample_collection].create_index('import_time')
-        self.database[self.sample_collection].create_index('tags')
+
+        # If the tags collection exists create an index on tags
+        if 'tags' in all_c:
+            self.database['tags'].create_index('tags')
 
     # Helper functions
     def to_unicode(self, s):

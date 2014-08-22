@@ -6,7 +6,7 @@ import pprint
 
 class MetaData(object):
     ''' This worker computes meta data for any file type. '''
-    dependencies = ['sample']
+    dependencies = ['sample', 'tags']
 
     def __init__(self):
         ''' Initialization '''
@@ -16,7 +16,7 @@ class MetaData(object):
         ''' This worker computes meta data for any file type. '''
         raw_bytes = input_data['sample']['raw_bytes']
         self.meta['md5'] = hashlib.md5(raw_bytes).hexdigest()
-        self.meta['tags'] = input_data['sample']['tags']
+        self.meta['tags'] = input_data['tags']['tags']
         self.meta['type_tag'] = input_data['sample']['type_tag']
         with magic.Magic() as mag:
             self.meta['file_type'] = mag.id_buffer(raw_bytes[:1024])
@@ -51,6 +51,7 @@ def test():
                              '../data/pe/bad/033d91aae8ad29ed9fbb858179271232')
     md5 = workbench.store_sample(open(data_path, 'rb').read(), 'bad_pe', 'exe')
     input_data = workbench.get_sample(md5)
+    input_data.update(workbench.work_request('tags', md5))
 
     # Execute the worker (unit test)
     worker = MetaData()

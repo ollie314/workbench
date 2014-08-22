@@ -111,8 +111,8 @@ class WorkbenchShell(object):
                 print '\n%s  %s%s %sLocked and Loaded...%s\n' % \
                       (self.beer, F.MAGENTA, md5[:6], F.YELLOW, F.RESET)
 
-                # Call meta on the sample (might want to think about this)
-                self.workbench.work_request('meta', md5)
+                # Add tags to the sample
+                self.workbench.add_tags(md5, tags)
 
                 # Store information about the sample into the sesssion
                 basename = os.path.basename(path)
@@ -142,20 +142,16 @@ class WorkbenchShell(object):
         my_df['tags'] = [', '.join(tag_list) for tag_list in my_df['tags']]
         return my_df.join(tags_df)
 
-    def search(self, tags='all'):
+    def search(self, tags=None):
         """Wrapper for the Workbench search method
             Args:
                 tags: a single tag 'pcap' or a list of tags to search for ['bad','aptz13']
             Returns:
                 A sample_set that contains the md5s for all matching samples
         """
-
-        # Fixme: This needs to be improved to handle arbitrary predicates (MongoDB predicates)
-        if tags == 'all':
-            return self.workbench.generate_sample_set()
-        elif isinstance(tags, str):
+        if isinstance(tags, str):
             tags = [tags]
-        return self.workbench.generate_sample_set({'tags': {'$in': tags}})
+        return self.workbench.generate_sample_set(tags)
 
     def versions(self):
         """Announce Versions of CLI and Server

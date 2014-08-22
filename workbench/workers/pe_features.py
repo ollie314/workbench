@@ -9,7 +9,7 @@ class PEFileWorker(object):
     ''' Create instance of PEFileWorker class. This class pulls static
         features out of a PE file using the python pefile module.
     '''
-    dependencies = ['sample']
+    dependencies = ['sample', 'tags']
 
     def __init__(self, verbose=False):
         ''' Init method '''
@@ -64,7 +64,7 @@ class PEFileWorker(object):
         dense_features, sparse_features = self.extract_features_using_pefile(pefile_handle)
 
         # Okay set my response
-        return {'dense_features': dense_features, 'sparse_features': sparse_features, 'tags': input_data['sample']['tags']}
+        return {'dense_features': dense_features, 'sparse_features': sparse_features, 'tags': input_data['tags']['tags']}
 
     def set_dense_features(self, dense_feature_list):
         ''' Set the dense feature list that the Python pefile module should extract.
@@ -341,7 +341,9 @@ def test():
                              '../data/pe/good/4be7ec02133544cde7a580875e130208')
     md5_2 = workbench.store_sample(open(data_path, 'rb').read(), 'good_pe', 'exe')
     input_data = workbench.get_sample(md5)
+    input_data.update(workbench.work_request('tags', md5))
     input_data_2 = workbench.get_sample(md5_2)
+    input_data_2.update(workbench.work_request('tags', md5_2))
     input_data_3 = {'sample': {'raw_bytes': 'invalid pe file to hit exception code'}}
 
     # Execute the worker (unit test)

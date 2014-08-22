@@ -103,13 +103,12 @@ class WorkBench(object):
     #######################
     # Sample Methods
     #######################
-    def store_sample(self, input_bytes, filename, type_tag, tags=None):
+    def store_sample(self, input_bytes, filename, type_tag):
         """ Store a sample into the DataStore.
             Args:
                 input_bytes: the actual bytes of the sample e.g. f.read()
                 filename: name of the file (used purely as meta data not for lookup)
                 type_tag: ('exe','pcap','pdf','json','swf', or ...)
-                tags: optional list of tags ['bad','aptz13']
             Returns:
                 the md5 of the sample.
         """
@@ -132,7 +131,11 @@ class WorkBench(object):
             input_bytes = lz4.loads(input_bytes)
 
         # Store the sample
-        md5 = self.data_store.store_sample(input_bytes, filename, type_tag, tags)
+        md5 = self.data_store.store_sample(input_bytes, filename, type_tag)
+
+        # Add the type_tags to tags
+        if type_tag != 'lz4':
+            self.add_tags(md5, type_tag)
 
         return md5
 
@@ -185,7 +188,7 @@ class WorkBench(object):
         """
         return self.data_store.has_sample(md5)
 
-    def combine_samples(self, md5_list, filename, type_tag, tags=None):
+    def combine_samples(self, md5_list, filename, type_tag):
         """Combine samples together. This may have various use cases the most significant 
            involving a bunch of sample 'chunks' got uploaded and now we combine them together
 
@@ -193,7 +196,6 @@ class WorkBench(object):
                 md5_list: The list of md5s to combine, order matters!
                 filename: name of the file (used purely as meta data not for lookup)
                 type_tag: ('exe','pcap','pdf','json','swf', or ...)
-                tags: optional list of tags ['bad','aptz13']
             Returns:
                 the computed md5 of the combined samples
         """
@@ -203,7 +205,7 @@ class WorkBench(object):
             self.remove_sample(md5)
 
         # Store it
-        return self.store_sample(total_bytes, filename, type_tag, tags)
+        return self.store_sample(total_bytes, filename, type_tag)
 
     def remove_sample(self, md5):
         """Remove the sample from the data store"""
@@ -303,6 +305,26 @@ class WorkBench(object):
                 print 'Alert: Sample Type could not be Determined'
                 return 'unknown'
 
+    def add_tags(self, md5, tags):
+        """Add tags to this sample"""
+        tag_set = set(self.get_tags(md5)) if self.get_tags(md5) else set()
+        if isinstance(tags, str):
+            tags = [tags]
+        for tag in tags:
+            tag_set.add(tag)
+        self.data_store.store_work_results({'tags': list(tag_set)}, 'tags', md5)
+
+    def set_tags(self, md5, tags):
+        """Set the tags for this sample"""
+        if isinstance(tags, str):
+            tags = [tags]
+        tag_set = set(tags)
+        self.data_store.store_work_results({'tags': list(tag_set)}, 'tags', md5)
+
+    def get_tags(self, md5):
+        """Get tags for this sample"""
+        tag_data = self.data_store.get_work_results('tags', md5)
+        return tag_data['tags'] if tag_data else None
 
 
     #######################
@@ -507,7 +529,12 @@ class WorkBench(object):
             Returns:
                 The md5 of the set (the actual md5 of the set)
         """
-        
+
+        # Sanity check
+        if not md5_list:
+            print 'Warning: Trying to store an empty sample_set'
+            return None
+
         # Remove any duplicates
         md5_list = list(set(md5_list))
 
@@ -519,16 +546,18 @@ class WorkBench(object):
         self._store_work_results({'md5_list':md5_list}, 'sample_set', set_md5)
         return set_md5
 
-    def generate_sample_set(self, predicate=None):
-        """Generate a sample_set that meets the predicate or all if predicate is not specified.
+    def generate_sample_set(self, tags=None):
+        """Generate a sample_set that maches the tags or all if tags are not specified.
 
             Args:
-                predicate: Match samples against this predicate (or all if not specified)
+                tags: Match samples against this tag list (or all if not specified)
 
             Returns:
-                The sample_set of those samples matching the predicate
+                The sample_set of those samples matching the tags
         """
-        md5_list = self.data_store.list_samples(predicate)
+        if isinstance(tags, str):
+            tags = [tags]
+        md5_list = self.data_store.tag_match(tags)
         return self.store_sample_set(md5_list)
 
     def get_sample_set(self, md5):
@@ -603,7 +632,7 @@ class WorkBench(object):
         """ Help for Workbench Basics """
         help =  '%sWorkbench: Getting started...' % (F.YELLOW)
         help += '\n%sStore a sample into Workbench:'  % (F.GREEN)
-        help += '\n\t%s$ workbench.store_sample(raw_bytes, filename, type_tag, tags)' % (F.BLUE)
+        help += '\n\t%s$ workbench.store_sample(raw_bytes, filename, type_tag)' % (F.BLUE)
         help += '\n\n%sNotice store_sample returns an md5 of the sample...'% (F.YELLOW)
         help += '\n%sRun workers on the sample (view, meta, whatever...):'  % (F.GREEN)
         help += '\n\t%s$ workbench.work_request(\'view\', md5)%s' % (F.BLUE, F.RESET)
@@ -731,8 +760,8 @@ class WorkBench(object):
                 The newest modification time of any worker in the work chain. 
         """
 
-        # Bottom out on sample or info
-        if worker_name=='sample' or worker_name=='info':
+        # Bottom out on sample, info or tags
+        if worker_name=='sample' or worker_name=='info' or worker_name=='tags':
             return datetime.datetime(1970, 1, 1)
 
         my_mod_time = self._get_work_results('info', worker_name)['info']['mod_time']
@@ -756,6 +785,10 @@ class WorkBench(object):
         # Looking for info?
         if worker_name == 'info':
             return self._get_work_results('info', md5)
+
+        # Looking for tags?
+        if worker_name == 'tags':
+            return self._get_work_results('tags', md5)
 
         # Do I actually have this plugin? (might have failed, etc)
         if (worker_name not in self.plugin_meta):
