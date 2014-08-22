@@ -52,11 +52,11 @@ def run():
                 print 'Filename %s uploaded: type_tag %s, md5 %s' % (filename, 'unknown', md5)
 
     # Okay now explode any container types
-    zip_files = workbench.generate_sample_set({'type_tag': 'zip'})
+    zip_files = workbench.generate_sample_set('zip')
     _foo = workbench.set_work_request('unzip', zip_files); list(_foo) # See Issue #306
-    pcap_files = workbench.generate_sample_set({'type_tag': 'pcap'})
+    pcap_files = workbench.generate_sample_set('pcap')
     _foo = workbench.set_work_request('pcap_bro', pcap_files); list(_foo) # See Issue #306
-    mem_files = workbench.generate_sample_set({'type_tag': 'pcap'})
+    mem_files = workbench.generate_sample_set('mem')
     _foo = workbench.set_work_request('mem_procdump', mem_files); list(_foo) # See Issue #306
 
 

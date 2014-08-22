@@ -193,11 +193,11 @@ class DataStore(object):
                     data[k] = [self.clean_for_storage(item) for item in data[k]]
         return data
 
-    def get_full_md5(self, partial_md5):
+    def get_full_md5(self, partial_md5, collection):
         """Support partial/short md5s, return the full md5 with this method"""
-        print 'Warning: Performing slow md5 search...'
+        # print 'Notice: Performing slow md5 search...'
         starts_with = '%s.*' % partial_md5
-        sample_info = self.database[self.sample_collection].find_one({'md5': {'$regex' : starts_with}},{'md5':1})
+        sample_info = self.database[collection].find_one({'md5': {'$regex' : starts_with}},{'md5':1})
         return sample_info['md5'] if sample_info else None
 
     def get_sample(self, md5):
@@ -215,7 +215,7 @@ class DataStore(object):
 
         # Support 'short' md5s but don't waste performance if the full md5 is provided
         if len(md5) < 32:
-            md5 = self.get_full_md5(md5)
+            md5 = self.get_full_md5(md5, self.sample_collection)
 
         # Grab the sample
         sample_info = self.database[self.sample_collection].find_one({'md5': md5})
@@ -331,7 +331,8 @@ class DataStore(object):
         try:
             self.database[collection].update({'md5':md5}, self.clean_for_storage(results), True)
         except pymongo.errors.OperationFailure:
-            print 'Not updating exising object in capped collection...(upgrade to mongodb 2.6)'
+            self.database[collection].insert({'md5':md5}, self.clean_for_storage(results), True)
+            print 'Could not update exising object in capped collection, doing an insert...'
 
     def get_work_results(self, collection, md5):
         """Get the results of the worker.
@@ -343,6 +344,10 @@ class DataStore(object):
         Returns:
             Dictionary of the worker result.
         """
+
+        # Support 'short' md5s but don't waste performance if the full md5 is provided
+        if len(md5) < 32:
+            md5 = self.get_full_md5(md5, collection)
 
         return self.database[collection].find_one({'md5':md5})
 
