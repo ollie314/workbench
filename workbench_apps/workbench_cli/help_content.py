@@ -91,7 +91,7 @@ class WorkbenchShellHelp(object):
         help += '\n\t%s> pe_df.head() %s' % (F.BLUE, F.RESET)
         help += '\n\t%s> pe_df = flatten_tags(pe_df) %s' % (F.BLUE, F.RESET)
         help += '\n\t%s> pe_df.hist(\'check_sum\',\'tags\') %s' % (F.BLUE, F.RESET)
-        help += '\n\t%s> pe_df.hist(\'bloxplot\',\'tags\') %s' % (F.BLUE, F.RESET)
+        help += '\n\t%s> pe_df.bloxplot(\'check_sum\',\'tags\') %s' % (F.BLUE, F.RESET)
         return help
 
     ##################
