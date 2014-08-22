@@ -1,9 +1,9 @@
 
-''' HelpCLI worker '''
+''' HelpFormatter worker '''
 
 from colorama import Fore, Style
 
-class HelpCLI(object):
+class HelpFormatter(object):
     ''' This worker does CLI formatting and coloring for any help object '''
     dependencies = ['help_base']
 
@@ -30,7 +30,7 @@ class HelpCLI(object):
 
         # WTF: Alert on unknown type_tag and return a string of the input_data
         else:
-            print 'Alert: help_cli worker received malformed object: %s' % str(input_data)
+            print 'Alert: help_formatter worker received malformed object: %s' % str(input_data)
             output = '\n%s%s%s' % (Fore.RED, str(input_data), Fore.RESET)
 
         # Return the formatted and colored help
@@ -38,7 +38,7 @@ class HelpCLI(object):
 
 # Unit test: Create the class, the proper input and run the execute() method for a test
 def test():
-    ''' help_cli.py: Unit test'''
+    ''' help_formatter.py: Unit test'''
 
     # This worker test requires a local server running
     import zerorpc
@@ -51,7 +51,7 @@ def test():
     input_data3 = workbench.work_request('help_base', 'store_sample')
 
     # Execute the worker (unit test)
-    worker = HelpCLI()
+    worker = HelpFormatter()
     output = worker.execute(input_data1)
     print '\n<<< Unit Test >>>'
     print output['help']
@@ -63,9 +63,9 @@ def test():
     print output['help']      
 
     # Execute the worker (server test)
-    output = workbench.work_request('help_cli', 'meta')
+    output = workbench.work_request('help_formatter', 'meta')
     print '\n<<< Server Test >>>'
-    print output['help_cli']['help']
+    print output['help_formatter']['help']
 
 if __name__ == "__main__":
     test()
