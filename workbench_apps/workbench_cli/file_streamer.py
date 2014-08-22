@@ -32,9 +32,15 @@ class FileStreamer(object):
         sent_bytes = 0
         total_bytes = len(raw_bytes)
         for chunk in self._file_chunks(raw_bytes, self.chunk_size):
-            md5_list.append(self.workbench.store_sample(chunk, filename, self.compress_ident, tags))
+            md5_list.append(self.workbench.store_sample(chunk, filename, self.compress_ident))
             sent_bytes += self.chunk_size
             self.progress(sent_bytes, total_bytes)
 
         # Now we just ask Workbench to combine these
-        return self.workbench.combine_samples(md5_list, filename, type_tag, tags)
+        full_md5 = self.workbench.combine_samples(md5_list, filename, type_tag)
+
+        # Add the tags
+        self.workbench.add_tags(full_md5, tags)
+
+        # Return the md5 of the finalized sample
+        return full_md5
