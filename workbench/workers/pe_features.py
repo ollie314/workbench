@@ -341,7 +341,9 @@ def test():
                              '../data/pe/good/4be7ec02133544cde7a580875e130208')
     md5_2 = workbench.store_sample(open(data_path, 'rb').read(), 'good_pe', 'exe')
     input_data = workbench.get_sample(md5)
+    input_data.update(workbench.work_request('tags', md5))
     input_data_2 = workbench.get_sample(md5_2)
+    input_data_2.update(workbench.work_request('tags', md5_2))
     input_data_3 = {'sample': {'raw_bytes': 'invalid pe file to hit exception code'}}
 
     # Execute the worker (unit test)
