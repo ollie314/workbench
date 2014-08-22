@@ -7,9 +7,11 @@ import IPython
 import lz4
 import inspect
 import funcsigs
+import operator
 import matplotlib.pyplot as plt
 plt.ion()
 from colorama import Fore as F
+import pprint
 
 try:
     import pandas as pd
@@ -122,6 +124,20 @@ class WorkbenchShell(object):
                 self.ipshell.push({'md5': self.session.md5})
                 self.ipshell.push({'short_md5': self.session.short_md5})
 
+        # Dump out tag information
+        self.tag_info()
+
+    def tag_info(self):
+        tag_df = pd.DataFrame(self.workbench.get_all_tags())
+        tag_df = self.flatten_tags(tag_df)
+        del tag_df['md5']
+        del tag_df['tags']
+        tag_freq = tag_df.sum().to_dict()
+        tag_freq = sorted(tag_freq.iteritems(), key=operator.itemgetter(1), reverse=True)
+        print '\n%sSamples in Database%s' % (F.MAGENTA, F.RESET)
+        for (tag, count) in tag_freq:
+            print '  %s%s: %s%s%s' % (F.GREEN, tag, F.BLUE, count, F.RESET)
+
     def pull_df(self, md5):
         """Wrapper for the Workbench get_dataframe method
             Args:
@@ -168,8 +184,9 @@ class WorkbenchShell(object):
         # Announce versions
         self.versions()
 
-        # Help
+        # Help and Sample/Tag info
         print '\n%s' % self.workbench.help('cli')
+        self.tag_info()
 
         # Now that we have the Workbench connection spun up, we register some stuff
         # with the embedded IPython interpreter and than spin it up
@@ -277,6 +294,7 @@ class WorkbenchShell(object):
             'load_sample': self.load_sample,
             'pull_df': self.pull_df,
             'flatten_tags': self.flatten_tags,
+            'tag_info': self.tag_info,
             'search': self.search,
             'reconnect': lambda info=self.server_info: self._connect(info),
             'version': self.versions,
