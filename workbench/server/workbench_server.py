@@ -326,6 +326,11 @@ class WorkBench(object):
         tag_data = self.data_store.get_work_results('tags', md5)
         return tag_data['tags'] if tag_data else None
 
+    def get_all_tags(self):
+        """Get tags for this sample"""
+        tag_data = self.data_store.get_all_tags()
+        return tag_data['tags'] if tag_data else None
+
 
     #######################
     # Index Methods
@@ -540,8 +545,7 @@ class WorkBench(object):
 
         for md5 in md5_list:
             if not self.has_sample(md5):
-                raise RuntimeError('Sample not found all items in sample_set\
-                                    must be in the datastore: %s (not found)' % (md5))
+                raise RuntimeError('%s: Not found! All items in sample_set must be in the datastore' % (md5))
         set_md5 = hashlib.md5(str(md5_list)).hexdigest()
         self._store_work_results({'md5_list':md5_list}, 'sample_set', set_md5)
         return set_md5
@@ -608,7 +612,7 @@ class WorkBench(object):
         # so we'll catch the exception and push back an object that
         # indicates we didn't find what they were asking for
         try:
-            return self.work_request('help_cli', topic)['help_cli']['help']
+            return self.work_request('help_formatter', topic)['help_formatter']['help']
         except WorkBench.DataNotFound as e:
 
             # Okay this is a bit tricky we want to give the user a nice error
@@ -642,7 +646,7 @@ class WorkBench(object):
         """ Help on all the available commands """
         help =  'Workbench Commands:'
         for command in self.list_all_commands():
-            full_help = self.work_request('help_cli', command)['help_cli']['help']
+            full_help = self.work_request('help_formatter', command)['help_formatter']['help']
             compact_help = full_help.split('\n')[:2]
             help += '\n\n%s' % '\n'.join(compact_help)
         return help
@@ -651,7 +655,7 @@ class WorkBench(object):
         """ Help on all the available workers """
         help =  'Workbench Workers:'
         for worker in self.list_all_workers():
-            full_help = self.work_request('help_cli', worker)['help_cli']['help']
+            full_help = self.work_request('help_formatter', worker)['help_formatter']['help']
             compact_help = full_help.split('\n')[:4]
             help += '\n\n%s' % '\n'.join(compact_help)
         return help
