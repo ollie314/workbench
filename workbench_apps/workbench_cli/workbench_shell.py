@@ -135,11 +135,25 @@ class WorkbenchShell(object):
         tag_df = self.flatten_tags(tag_df)
         del tag_df['md5']
         del tag_df['tags']
+
+        # Give aggregation counts
         tag_freq = tag_df.sum().to_dict()
         tag_freq = sorted(tag_freq.iteritems(), key=operator.itemgetter(1), reverse=True)
         print '\n%sSamples in Database%s' % (F.MAGENTA, F.RESET)
-        for (tag, count) in tag_freq:
+        for (tag, count) in tag_freq[:10]:
             print '  %s%s: %s%s%s' % (F.GREEN, tag, F.BLUE, count, F.RESET)
+
+        # Give label correlations
+        topN = 10
+        count = 1
+        sorted_series = tag_df.corr().unstack().order(ascending=False)
+        print '\n%sCorrelated Tags%s' % (F.MAGENTA, F.RESET)
+        for (name1, name2), value in sorted_series.iteritems():
+            if name1==name2: continue
+            if name1=='unknown' or name2=='unknown': continue
+            print '  %s%s:%s %s%.1f%s' % (F.GREEN, name1, name2, F.BLUE, value, F.RESET)
+            count += 1
+            if count > topN: break
 
     def pull_df(self, md5):
         """Wrapper for the Workbench get_dataframe method
@@ -187,9 +201,9 @@ class WorkbenchShell(object):
         # Announce versions
         self.versions()
 
-        # Help and Sample/Tag info
-        print '\n%s' % self.workbench.help('cli')
+        # Sample/Tag info and Help
         self.tag_info()
+        print '\n%s' % self.workbench.help('cli')
 
         # Now that we have the Workbench connection spun up, we register some stuff
         # with the embedded IPython interpreter and than spin it up
