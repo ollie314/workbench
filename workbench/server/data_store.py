@@ -344,11 +344,6 @@ class DataStore(object):
         Returns:
             Dictionary of the worker result.
         """
-
-        # Support 'short' md5s but don't waste performance if the full md5 is provided
-        if len(md5) < 32:
-            md5 = self.get_full_md5(md5, collection)
-
         return self.database[collection].find_one({'md5':md5})
 
     def all_sample_md5s(self, type_tag=None):
