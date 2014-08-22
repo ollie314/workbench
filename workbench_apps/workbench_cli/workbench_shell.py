@@ -128,7 +128,10 @@ class WorkbenchShell(object):
         self.tag_info()
 
     def tag_info(self):
-        tag_df = pd.DataFrame(self.workbench.get_all_tags())
+        tags = self.workbench.get_all_tags()
+        if not tags:
+            return
+        tag_df = pd.DataFrame(tags)
         tag_df = self.flatten_tags(tag_df)
         del tag_df['md5']
         del tag_df['tags']
