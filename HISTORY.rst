@@ -32,3 +32,8 @@ History
 ^^^^^^^^^^^^^^^^^^
 
 * Release of workbench for alpha developers and users.
+
+0.3.2 (2014-08-29)
+^^^^^^^^^^^^^^^^^^
+
+* Release of workbench for alpha developers and users.
