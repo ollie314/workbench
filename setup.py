@@ -35,7 +35,7 @@ setup(
     scripts=['workbench/server/workbench_server', 'workbench_apps/workbench_cli/workbench'],
     tests_require=['tox'],
     install_requires=['cython', 'colorama', 'elasticsearch', 'funcsigs', 'flask', 'filemagic', 
-                      'ipython', 'lz4', 'mock', 'pandas', 'pefile',
+                      'ipython', 'lz4', 'matplotlib', 'mock', 'pandas', 'pefile',
                       'py2neo', 'pymongo', 'pytest', 'rekall', 'requests',
                       'ssdeep==2.9-0.3', 'urllib3', 'yara', 'zerorpc', 'cython'],
     license='MIT',
@@ -46,7 +46,8 @@ setup(
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
-        'Operating System :: MacOS :: POSIX',
+        'Operating System :: MacOS',
+        'Operating System :: Unix',
         'Natural Language :: English',
         'Programming Language :: Python :: 2.7'
     ]
