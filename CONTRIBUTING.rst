@@ -80,7 +80,6 @@ Workbench (Server/CLI/All)
 ::
 
     $ make clean
-    # pip install -e .
     $ python setup.py sdist
     $ cd dist
     $ tar xzvf workbench-0.x.y.tar.gz
