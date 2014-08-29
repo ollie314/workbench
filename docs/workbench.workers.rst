@@ -43,10 +43,10 @@ workbench.workers.help_base module
     :undoc-members:
     :show-inheritance:
 
-workbench.workers.help_cli module
----------------------------------
+workbench.workers.help_formatter module
+---------------------------------------
 
-.. automodule:: workbench.workers.help_cli
+.. automodule:: workbench.workers.help_formatter
     :members:
     :undoc-members:
     :show-inheritance:
