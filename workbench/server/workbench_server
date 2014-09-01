@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+"""Workbench Server"""
 
 try:
     import workbench.server.workbench_server as server

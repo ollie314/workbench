@@ -287,6 +287,7 @@ class WorkBench(object):
                         'application/x-dosexec': 'exe',
                         'application/x-empty': 'empty',
                         'application/x-shockwave-flash': 'swf',
+                        'application/xml': 'xml',
                         'application/zip': 'zip',
                         'image/gif': 'gif',
                         'text/html': 'html',
