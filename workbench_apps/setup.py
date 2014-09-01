@@ -27,7 +27,7 @@ setup(
     author_email='support@supercowpowers.com',
     url='http://github.com/SuperCowPowers/workbench',
     packages=['workbench_cli'],
-    package_dir={'workbench_cli': 'workbench_cli'},
+    package_dir={'workbench': 'workbench_cli'},
     include_package_data=True,
     scripts=['workbench_cli/workbench'],
     install_requires=['colorama', 'funcsigs', 'ipython', 'lz4', 

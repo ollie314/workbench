@@ -7,10 +7,7 @@ try:
     import workbench_cli.workbench_shell as workbench_shell
 except (ImportError, ValueError):
     try:
-        import workbench.workbench_shell as workbench_shell
-
-    # Okay this happens when you're running workbench in a debugger so having
-    # this is super handy and we'll keep it even though it hurts coverage score.
+        import workbench_apps.workbench_cli.workbench_shell as workbench_shell
     except (ImportError, ValueError):
     	import workbench_shell
 

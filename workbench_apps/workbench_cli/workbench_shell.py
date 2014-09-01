@@ -93,10 +93,11 @@ class WorkbenchShell(object):
         if not tags:
             print '\n%sRecommended: Add a list of tags when you load samples. \
                    \n\t%sExamples: [\'bad\'], [\'good\'], [\'bad\',\'aptz13\']%s' % (F.YELLOW, F.GREEN, F.RESET)
+            return
 
         # Do they want everything under a directory?
         if os.path.isdir(file_path):
-            file_list = [os.path.join(file_path, child) for child in os.listdir(file_path)]
+            file_list = self._all_files_in_directory(file_path)
         else:
             file_list = [file_path]
 
@@ -146,7 +147,8 @@ class WorkbenchShell(object):
         # Give label correlations
         topN = 10
         count = 1
-        sorted_series = tag_df.corr().unstack().order(ascending=False)
+        corr = tag_df.corr().fillna(1)
+        sorted_series = corr.unstack().order(ascending=False)
         print '\n%sCorrelated Tags%s' % (F.MAGENTA, F.RESET)
         for (name1, name2), value in sorted_series.iteritems():
             if name1==name2: continue
@@ -322,6 +324,16 @@ class WorkbenchShell(object):
 
         # Return the list of workbench commands
         return commands
+
+    @staticmethod
+    def _all_files_in_directory(path):
+        """ Recursively ist all files under a directory """
+        file_list = []
+        for dirname, dirnames, filenames in os.walk(path):
+            for filename in filenames:
+                if filename != '.DS_Store':
+                    file_list.append(os.path.join(dirname, filename))
+        return file_list
 
     # Internal Class
     class Session(object):
