@@ -8,8 +8,6 @@ import lz4
 import inspect
 import funcsigs
 import operator
-import matplotlib.pyplot as plt
-plt.ion()
 from colorama import Fore as F
 import pprint
 
@@ -19,6 +17,12 @@ except ImportError:
     print '\n%sNotice: pandas not found...' % F.YELLOW
     print '\t%sWe recommend installing pandas: %s$ pip install pandas%s' % (F.BLUE, F.RED, F.RESET)
 
+try:
+    import matplotlib.pyplot as plt
+    plt.ion()
+except ImportError:
+    print '\n%sNotice: matplotlib not found...' % F.YELLOW
+    print '\t%sWe recommend installing matplotlib: %s$ pip install matplotlib%s' % (F.BLUE, F.RED, F.RESET)
 try:
     from . import client_helper
     from . import help_content
