@@ -71,6 +71,13 @@ def test():
         print 'Downloading failed, try it manually...'
         print 'wget http://s3-us-west-2.amazonaws.com/workbench-data/memory_images/exemplar4.vmem'
         exit(1)
+    if os.stat(data_path).st_size < 100000:
+        data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../data/memory_images/exemplar4.vmem') 
+        with open(data_path, 'rb') as mem_file:
+            print 'Corrupt memory image: %s' % mem_file.read()[:500]
+        print 'Downloading failed, try it manually...'
+        print 'wget http://s3-us-west-2.amazonaws.com/workbench-data/memory_images/exemplar4.vmem'
+        exit(1)        
 
     # Store the sample
     data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../data/memory_images/exemplar4.vmem')
