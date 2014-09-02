@@ -18,7 +18,7 @@ before_install:
     - export PATH=/opt/bro/bin:$PATH
     - wget https://s3.amazonaws.com/workbench-wheels/py27/wheelhouse.tar.gz
     - tar xvfz wheelhouse.tar.gz
-    #- wget https://s3-us-west-2.amazonaws.com/workbench-data/memory_images/exemplar4.vmem -O workbench/data/memory_images/exemplar4.vmem
+    - wget http://s3-us-west-2.amazonaws.com/workbench-data/memory_images/exemplar4.vmem -O workbench/data/memory_images/exemplar4.vmem
 install:
     - pip install tox
     - pip install coveralls
