@@ -8,21 +8,21 @@ import lz4
 import inspect
 import funcsigs
 import operator
-from colorama import Fore as F
 import pprint
+from IPython.utils.coloransi import TermColors as color
 
 try:
     import pandas as pd
 except ImportError:
-    print '\n%sNotice: pandas not found...' % F.YELLOW
-    print '\t%sWe recommend installing pandas: %s$ pip install pandas%s' % (F.BLUE, F.RED, F.RESET)
+    print '\n%sNotice: pandas not found...' % color.Yellow
+    print '\t%sWe recommend installing pandas: %s$ pip install pandas%s' % (color.Blue, color.Red, color.Normal)
 
 try:
     import matplotlib.pyplot as plt
     plt.ion()
 except ImportError:
-    print '\n%sNotice: matplotlib not found...' % F.YELLOW
-    print '\t%sWe recommend installing matplotlib: %s$ pip install matplotlib%s' % (F.BLUE, F.RED, F.RESET)
+    print '\n%sNotice: matplotlib not found...' % color.Yellow
+    print '\t%sWe recommend installing matplotlib: %s$ pip install matplotlib%s' % (color.Blue, color.Red, color.Normal)
 try:
     from . import client_helper
     from . import help_content
@@ -96,7 +96,7 @@ class WorkbenchShell(object):
         # Recommend a tag
         if not tags:
             print '\n%sRecommended: Add a list of tags when you load samples. \
-                   \n\t%sExamples: [\'bad\'], [\'good\'], [\'bad\',\'aptz13\']%s' % (F.YELLOW, F.GREEN, F.RESET)
+                   \n\t%sExamples: [\'bad\'], [\'good\'], [\'bad\',\'aptz13\']%s' % (color.Yellow, color.Green, color.Normal)
             return
 
         # Do they want everything under a directory?
@@ -111,12 +111,12 @@ class WorkbenchShell(object):
                 raw_bytes = my_file.read()
                 md5 = hashlib.md5(raw_bytes).hexdigest()
                 if not self.workbench.has_sample(md5):
-                    print '%sStreaming Sample...%s' % (F.MAGENTA, F.RESET)
+                    print '%sStreaming Sample...%s' % (color.Purple, color.Normal)
                     basename = os.path.basename(path)
                     md5 = self.streamer.stream_to_workbench(raw_bytes, basename, 'unknown', tags)
 
                 print '\n%s  %s%s %sLocked and Loaded...%s\n' % \
-                      (self.beer, F.MAGENTA, md5[:6], F.YELLOW, F.RESET)
+                      (self.beer, color.Purple, md5[:6], color.Yellow, color.Normal)
 
                 # Add tags to the sample
                 self.workbench.add_tags(md5, tags)
@@ -147,14 +147,14 @@ class WorkbenchShell(object):
 
         corr = tag_df.corr().fillna(1)
         corr_dict = corr.to_dict()  
-        print '\n%sSamples in Database%s' % (F.MAGENTA, F.RESET)
+        print '\n%sSamples in Database%s' % (color.Purple, color.Normal)
         for tag, count in tag_freq.iteritems():
-            print '  %s%s: %s%s%s  (' % (F.GREEN, tag, F.BLUE, count, F.RESET),
+            print '  %s%s: %s%s%s  (' % (color.Green, tag, color.Blue, count, color.Normal),
             tag_corrs = sorted(corr_dict[tag].iteritems(), key=operator.itemgetter(1), reverse=True)
             for corr_tag, value in tag_corrs[:5]:
                 if corr_tag != tag:
-                    print '%s%s:%s%.1f' % (F.GREEN, corr_tag, F.BLUE, value),
-            print '%s)' % F.RESET
+                    print '%s%s:%s%.1f' % (color.Green, corr_tag, color.Blue, value),
+            print '%s)' % color.Normal
 
     def pull_df(self, md5):
         """Wrapper for the Workbench get_dataframe method
@@ -193,7 +193,7 @@ class WorkbenchShell(object):
             Returns:
                 The running versions of both the CLI and the Workbench Server
         """
-        print '%s<<< Workbench CLI Version %s >>>%s' % (F.BLUE, self.version, F.RESET)
+        print '%s<<< Workbench CLI Version %s >>>%s' % (color.Blue, self.version, color.Normal)
         print self.workbench.help('version')
 
     def run(self):
@@ -215,9 +215,7 @@ class WorkbenchShell(object):
         cfg.InteractiveShellEmbed.autoindent = True
         cfg.InteractiveShellEmbed.deep_reload = True
         cfg.PromptManager.in_template = (
-            r'{color.Purple}'
-            r'{short_md5}'
-            r'{color.Blue} Workbench{color.Green}[\#]> ')
+            r'{color.Purple}{short_md5}{color.Blue} Workbench{color.Green}[\#]> ')
         # cfg.PromptManager.out_template = ''
 
         # Create the IPython shell
@@ -247,7 +245,7 @@ class WorkbenchShell(object):
             del _tmp_connect
         except zerorpc.exceptions.LostRemote:
             print '%sError: Could not connect to Workbench Server at %s:%s%s' % \
-                  (F.RED, server_info['server'], server_info['port'], F.RESET)
+                  (color.Red, server_info['server'], server_info['port'], color.Normal)
             sys.exit(1)
 
         # Okay do the real connection
@@ -255,7 +253,7 @@ class WorkbenchShell(object):
             self.workbench.close()
         self.workbench = zerorpc.Client(timeout=300, heartbeat=60)
         self.workbench.connect('tcp://'+server_info['server']+':'+server_info['port'])
-        print '\n%s<<< Connected: %s:%s >>>%s' % (F.GREEN, server_info['server'], server_info['port'], F.RESET)
+        print '\n%s<<< Connected: %s:%s >>>%s' % (color.Green, server_info['server'], server_info['port'], color.Normal)
 
     def _progress_print(self, sent, total):
         """Progress print show the progress of the current upload with a neat progress bar
@@ -263,7 +261,7 @@ class WorkbenchShell(object):
         """
         percent = min(int(sent*100.0/total), 100)
         sys.stdout.write('\r{0}[{1}{2}] {3}{4}%{5}'.
-                         format(F.GREEN, '#'*(percent/2), ' '*(50-percent/2), F.YELLOW, percent, F.RESET))
+                         format(color.Green, '#'*(percent/2), ' '*(50-percent/2), color.Yellow, percent, color.Normal))
         sys.stdout.flush()
 
     def _work_request(self, worker, md5=None):
@@ -287,7 +285,7 @@ class WorkbenchShell(object):
 
     def _data_not_found(self, e):
         """Message when you get a DataNotFound exception from the server"""
-        return '%s%s%s' % (F.RED, e.msg, F.RESET)
+        return '%s%s%s' % (color.Red, e.msg, color.Normal)
 
     def _generate_command_dict(self):
         """Create a customized namespace for Workbench with a bunch of shortcuts

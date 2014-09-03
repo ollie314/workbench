@@ -8,8 +8,7 @@ import os, sys
 from datetime import datetime
 import dir_watcher
 import inspect
-import colorama
-from colorama import Fore
+from IPython.utils.coloransi import TermColors as color
 
 class PluginManager(object):
     """Plugin Manager for Workbench."""
@@ -83,8 +82,9 @@ class PluginManager(object):
         """
         if f.endswith('.py'):
             plugin_name = os.path.splitext(os.path.basename(f))[0]
-            print '- %s %sREMOVED' % (plugin_name, Fore.RED)
-            print '\t%sNote: still in memory, restart Workbench to remove...%s' % (Fore.YELLOW, Fore.RESET)
+            print '- %s %sREMOVED' % (plugin_name, color.Red)
+            print '\t%sNote: still in memory, restart Workbench to remove...%s' % \
+                  (color.Yellow, color.Normal)
 
     def add_plugin(self, f):
         """Adding and verifying plugin.
@@ -101,7 +101,7 @@ class PluginManager(object):
             if plugin_name in sys.modules:
                 try:
                     handler = reload(sys.modules[plugin_name])
-                    print'\t- %s %sRELOAD%s' % (plugin_name, Fore.YELLOW, Fore.RESET)
+                    print'\t- %s %sRELOAD%s' % (plugin_name, color.Yellow, color.Normal)
                 except ImportError, error:
                     print 'Failed to import plugin: %s (%s)' % (plugin_name, error)
                     return
@@ -115,7 +115,7 @@ class PluginManager(object):
 
             # Run the handler through plugin validation
             plugin = self.validate(handler)
-            print '\t- %s %sOK%s' % (plugin_name, Fore.GREEN, Fore.RESET)
+            print '\t- %s %sOK%s' % (plugin_name, color.Green, color.Normal)
             if plugin:
 
                 # Okay must be successfully loaded so capture the plugin meta-data,

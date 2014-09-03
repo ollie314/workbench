@@ -1,7 +1,7 @@
 
 ''' HelpFormatter worker '''
 
-from colorama import Fore, Style
+from IPython.utils.coloransi import TermColors as color
 
 class HelpFormatter(object):
     ''' This worker does CLI formatting and coloring for any help object '''
@@ -14,24 +14,23 @@ class HelpFormatter(object):
 
         # Standard help text
         if type_tag == 'help':
-            output = '%s%s%s%s%s' % (Style.BRIGHT, Fore.BLUE, input_data['help'], Fore.RESET, Style.RESET_ALL)
+            output = '%s%s%s' % (color.Blue, input_data['help'], color.Normal)
 
         # Worker
         elif type_tag == 'worker':
-            output = '%s%s%s%s' % (Style.BRIGHT, Fore.YELLOW, input_data['name'], Style.RESET_ALL)
-            output += '\n    %sInput: %s%s%s' % (Fore.BLUE, Fore.GREEN, input_data['dependencies'], Fore.RESET)
-            output += '\n    %s%s' % (Fore.GREEN, input_data['docstring'])
+            output = '%s%s' % (color.Yellow, input_data['name'])
+            output += '\n    %sInput: %s%s%s' % (color.Blue, color.Green, input_data['dependencies'], color.Normal)
+            output += '\n    %s%s' % (color.Green, input_data['docstring'])
 
         # Command
         elif type_tag == 'command':
-            output = '%s%s%s%s%s %s' % (Style.BRIGHT, Fore.YELLOW, input_data['command'],
-                                             Style.RESET_ALL, Fore.BLUE, input_data['sig'])
-            output += '\n    %s%s%s' % (Fore.GREEN, input_data['docstring'], Fore.RESET)
+            output = '%s%s%s %s' % (color.Yellow, input_data['command'], color.Blue, input_data['sig'])
+            output += '\n    %s%s%s' % (color.Green, input_data['docstring'], color.Normal)
 
         # WTF: Alert on unknown type_tag and return a string of the input_data
         else:
             print 'Alert: help_formatter worker received malformed object: %s' % str(input_data)
-            output = '\n%s%s%s' % (Fore.RED, str(input_data), Fore.RESET)
+            output = '\n%s%s%s' % (color.Red, str(input_data), color.Normal)
 
         # Return the formatted and colored help
         return {'help': output}
