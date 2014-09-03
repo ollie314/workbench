@@ -14,17 +14,17 @@ class HelpFormatter(object):
 
         # Standard help text
         if type_tag == 'help':
-            output = '%s%s%s' % (color.Blue, input_data['help'], color.Normal)
+            output = '%s%s%s' % (color.LightBlue, input_data['help'], color.Normal)
 
         # Worker
         elif type_tag == 'worker':
             output = '%s%s' % (color.Yellow, input_data['name'])
-            output += '\n    %sInput: %s%s%s' % (color.Blue, color.Green, input_data['dependencies'], color.Normal)
+            output += '\n    %sInput: %s%s%s' % (color.LightBlue, color.Green, input_data['dependencies'], color.Normal)
             output += '\n    %s%s' % (color.Green, input_data['docstring'])
 
         # Command
         elif type_tag == 'command':
-            output = '%s%s%s %s' % (color.Yellow, input_data['command'], color.Blue, input_data['sig'])
+            output = '%s%s%s %s' % (color.Yellow, input_data['command'], color.LightBlue, input_data['sig'])
             output += '\n    %s%s%s' % (color.Green, input_data['docstring'], color.Normal)
 
         # WTF: Alert on unknown type_tag and return a string of the input_data
