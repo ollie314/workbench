@@ -626,10 +626,10 @@ class WorkBench(object):
     def _help_workbench(self):
         """ Help on Workbench """
         help = '%sWelcome to Workbench Help:%s' % (color.Yellow, color.Normal)
-        help += '\n\t%s- workbench.help(\'basic\') %s for getting started help' % (color.Green, color.Blue)
-        help += '\n\t%s- workbench.help(\'workers\') %s for help on available workers' % (color.Green, color.Blue)
-        help += '\n\t%s- workbench.help(\'commands\') %s for help on workbench commands' % (color.Green, color.Blue)
-        help += '\n\t%s- workbench.help(topic) %s where topic can be a help, command or worker' % (color.Green, color.Blue)
+        help += '\n\t%s- workbench.help(\'basic\') %s for getting started help' % (color.Green, color.LightBlue)
+        help += '\n\t%s- workbench.help(\'workers\') %s for help on available workers' % (color.Green, color.LightBlue)
+        help += '\n\t%s- workbench.help(\'commands\') %s for help on workbench commands' % (color.Green, color.LightBlue)
+        help += '\n\t%s- workbench.help(topic) %s where topic can be a help, command or worker' % (color.Green, color.LightBlue)
         help += '\n\n%sSee http://github.com/SuperCowPowers/workbench for more information\n%s' % (color.Yellow, color.Normal)
         return help
 
@@ -637,10 +637,10 @@ class WorkBench(object):
         """ Help for Workbench Basics """
         help =  '%sWorkbench: Getting started...' % (color.Yellow)
         help += '\n%sStore a sample into Workbench:'  % (color.Green)
-        help += '\n\t%s$ workbench.store_sample(raw_bytes, filename, type_tag)' % (color.Blue)
+        help += '\n\t%s$ workbench.store_sample(raw_bytes, filename, type_tag)' % (color.LightBlue)
         help += '\n\n%sNotice store_sample returns an md5 of the sample...'% (color.Yellow)
         help += '\n%sRun workers on the sample (view, meta, whatever...):'  % (color.Green)
-        help += '\n\t%s$ workbench.work_request(\'view\', md5)%s' % (color.Blue, color.Normal)
+        help += '\n\t%s$ workbench.work_request(\'view\', md5)%s' % (color.LightBlue, color.Normal)
         return help
 
     def _help_commands(self):

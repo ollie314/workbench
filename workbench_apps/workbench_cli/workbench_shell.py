@@ -15,14 +15,14 @@ try:
     import pandas as pd
 except ImportError:
     print '\n%sNotice: pandas not found...' % color.Yellow
-    print '\t%sWe recommend installing pandas: %s$ pip install pandas%s' % (color.Blue, color.Red, color.Normal)
+    print '\t%sWe recommend installing pandas: %s$ pip install pandas%s' % (color.LightBlue, color.Red, color.Normal)
 
 try:
     import matplotlib.pyplot as plt
     plt.ion()
 except ImportError:
     print '\n%sNotice: matplotlib not found...' % color.Yellow
-    print '\t%sWe recommend installing matplotlib: %s$ pip install matplotlib%s' % (color.Blue, color.Red, color.Normal)
+    print '\t%sWe recommend installing matplotlib: %s$ pip install matplotlib%s' % (color.LightBlue, color.Red, color.Normal)
 try:
     from . import client_helper
     from . import help_content
@@ -111,12 +111,12 @@ class WorkbenchShell(object):
                 raw_bytes = my_file.read()
                 md5 = hashlib.md5(raw_bytes).hexdigest()
                 if not self.workbench.has_sample(md5):
-                    print '%sStreaming Sample...%s' % (color.Purple, color.Normal)
+                    print '%sStreaming Sample...%s' % (color.LightPurple, color.Normal)
                     basename = os.path.basename(path)
                     md5 = self.streamer.stream_to_workbench(raw_bytes, basename, 'unknown', tags)
 
                 print '\n%s  %s%s %sLocked and Loaded...%s\n' % \
-                      (self.beer, color.Purple, md5[:6], color.Yellow, color.Normal)
+                      (self.beer, color.LightPurple, md5[:6], color.Yellow, color.Normal)
 
                 # Add tags to the sample
                 self.workbench.add_tags(md5, tags)
@@ -147,13 +147,13 @@ class WorkbenchShell(object):
 
         corr = tag_df.corr().fillna(1)
         corr_dict = corr.to_dict()  
-        print '\n%sSamples in Database%s' % (color.Purple, color.Normal)
+        print '\n%sSamples in Database%s' % (color.LightPurple, color.Normal)
         for tag, count in tag_freq.iteritems():
-            print '  %s%s: %s%s%s  (' % (color.Green, tag, color.Blue, count, color.Normal),
+            print '  %s%s: %s%s%s  (' % (color.Green, tag, color.LightBlue, count, color.Normal),
             tag_corrs = sorted(corr_dict[tag].iteritems(), key=operator.itemgetter(1), reverse=True)
             for corr_tag, value in tag_corrs[:5]:
                 if corr_tag != tag:
-                    print '%s%s:%s%.1f' % (color.Green, corr_tag, color.Blue, value),
+                    print '%s%s:%s%.1f' % (color.Green, corr_tag, color.LightBlue, value),
             print '%s)' % color.Normal
 
     def pull_df(self, md5):
@@ -193,7 +193,7 @@ class WorkbenchShell(object):
             Returns:
                 The running versions of both the CLI and the Workbench Server
         """
-        print '%s<<< Workbench CLI Version %s >>>%s' % (color.Blue, self.version, color.Normal)
+        print '%s<<< Workbench CLI Version %s >>>%s' % (color.LightBlue, self.version, color.Normal)
         print self.workbench.help('version')
 
     def run(self):
@@ -215,7 +215,7 @@ class WorkbenchShell(object):
         cfg.InteractiveShellEmbed.autoindent = True
         cfg.InteractiveShellEmbed.deep_reload = True
         cfg.PromptManager.in_template = (
-            r'{color.Purple}{short_md5}{color.Blue} Workbench{color.Green}[\#]> ')
+            r'{color.LightPurple}{short_md5}{color.LightBlue} Workbench{color.Green}[\#]> ')
         # cfg.PromptManager.out_template = ''
 
         # Create the IPython shell
