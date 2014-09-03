@@ -36,7 +36,7 @@ def run():
                 # Just want the logs
                 if log_name.endswith('_log'):
                     bro_log = workbench.get_sample(md5)['sample']['raw_bytes']
-                    print '\n\n<<< Bro log: %s >>>\n %s' % (log_name, bro_log)
+                    print '\n\n<<< Bro log: %s >>>\n %s' % (log_name, str(bro_log)[:500])
 
 def test():
     """Executes pcap_bro_raw test."""

@@ -31,7 +31,7 @@ setup(
     include_package_data=True,
     scripts=['workbench_cli/workbench'],
     install_requires=['colorama', 'funcsigs', 'ipython', 'lz4', 
-                      'matplotlib', 'pandas', 'pytest', 'zerorpc'],
+                      'pandas', 'pytest', 'zerorpc'],
     license='MIT',
     zip_safe=False,
     keywords='workbench security python',

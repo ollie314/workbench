@@ -8,8 +8,6 @@ import lz4
 import inspect
 import funcsigs
 import operator
-import matplotlib.pyplot as plt
-plt.ion()
 from colorama import Fore as F
 import pprint
 
@@ -19,6 +17,12 @@ except ImportError:
     print '\n%sNotice: pandas not found...' % F.YELLOW
     print '\t%sWe recommend installing pandas: %s$ pip install pandas%s' % (F.BLUE, F.RED, F.RESET)
 
+try:
+    import matplotlib.pyplot as plt
+    plt.ion()
+except ImportError:
+    print '\n%sNotice: matplotlib not found...' % F.YELLOW
+    print '\t%sWe recommend installing matplotlib: %s$ pip install matplotlib%s' % (F.BLUE, F.RED, F.RESET)
 try:
     from . import client_helper
     from . import help_content
@@ -137,25 +141,20 @@ class WorkbenchShell(object):
         del tag_df['md5']
         del tag_df['tags']
 
-        # Give aggregation counts
-        tag_freq = tag_df.sum().to_dict()
-        tag_freq = sorted(tag_freq.iteritems(), key=operator.itemgetter(1), reverse=True)
-        print '\n%sSamples in Database%s' % (F.MAGENTA, F.RESET)
-        for (tag, count) in tag_freq[:10]:
-            print '  %s%s: %s%s%s' % (F.GREEN, tag, F.BLUE, count, F.RESET)
+        # Give aggregation counts and correlations
+        tag_freq = tag_df.sum()
+        tag_freq.sort(ascending=False)
 
-        # Give label correlations
-        topN = 10
-        count = 1
         corr = tag_df.corr().fillna(1)
-        sorted_series = corr.unstack().order(ascending=False)
-        print '\n%sCorrelated Tags%s' % (F.MAGENTA, F.RESET)
-        for (name1, name2), value in sorted_series.iteritems():
-            if name1==name2: continue
-            if name1=='unknown' or name2=='unknown': continue
-            print '  %s%s:%s %s%.1f%s' % (F.GREEN, name1, name2, F.BLUE, value, F.RESET)
-            count += 1
-            if count > topN: break
+        corr_dict = corr.to_dict()  
+        print '\n%sSamples in Database%s' % (F.MAGENTA, F.RESET)
+        for tag, count in tag_freq.iteritems():
+            print '  %s%s: %s%s%s  (' % (F.GREEN, tag, F.BLUE, count, F.RESET),
+            tag_corrs = sorted(corr_dict[tag].iteritems(), key=operator.itemgetter(1), reverse=True)
+            for corr_tag, value in tag_corrs[:5]:
+                if corr_tag != tag:
+                    print '%s%s:%s%.1f' % (F.GREEN, corr_tag, F.BLUE, value),
+            print '%s)' % F.RESET
 
     def pull_df(self, md5):
         """Wrapper for the Workbench get_dataframe method
