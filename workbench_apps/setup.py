@@ -30,7 +30,7 @@ setup(
     package_dir={'workbench': 'workbench_cli'},
     include_package_data=True,
     scripts=['workbench_cli/workbench'],
-    install_requires=['colorama', 'funcsigs', 'ipython', 'lz4', 
+    install_requires=['funcsigs', 'ipython', 'lz4', 
                       'pandas', 'pytest', 'zerorpc'],
     license='MIT',
     zip_safe=False,
