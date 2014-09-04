@@ -9,6 +9,7 @@ from datetime import datetime
 import dir_watcher
 import inspect
 from IPython.utils.coloransi import TermColors as color
+#pylint: disable=no-member
 
 class PluginManager(object):
     """Plugin Manager for Workbench."""

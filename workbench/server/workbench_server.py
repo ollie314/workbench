@@ -21,6 +21,7 @@ import magic
 import datetime
 import lz4
 from IPython.utils.coloransi import TermColors as color
+#pylint: disable=no-member
 try:
     from cStringIO import StringIO
 except ImportError:
