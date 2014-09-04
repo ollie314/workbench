@@ -61,7 +61,7 @@ class DataStore(object):
         """
 
         # Temp sanity check for old clients
-        if len(filename) > 100:
+        if len(filename) > 1000:
             print 'switched bytes/filename... %s %s' % (sample_bytes[:100], filename[:100])
             exit(1)
 

@@ -32,7 +32,9 @@ def run():
             pprint.pprint(results)
 
 import pytest
+#pylint: disable=no-member
 @pytest.mark.xfail
+#pylint: enable=no-member
 def test():
     """Executes short md5 test."""
     run()

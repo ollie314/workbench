@@ -3,6 +3,7 @@
 import zipfile
 import zerorpc
 import pprint
+import os
 try:
     from cStringIO import StringIO
 except ImportError:
@@ -22,6 +23,7 @@ class Unzip(object):
         zipfile_output = zipfile.ZipFile(StringIO(raw_bytes))
         payload_md5s = []
         for name in zipfile_output.namelist():
+            filename = os.path.basename(name)
             payload_md5s.append(self.workbench.store_sample(zipfile_output.read(name), name, 'unknown'))
         return {'payload_md5s': payload_md5s}
 
@@ -35,12 +37,10 @@ def test():
     ''' unzip.py: Unit test'''
 
     # This worker test requires a local server running
-    import zerorpc
     workbench = zerorpc.Client(timeout=300, heartbeat=60)
     workbench.connect("tcp://127.0.0.1:4242")
 
     # Generate input for the worker
-    import os
     data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../data/zip/bad.zip')
     md5 = workbench.store_sample(open(data_path, 'rb').read(), 'bad.zip', 'zip')
     data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../data/zip/good.zip')

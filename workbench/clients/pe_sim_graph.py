@@ -153,7 +153,9 @@ def run():
         ('match (n)-[r]-() return n,r')
 
 import pytest
+#pylint: disable=no-member
 @pytest.mark.xfail
+#pylint: enable=no-member
 def test():
     """Executes pe_sim_graph test."""
     run()

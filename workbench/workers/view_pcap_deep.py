@@ -1,6 +1,7 @@
 ''' view_pcap_deep worker '''
 import zerorpc
 import pprint
+import os
 
 
 class ViewPcapDeep(object):
@@ -41,12 +42,10 @@ def test():
     ''' view_pcap_deep.py: Unit test'''
 
     # This worker test requires a local server running
-    import zerorpc
     workbench = zerorpc.Client(timeout=300, heartbeat=60)
     workbench.connect("tcp://127.0.0.1:4242")
 
     # Generate input for the worker
-    import os
     data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
                              '../data/pcap/winmediaplayer.pcap')
     md5 = workbench.store_sample(open(data_path, 'rb').read(), 'winmedia.pcap', 'pcap')

@@ -52,8 +52,6 @@ class MemoryImageMeta(object):
         return self.output
 
 # Unit test: Create the class, the proper input and run the execute() method for a test
-import pytest
-@pytest.mark.rekall
 def test():
     ''' mem_meta.py: Test '''
 

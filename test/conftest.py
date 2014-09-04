@@ -6,7 +6,9 @@ import zerorpc
 import pytest
 import workbench_singleton # This spins up the server
 
+#pylint: disable=no-member
 @pytest.fixture(scope='session')
+#pylint: enable=no-member
 def workbench_conn(request):
     ''' Workbench Fixture '''
 

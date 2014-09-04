@@ -18,9 +18,10 @@ import inspect
 import funcsigs
 import ConfigParser
 import magic
-from colorama import Fore as F, Style
 import datetime
 import lz4
+from IPython.utils.coloransi import TermColors as color
+#pylint: disable=no-member
 try:
     from cStringIO import StringIO
 except ImportError:
@@ -620,27 +621,27 @@ class WorkBench(object):
             # message that has both the md5 of what they were looking for and
             # a nice informative message that explains what might have happened
             sample_md5 = e.args[0]
-            return '%s%s\n\t%s%s%s' % (F.YELLOW, sample_md5, F.GREEN, e.message(), F.RESET)
+            return '%s%s\n\t%s%s%s' % (color.Yellow, sample_md5, color.Green, e.message(), color.Normal)
 
     # Fixme: These are internal methods that basically just provide help text
     def _help_workbench(self):
         """ Help on Workbench """
-        help = '%sWelcome to Workbench Help:%s' % (F.YELLOW, F.RESET)
-        help += '\n\t%s- workbench.help(\'basic\') %s for getting started help' % (F.GREEN, F.BLUE)
-        help += '\n\t%s- workbench.help(\'workers\') %s for help on available workers' % (F.GREEN, F.BLUE)
-        help += '\n\t%s- workbench.help(\'commands\') %s for help on workbench commands' % (F.GREEN, F.BLUE)
-        help += '\n\t%s- workbench.help(topic) %s where topic can be a help, command or worker' % (F.GREEN, F.BLUE)
-        help += '\n\n%sSee http://github.com/SuperCowPowers/workbench for more information\n%s' % (F.YELLOW, F.RESET)
+        help = '%sWelcome to Workbench Help:%s' % (color.Yellow, color.Normal)
+        help += '\n\t%s- workbench.help(\'basic\') %s for getting started help' % (color.Green, color.LightBlue)
+        help += '\n\t%s- workbench.help(\'workers\') %s for help on available workers' % (color.Green, color.LightBlue)
+        help += '\n\t%s- workbench.help(\'commands\') %s for help on workbench commands' % (color.Green, color.LightBlue)
+        help += '\n\t%s- workbench.help(topic) %s where topic can be a help, command or worker' % (color.Green, color.LightBlue)
+        help += '\n\n%sSee http://github.com/SuperCowPowers/workbench for more information\n%s' % (color.Yellow, color.Normal)
         return help
 
     def _help_basic(self):
         """ Help for Workbench Basics """
-        help =  '%sWorkbench: Getting started...' % (F.YELLOW)
-        help += '\n%sStore a sample into Workbench:'  % (F.GREEN)
-        help += '\n\t%s$ workbench.store_sample(raw_bytes, filename, type_tag)' % (F.BLUE)
-        help += '\n\n%sNotice store_sample returns an md5 of the sample...'% (F.YELLOW)
-        help += '\n%sRun workers on the sample (view, meta, whatever...):'  % (F.GREEN)
-        help += '\n\t%s$ workbench.work_request(\'view\', md5)%s' % (F.BLUE, F.RESET)
+        help =  '%sWorkbench: Getting started...' % (color.Yellow)
+        help += '\n%sStore a sample into Workbench:'  % (color.Green)
+        help += '\n\t%s$ workbench.store_sample(raw_bytes, filename, type_tag)' % (color.LightBlue)
+        help += '\n\n%sNotice store_sample returns an md5 of the sample...'% (color.Yellow)
+        help += '\n%sRun workers on the sample (view, meta, whatever...):'  % (color.Green)
+        help += '\n\t%s$ workbench.work_request(\'view\', md5)%s' % (color.LightBlue, color.Normal)
         return help
 
     def _help_commands(self):

@@ -24,7 +24,7 @@ class PcapBro(object):
         self.workbench.connect("tcp://127.0.0.1:4242")
         self.bro_script_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'bro')
         if not os.path.exists(self.bro_script_dir):
-            raise RuntimeError('pcap_bro could not find bro directory under: %s' % self.orig_dir)
+            raise RuntimeError('pcap_bro could not find bro directory under: %s' % self.bro_script_dir)
 
     def setup_pcap_inputs(self, input_data):
         ''' Write the PCAPs to disk for Bro to process and return the pcap filenames '''
@@ -148,7 +148,6 @@ def test():
     ''' pcap_bro.py: Unit test'''
 
     # This worker test requires a local server running
-    import zerorpc
     workbench = zerorpc.Client(timeout=300, heartbeat=60)
     workbench.connect("tcp://127.0.0.1:4242")
 
