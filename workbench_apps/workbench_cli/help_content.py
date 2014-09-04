@@ -2,6 +2,7 @@
 
 import inspect
 from IPython.utils.coloransi import TermColors as color
+#pylint: disable=no-member
 
 class WorkbenchShellHelp(object):
     """Workbench CLI Help"""

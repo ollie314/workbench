@@ -2,6 +2,7 @@
 ''' HelpFormatter worker '''
 
 from IPython.utils.coloransi import TermColors as color
+#pylint: disable=no-member
 
 class HelpFormatter(object):
     ''' This worker does CLI formatting and coloring for any help object '''

@@ -10,6 +10,7 @@ import funcsigs
 import operator
 import pprint
 from IPython.utils.coloransi import TermColors as color
+#pylint: disable=no-member
 
 try:
     import pandas as pd
