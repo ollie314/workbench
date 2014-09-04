@@ -122,18 +122,21 @@ class WorkbenchShell(object):
                 # Add tags to the sample
                 self.workbench.add_tags(md5, tags)
 
-                # Store information about the sample into the sesssion
-                basename = os.path.basename(path)
-                self.session.filename = basename
-                self.session.md5 = md5
-                self.session.short_md5 = md5[:6]
-                self.ipshell.push({'md5': self.session.md5})
-                self.ipshell.push({'short_md5': self.session.short_md5})
+                # Pivot on this md5
+                self.pivot(md5)
 
         # Dump out tag information
-        self.tag_info()
+        self.tags()
 
-    def tag_info(self):
+    def pivot(self, md5):
+        '''Pivot on the md5e'''
+        self.session.md5 = md5
+        self.session.short_md5 = md5[:6]
+        self.ipshell.push({'md5': self.session.md5})
+        self.ipshell.push({'short_md5': self.session.short_md5})        
+        
+    def tags(self):
+        '''Display tag information for all samples in database'''
         tags = self.workbench.get_all_tags()
         if not tags:
             return
@@ -177,6 +180,11 @@ class WorkbenchShell(object):
         my_df['tags'] = [', '.join(tag_list) for tag_list in my_df['tags']]
         return my_df.join(tags_df)
 
+    def flatten(self, df, column_name):
+        """Flatten a column in the dataframe that contains lists"""
+        return pd.DataFrame([[md5, x] for md5, value_list in zip(df['md5'],df[column_name]) 
+                             for x in value_list], columns=['md5',column_name])
+
     def search(self, tags=None):
         """Wrapper for the Workbench search method
             Args:
@@ -204,7 +212,7 @@ class WorkbenchShell(object):
         self.versions()
 
         # Sample/Tag info and Help
-        self.tag_info()
+        self.tags()
         print '\n%s' % self.workbench.help('cli')
 
         # Now that we have the Workbench connection spun up, we register some stuff
@@ -310,8 +318,10 @@ class WorkbenchShell(object):
             'help': self._help,
             'load_sample': self.load_sample,
             'pull_df': self.pull_df,
+            'flatten': self.flatten,
             'flatten_tags': self.flatten_tags,
-            'tag_info': self.tag_info,
+            'tags': self.tags,
+            'pivot': self.pivot,
             'search': self.search,
             'reconnect': lambda info=self.server_info: self._connect(info),
             'version': self.versions,
