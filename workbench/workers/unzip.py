@@ -3,6 +3,7 @@
 import zipfile
 import zerorpc
 import pprint
+import os
 try:
     from cStringIO import StringIO
 except ImportError:
@@ -22,6 +23,7 @@ class Unzip(object):
         zipfile_output = zipfile.ZipFile(StringIO(raw_bytes))
         payload_md5s = []
         for name in zipfile_output.namelist():
+            filename = os.path.basename(name)
             payload_md5s.append(self.workbench.store_sample(zipfile_output.read(name), name, 'unknown'))
         return {'payload_md5s': payload_md5s}
 
