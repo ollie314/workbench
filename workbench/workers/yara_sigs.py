@@ -69,10 +69,10 @@ def test():
     workbench.connect("tcp://127.0.0.1:4242")
 
     # Test a file with known yara sigs
-    filename = '../data/pe/bad/auriga.exe'
+    data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../data/pe/bad/auriga.exe')
 
-    with open(filename,'rb') as pe_file:
-        base_name = os.path.basename(filename)
+    with open(data_path,'rb') as pe_file:
+        base_name = os.path.basename(data_path)
         md5 = workbench.store_sample(pe_file.read(), base_name, 'exe')
 
     # Grab the sample from workbench
