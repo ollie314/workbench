@@ -1,11 +1,26 @@
 ''' PE peid worker, uses the peid_userdb.txt database of signatures '''
+import os
 import peutils
 import pefile
 import pkg_resources
 import pprint
 
-# Fixme: We want to load this once per module load
-PEID_SIGS = pkg_resources.resource_string(__name__, 'peid_userdb.txt')
+# We want to load this once per module load
+def get_peid_db():
+    ''' Grab the peid_userdb.txt file from local disk '''
+
+    # Try to find the yara rules directory relative to the worker
+    my_dir = os.path.dirname(os.path.realpath(__file__))
+    db_path = os.path.join(my_dir, 'peid_userdb.txt')
+    if not os.path.exists(db_path):
+        raise RuntimeError('peid could not find peid_userdb.txt under: %s' % db_path)
+
+    # Okay load up signature
+    print 'Info: Loading PE signatures'
+    signatures = peutils.SignatureDatabase(data = open(db_path, 'rb').read())
+    return signatures
+
+PEID_SIGS = get_peid_db()
 
 class PEIDWorker(object):
     ''' This worker looks up pe_id signatures for a PE file. '''
@@ -30,8 +45,7 @@ class PEIDWorker(object):
 
     def peid_features(self, pefile_handle):
         ''' Get features from PEid signature database'''
-        signatures = peutils.SignatureDatabase(data = self.peid_sigs)
-        peid_match = signatures.match(pefile_handle)
+        peid_match = self.peid_sigs.match(pefile_handle)
         return peid_match if peid_match else []
 
 
@@ -47,7 +61,7 @@ def test():
     # Generate input for the worker
     import os
     data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                             '../data/pe/bad/033d91aae8ad29ed9fbb858179271232')
+                             '../data/pe/bad/86714940f491bc38c2e842e80c7f778e')
     md5 = workbench.store_sample(open(data_path, 'rb').read(), 'bad_pe', 'exe')
     input_data = workbench.get_sample(md5)
 
