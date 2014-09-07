@@ -5,7 +5,22 @@ import yara
 import pprint
 import collections
 
+# We want to load this once per module load
+def get_rules_from_disk():
+    ''' Recursively traverse the yara/rules directory for rules '''
 
+    # Try to find the yara rules directory relative to the worker
+    my_dir = os.path.dirname(os.path.realpath(__file__))
+    yara_rule_path = os.path.join(my_dir, 'yara/rules')
+    if not os.path.exists(yara_rule_path):
+        raise RuntimeError('yara could not find yara rules directory under: %s' % my_dir)
+
+    # Okay load in all the rules under the yara rule path
+    rules = yara.load_rules(rules_rootpath=yara_rule_path, fast_match=True)
+
+    return rules
+
+YARA_RULES = get_rules_from_disk()
 
 class YaraSigs(object):
     ''' This worker check for matches against yara sigs. 
@@ -13,21 +28,7 @@ class YaraSigs(object):
     dependencies = ['sample']
 
     def __init__(self):
-        self.rules = self.get_rules_from_disk()
-
-    def get_rules_from_disk(self):
-        ''' Recursively traverse the yara/rules directory for rules '''
-
-        # Try to find the yara rules directory relative to the worker
-        my_dir = os.path.dirname(os.path.realpath(__file__))
-        yara_rule_path = os.path.join(my_dir, 'yara/rules')
-        if not os.path.exists(yara_rule_path):
-            raise RuntimeError('yara could not find yara rules directory under: %s' % my_dir)
-
-        # Okay load in all the rules under the yara rule path
-        self.rules = yara.load_rules(rules_rootpath=yara_rule_path, fast_match=True)
-
-        return self.rules
+        self.rules = YARA_RULES
 
     def execute(self, input_data):
         ''' yara worker execute method '''
