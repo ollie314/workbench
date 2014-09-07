@@ -3,6 +3,8 @@
 import os
 import yara
 import pprint
+import collections
+
 
 
 class YaraSigs(object):
@@ -11,9 +13,9 @@ class YaraSigs(object):
     dependencies = ['sample']
 
     def __init__(self):
-        self.rules = self.get_yara_rules()
+        self.rules = self.get_rules_from_disk()
 
-    def get_yara_rules(self):
+    def get_rules_from_disk(self):
         ''' Recursively traverse the yara/rules directory for rules '''
 
         # Try to find the yara rules directory relative to the worker
@@ -23,7 +25,7 @@ class YaraSigs(object):
             raise RuntimeError('yara could not find yara rules directory under: %s' % my_dir)
 
         # Okay load in all the rules under the yara rule path
-        self.rules = yara.load_rules(rules_rootpath=yara_rule_path) 
+        self.rules = yara.load_rules(rules_rootpath=yara_rule_path, fast_match=True)
 
         return self.rules
 
@@ -31,36 +33,49 @@ class YaraSigs(object):
         ''' yara worker execute method '''
         raw_bytes = input_data['sample']['raw_bytes']
         matches = self.rules.match_data(raw_bytes)
-        return {'matches': matches}
+
+        # The matches data is organized in the following way
+        # {'filename1': [match_list], 'filename2': [match_list]}
+        # match_list = list of match
+        # match = {'meta':{'description':'blah}, tags=[], matches:True,
+        #           strings:[string_list]}
+        # string = {'flags':blah, 'identifier':'$', 'data': FindWindow, 'offset'}
+        # 
+        # So we're going to flatten a bit (shrug)
+        # {filename_match_meta_description: string_list}
+        flat_data = collections.defaultdict(list)
+        for filename, match_list in matches.iteritems():
+            for match in match_list:
+                if 'description' in match['meta']:
+                    new_tag = filename+'_'+match['meta']['description']
+                else:
+                    new_tag = filename+'_'+match['rule']
+                for match in match['strings']:
+                    flat_data[new_tag].append(match['data'])
+                # Remove duplicates
+                flat_data[new_tag] = list(set(flat_data[new_tag]))
+
+        return {'matches': flat_data}
 
 
 # Unit test: Create the class, the proper input and run the execute() method for a test
 def test():
-    ''' yara.py: Unit test'''
+    ''' yara_sigs.py: Unit test'''
 
     # This worker test requires a local server running
     import zerorpc
     workbench = zerorpc.Client(timeout=300, heartbeat=60)
     workbench.connect("tcp://127.0.0.1:4242")
 
-    # Store all the files in directory and make an md5 list
-    data_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)),'../data/pe/bad')
-    file_list = [os.path.join(data_dir, child) for child in os.listdir(data_dir)]
-    md5_list = []
-    for filename in file_list:
+    # Test a file with known yara sigs
+    filename = '../data/pe/bad/auriga.exe'
 
-        # Skip OS generated files
-        if '.DS_Store' in filename: continue
+    with open(filename,'rb') as pe_file:
+        base_name = os.path.basename(filename)
+        md5 = workbench.store_sample(pe_file.read(), base_name, 'exe')
 
-        with open(filename,'rb') as pe_file:
-            base_name = os.path.basename(filename)
-            md5_list.append(workbench.store_sample(pe_file.read(), base_name, 'exe'))
-
-    # Store the md5 list on the server as a sample set
-    workbench.store_sample_set(md5_list)
-
-    # Grab one of the sample for input to the local unit test
-    input_data = workbench.get_sample(md5_list[0])
+    # Grab the sample from workbench
+    input_data = workbench.get_sample(md5)
 
     # Execute the worker (unit test)
     worker = YaraSigs()
@@ -69,11 +84,9 @@ def test():
     pprint.pprint(output)
 
     # Execute the worker (server test)
-    sample_set = workbench.store_sample_set(md5_list)
-    output = workbench.set_work_request('yara_sigs', sample_set)
-    get_all_output = list(output)
+    output = workbench.work_request('yara_sigs', md5)
     print '\n<<< Server Test >>>'
-    pprint.pprint(get_all_output)
+    pprint.pprint(output)
 
 if __name__ == "__main__":
     test()
