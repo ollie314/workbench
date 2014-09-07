@@ -16,7 +16,6 @@ def get_peid_db():
         raise RuntimeError('peid could not find peid_userdb.txt under: %s' % db_path)
 
     # Okay load up signature
-    print 'Info: Loading PE signatures'
     signatures = peutils.SignatureDatabase(data = open(db_path, 'rb').read())
     return signatures
 
