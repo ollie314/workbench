@@ -1,4 +1,5 @@
 rule madness {
+  meta:
    author = "Jason Jones"
    author_email = "jasonjones@arbor.net"
    date = "2014-01-15"
