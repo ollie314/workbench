@@ -6,7 +6,7 @@ import pprint
 
 class ViewZipDeep(object):
     ''' ViewZipDeep: Generates a view for Zip files '''
-    dependencies = ['meta', 'unzip']
+    dependencies = ['view_zip']
 
     def __init__(self):
         self.workbench = zerorpc.Client(timeout=300, heartbeat=60)
@@ -20,8 +20,7 @@ class ViewZipDeep(object):
             return {'error': self.__class__.__name__+': called on '+input_data['meta']['type_tag']}
 
         view = {}
-        view['payload_md5s'] = input_data['unzip']['payload_md5s']
-        view.update(input_data['meta'])
+        view.update(input_data['view_zip'])
 
         # Okay this view is going to also give the meta data about the payloads
         view['payload_meta'] = [self.workbench.work_request('meta', md5) for md5 in input_data['unzip']['payload_md5s']]
