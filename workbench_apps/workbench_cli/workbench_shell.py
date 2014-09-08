@@ -107,6 +107,7 @@ class WorkbenchShell(object):
             file_list = [file_path]
 
         # Upload the files into workbench
+        md5_list = []
         for path in file_list:
             with open(path, 'rb') as my_file:
                 raw_bytes = my_file.read()
@@ -121,15 +122,38 @@ class WorkbenchShell(object):
 
                 # Add tags to the sample
                 self.workbench.add_tags(md5, tags)
+                md5_list.append(md5)
 
-                # Pivot on this md5
-                self.pivot(md5)
+        # Pivot on the sample_set
+        set_md5 = self.workbench.store_sample_set(md5_list)
+        self.pivot(set_md5, '_'.join(tags))
 
         # Dump out tag information
         self.tags()
 
-    def pivot(self, md5):
+    def pivot(self, md5, tag=''):
         '''Pivot on the md5e'''
+
+        # Is the md5 a tag?
+        ss = self.workbench.generate_sample_set(md5)
+        if ss:
+            tag = md5 if not tag else tag
+            md5 = ss
+
+        # Is the md5 a sample_set?
+        if self.workbench.is_sample_set(md5):
+
+            # Is the sample_set one sample?
+            ss = self.workbench.get_sample_set(md5)
+            if len(ss) == 1:
+                md5 = ss[0]
+            deco = '(%s:%d)' % (tag, len(ss))
+            self.ipshell.push({'prompt_deco': deco})
+        else:
+            deco = '(%s:1)' % tag
+            self.ipshell.push({'prompt_deco': deco})
+
+        # Set the new md5
         self.session.md5 = md5
         self.session.short_md5 = md5[:6]
         self.ipshell.push({'md5': self.session.md5})
@@ -141,24 +165,9 @@ class WorkbenchShell(object):
         if not tags:
             return
         tag_df = pd.DataFrame(tags)
-        tag_df = self.flatten_tags(tag_df)
-        del tag_df['md5']
-        del tag_df['tags']
-
-        # Give aggregation counts and correlations
-        tag_freq = tag_df.sum()
-        tag_freq.sort(ascending=False)
-
-        corr = tag_df.corr().fillna(1)
-        corr_dict = corr.to_dict()  
+        tag_df = self.vectorize(tag_df, 'tags')
         print '\n%sSamples in Database%s' % (color.LightPurple, color.Normal)
-        for tag, count in tag_freq.iteritems():
-            print '  %s%s: %s%s%s  (' % (color.Green, tag, color.LightBlue, count, color.Normal),
-            tag_corrs = sorted(corr_dict[tag].iteritems(), key=operator.itemgetter(1), reverse=True)
-            for corr_tag, value in tag_corrs[:5]:
-                if corr_tag != tag:
-                    print '%s%s:%s%.1f' % (color.Green, corr_tag, color.LightBlue, value),
-            print '%s)' % color.Normal
+        self.top_corr(tag_df)
 
     def pull_df(self, md5):
         """Wrapper for the Workbench get_dataframe method
@@ -174,16 +183,30 @@ class WorkbenchShell(object):
         except zerorpc.exceptions.RemoteError as e:
             return repr_to_str_decorator.r_to_s(self._data_not_found)(e)
 
-    def flatten_tags(self, my_df):
-        """Flatten(vectorize) the tags column in the dataframe"""
-        tags_df = my_df['tags'].str.join(sep='-').str.get_dummies(sep='-')
-        my_df['tags'] = [', '.join(tag_list) for tag_list in my_df['tags']]
-        return my_df.join(tags_df)
+    def vectorize(self, df, column_name):
+        """Vectorize a column in the dataframe"""
+        vec_df = df[column_name].str.join(sep='-').str.get_dummies(sep='-')
+        return vec_df
 
     def flatten(self, df, column_name):
         """Flatten a column in the dataframe that contains lists"""
-        return pd.DataFrame([[md5, x] for md5, value_list in zip(df['md5'],df[column_name]) 
-                             for x in value_list], columns=['md5',column_name])
+        _exp_list = [[md5, x] for md5, value_list in zip(df['md5'], df[column_name]) for x in value_list]
+        return pd.DataFrame(_exp_list, columns=['md5',column_name])
+
+    def top_corr(self, df):
+        """Give aggregation counts and correlations"""
+        tag_freq = df.sum()
+        tag_freq.sort(ascending=False)
+
+        corr = df.corr().fillna(1)
+        corr_dict = corr.to_dict()
+        for tag, count in tag_freq.iteritems():
+            print '  %s%s: %s%s%s  (' % (color.Green, tag, color.LightBlue, count, color.Normal),
+            tag_corrs = sorted(corr_dict[tag].iteritems(), key=operator.itemgetter(1), reverse=True)
+            for corr_tag, value in tag_corrs[:5]:
+                if corr_tag != tag and (value > .2):
+                    print '%s%s:%s%.1f' % (color.Green, corr_tag, color.LightBlue, value),
+            print '%s)' % color.Normal
 
     def search(self, tags=None):
         """Wrapper for the Workbench search method
@@ -224,7 +247,7 @@ class WorkbenchShell(object):
         cfg.InteractiveShellEmbed.autoindent = True
         cfg.InteractiveShellEmbed.deep_reload = True
         cfg.PromptManager.in_template = (
-            r'{color.LightPurple}{short_md5}{color.LightBlue} Workbench{color.Green}[\#]> ')
+            r'{color.LightPurple}{short_md5}{color.Yellow}{prompt_deco}{color.LightBlue} Workbench{color.Green}[\#]> ')
         # cfg.PromptManager.out_template = ''
 
         # Create the IPython shell
@@ -319,14 +342,16 @@ class WorkbenchShell(object):
             'load_sample': self.load_sample,
             'pull_df': self.pull_df,
             'flatten': self.flatten,
-            'flatten_tags': self.flatten_tags,
+            'vectorize': self.vectorize,
+            'top_corr': self.top_corr,
             'tags': self.tags,
             'pivot': self.pivot,
             'search': self.search,
             'reconnect': lambda info=self.server_info: self._connect(info),
             'version': self.versions,
             'versions': self.versions,
-            'short_md5': self.session.short_md5
+            'short_md5': self.session.short_md5,
+            'prompt_deco': self.session.prompt_deco
         }
         commands.update(general)
 
@@ -351,6 +376,7 @@ class WorkbenchShell(object):
             self.filename = None
             self.md5 = None
             self.short_md5 = '-'
+            self.prompt_deco = ''
             self.server = 'localhost'
     
     def _register_info(self):
