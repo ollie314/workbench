@@ -37,7 +37,7 @@ Workbench Examples
 
 Big Thanks
 ~~~~~~~~~~
-- Yara Sigs: Crowdstrike, Mandiant, Viper, KevTheHermit
+- Yara Sigs: AlienVault, Crowdstrike, Mandiant, Viper, KevTheHermit
 
 Pull the repository
 ~~~~~~~~~~~~~~~~~~~
