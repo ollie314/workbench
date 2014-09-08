@@ -6,7 +6,7 @@ import pprint
 
 class ViewZip(object):
     ''' ViewZip: Generates a view for Zip files '''
-    dependencies = ['meta', 'unzip']
+    dependencies = ['meta', 'unzip', 'yara_sigs']
 
     def __init__(self):
         self.workbench = zerorpc.Client(timeout=300, heartbeat=60)
@@ -21,6 +21,7 @@ class ViewZip(object):
 
         view = {}
         view['payload_md5s'] = input_data['unzip']['payload_md5s']
+        view['yara_sigs'] = input_data['yara_sigs']['matches'].keys()
         view.update(input_data['meta'])
 
         # Okay this view is going to also give the meta data about the payloads
