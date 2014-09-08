@@ -35,6 +35,10 @@ Workbench Examples
 -  `PE File Static Analysis Notebook <http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/workbench/notebooks/PE_Static_Analysis.ipynb>`_
 -  `Memory Analysis Notebook <http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/workbench/notebooks/Rekall_to_Dataframe.ipynb>`_
 
+Big Thanks
+~~~~~~~~~~
+- Yara Sigs: Crowdstrike, Mandiant, Viper, KevTheHermit
+
 Pull the repository
 ~~~~~~~~~~~~~~~~~~~
 
