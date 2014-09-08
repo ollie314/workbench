@@ -96,7 +96,7 @@ class WorkbenchShell(object):
 
         # Recommend a tag
         if not tags:
-            print '\n%sRecommended: Add a list of tags when you load samples. \
+            print '\n%sRequired: Add a list of tags when you load samples (put \'unknown\' if you must). \
                    \n\t%sExamples: [\'bad\'], [\'good\'], [\'bad\',\'aptz13\']%s' % (color.Yellow, color.Green, color.Normal)
             return
 
