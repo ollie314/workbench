@@ -46,6 +46,7 @@ def test():
     md5 = workbench.store_sample(open(data_path, 'rb').read(), 'bad.zip', 'zip')
     input_data = workbench.work_request('meta', md5)
     input_data.update(workbench.work_request('unzip', md5))
+    input_data.update(workbench.work_request('yara_sigs', md5))
 
     # Execute the worker (unit test)
     worker = ViewZip()
