@@ -14,16 +14,8 @@ class ViewZipDeep(object):
 
     def execute(self, input_data):
         ''' Execute the ViewZipDeep worker '''
-
-        # Just a small check to make sure we haven't been called on the wrong file type
-        if (input_data['meta']['type_tag'] != 'zip'):
-            return {'error': self.__class__.__name__+': called on '+input_data['meta']['type_tag']}
-
         view = {}
         view.update(input_data['view_zip'])
-
-        # Okay this view is going to also give the meta data about the payloads
-        view['payload_meta'] = [self.workbench.work_request('meta', md5) for md5 in input_data['unzip']['payload_md5s']]
         return view
 
     def __del__(self):
@@ -42,8 +34,7 @@ def test():
     # Generate input for the worker
     data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../data/zip/bad.zip')
     md5 = workbench.store_sample(open(data_path, 'rb').read(), 'bad.zip', 'zip')
-    input_data = workbench.work_request('meta', md5)
-    input_data.update(workbench.work_request('unzip', md5))
+    input_data = workbench.work_request('view_zip', md5)
 
     # Execute the worker (unit test)
     worker = ViewZipDeep()
