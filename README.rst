@@ -20,6 +20,8 @@ Workbench Videos
 -  `Workbench Command Interface <http://youtu.be/MvSa7aklWTI>`_
 -  `Workbench Command Interface 2 <http://youtu.be/VlxP7OdKQAI>`_
 -  `Workbench Robust Client/Server <http://youtu.be/RxSaJuC6t1k>`_
+-  `Dive into PCAPs with Workbench <http://youtu.be/ywasp2AEWO8>`_
+-  `Correlating Yara Sigs with Workbench <http://youtu.be/7VAI20FrgOc>`_
 
 Workbench Examples
 ~~~~~~~~~~~~~~~~~~
