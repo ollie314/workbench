@@ -30,6 +30,10 @@ def run():
             workbench.index_worker_output('view_pcap', md5, 'view_pcap', None)
             print '\n\n<<< PCAP Data: %s Indexed>>>' % (base_name)
 
+import pytest
+#pylint: disable=no-member
+@pytest.mark.xfail
+#pylint: enable=no-member
 def test():
     """Executes pcap_meta_indexer test."""
     run()
