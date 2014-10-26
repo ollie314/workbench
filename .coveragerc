@@ -1,6 +1,5 @@
 [run]
-timid = True
-coroutine = gevent
+concurrency = gevent
 
 [report]
 exclude_lines =
