@@ -117,15 +117,7 @@ class WorkBench(object):
         # If the sample comes in with an unknown type_tag try to determine it
         if type_tag == 'unknown':
             print 'Info: Unknown File -- Trying to Determine Type...'
-            type_tag = self.guess_type_tag(input_bytes)
-            if type_tag == 'data':
-                print 'Info: File -- Trying to Determine Type from filename...'
-                ext = os.path.splitext(filename)[1][1:]
-                if ext in ['mem','vmem']:
-                    type_tag = 'mem'
-                else:
-                    print 'Alert: Failed to Determine Type for %s' % filename
-                    exit(1) # Temp
+            type_tag = self.guess_type_tag(input_bytes, filename)
 
         # Do we have a compressed sample? If so decompress it
         if type_tag == 'lz4':
@@ -276,7 +268,7 @@ class WorkBench(object):
             print 'Info: DataFrame compression %.0f%%' % (len(compress_df)*100.0/float(len(sample['raw_bytes'])))
             return compress_df
 
-    def guess_type_tag(self, input_bytes):
+    def guess_type_tag(self, input_bytes, filename):
         """ Try to guess the type_tag for this sample """
         mime_to_type = {'application/jar': 'jar',
                         'application/java-archive': 'jar',
@@ -302,7 +294,18 @@ class WorkBench(object):
         with magic.Magic(flags=magic.MAGIC_MIME_TYPE) as mag:
             mime_type = mag.id_buffer(input_bytes[:1024])
             if mime_type in mime_to_type:
-                return mime_to_type[mime_type]
+                type_tag = mime_to_type[mime_type]
+
+                # If we get 'data' back look at the filename
+                if type_tag == 'data':
+                    print 'Info: File -- Trying to Determine Type from filename...'
+                    ext = os.path.splitext(filename)[1][1:]
+                    if ext in ['mem','vmem']:
+                        type_tag = 'mem'
+                    else:
+                        print 'Alert: Failed to Determine Type for %s' % filename
+                        exit(1) # Temp
+                return type_tag
             else:
                 print 'Alert: Sample Type could not be Determined'
                 return 'unknown'
