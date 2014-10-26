@@ -305,7 +305,12 @@ class DataStore(object):
             cursor = self.database['tags'].find({}, {'_id':0, 'md5':1})
         else:
             cursor = self.database['tags'].find({'tags': {'$in': tags}}, {'_id':0, 'md5':1})
-        return [item['md5'] for item in cursor]
+
+        # We have the tags, now make sure we only return those md5 which 
+        # also exist in the samples collection
+        tag_md5s = set([item['md5'] for item in cursor])
+        sample_md5s = set(item['md5'] for item in self.database['samples'].find({}, {'_id':0, 'md5':1}))
+        return list(tag_md5s.intersection(sample_md5s))
 
     def tags_all(self):
         """List of the tags and md5s for all samples
