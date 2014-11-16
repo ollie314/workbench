@@ -1,6 +1,13 @@
 workbench.workers package
 =========================
 
+Subpackages
+-----------
+
+.. toctree::
+
+    workbench.workers.rekall_adapter
+
 Submodules
 ----------
 
@@ -56,6 +63,46 @@ workbench.workers.log_meta module
 ---------------------------------
 
 .. automodule:: workbench.workers.log_meta
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+workbench.workers.mem_connscan module
+-------------------------------------
+
+.. automodule:: workbench.workers.mem_connscan
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+workbench.workers.mem_dlllist module
+------------------------------------
+
+.. automodule:: workbench.workers.mem_dlllist
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+workbench.workers.mem_meta module
+---------------------------------
+
+.. automodule:: workbench.workers.mem_meta
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+workbench.workers.mem_procdump module
+-------------------------------------
+
+.. automodule:: workbench.workers.mem_procdump
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+workbench.workers.mem_pslist module
+-----------------------------------
+
+.. automodule:: workbench.workers.mem_pslist
     :members:
     :undoc-members:
     :show-inheritance:
@@ -200,6 +247,22 @@ workbench.workers.view_log_meta module
 --------------------------------------
 
 .. automodule:: workbench.workers.view_log_meta
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+workbench.workers.view_memory module
+------------------------------------
+
+.. automodule:: workbench.workers.view_memory
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+workbench.workers.view_memory_deep module
+-----------------------------------------
+
+.. automodule:: workbench.workers.view_memory_deep
     :members:
     :undoc-members:
     :show-inheritance:
