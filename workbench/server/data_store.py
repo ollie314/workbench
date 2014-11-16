@@ -416,8 +416,8 @@ class DataStore(object):
         Operations like making sure collections are capped and indexes are set up.
         """
 
-        # Only run every 10 seconds
-        if (time.time() - self.last_ops_run) < 10:
+        # Only run every 30 seconds
+        if (time.time() - self.last_ops_run) < 30:
             return
 
         try:
