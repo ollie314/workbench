@@ -460,8 +460,11 @@ class DataStore(object):
         # Mongo may throw an autoreconnect exception so catch it and just return
         # the autoreconnect means that some operations didn't get executed but
         # because this method gets called every 30 seconds no biggy...
-        except pymongo.errors.AutoReconnect, e:
-            print 'Warning: MongoDB raised an AutoReconnect...', e
+        except pymongo.errors.AutoReconnect as e:
+            print 'Warning: MongoDB raised an AutoReconnect...' % e
+            return
+        except Exception as e:
+            print 'Critical: MongoDB raised an exception' % e
             return
 
     # Helper functions
