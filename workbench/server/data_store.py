@@ -420,43 +420,49 @@ class DataStore(object):
         if (time.time() - self.last_ops_run) < 10:
             return
 
-        # Reset last ops run
-        self.last_ops_run = time.time()
-        print 'Running Periodic Ops'
-
-        # Get all the collections in the workbench database
-        all_c = self.database.collection_names()
-
-        # Remove collections that we don't want to cap
         try:
-            all_c.remove('system.indexes')
-            all_c.remove('fs.chunks')
-            all_c.remove('fs.files')
-            all_c.remove('info')
-            all_c.remove('tags')
-            all_c.remove(self.sample_collection)
-        except ValueError:
-            print 'Catching a benign exception thats expected...'
 
-        # Convert collections to capped if desired
-        try:
+            # Reset last ops run
+            self.last_ops_run = time.time()
+            print 'Running Periodic Ops'
+
+            # Get all the collections in the workbench database
+            all_c = self.database.collection_names()
+
+            # Remove collections that we don't want to cap
+            try:
+                all_c.remove('system.indexes')
+                all_c.remove('fs.chunks')
+                all_c.remove('fs.files')
+                all_c.remove('info')
+                all_c.remove('tags')
+                all_c.remove(self.sample_collection)
+            except ValueError:
+                print 'Catching a benign exception thats expected...'
+
+            # Convert collections to capped if desired
             if self.worker_cap:
                 size = self.worker_cap * pow(1024, 2)  # MegaBytes per collection
                 for collection in all_c:
                     self.database.command('convertToCapped', collection, size=size)
+
+            # Loop through all collections ensuring they have an index on MD5s
+            for collection in all_c:
+                self.database[collection].ensure_index('md5')
+
+            # Add required indexes for samples collection
+            self.database[self.sample_collection].create_index('import_time')
+
+            # Create an index on tags
+            self.database['tags'].create_index('tags')
+
+    
+        # Mongo may throw an autoreconnect exception so catch it and just return
+        # the autoreconnect means that some operations didn't get executed but
+        # because this method gets called every 30 seconds no biggy...
         except pymongo.errors.AutoReconnect, e:
             print 'Warning: MongoDB raised an AutoReconnect...', e
-            time.sleep(5)
-
-        # Loop through all collections ensuring they have an index on MD5s
-        for collection in all_c:
-            self.database[collection].ensure_index('md5')
-
-        # Add required indexes for samples collection
-        self.database[self.sample_collection].create_index('import_time')
-
-        # Create an index on tags
-        self.database['tags'].create_index('tags')
+            return
 
     # Helper functions
     def to_unicode(self, s):
