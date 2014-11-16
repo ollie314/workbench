@@ -104,9 +104,10 @@ Mac/OSX
 Ubuntu (14.04 and 12.04)
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-    -  Neo4j: See official instructions for Neo4j `here <http://www.neo4j.org/download/linux>`_
-
-    -  Note: You may need to install Java JDK 1.7. If you have Java 1.7 installed and error says otherwise, run 
+    -  Neo4j: 
+        - Debian Packages: http://debian.neo4j.org/
+        - or See official instructions for Neo4j `here <http://www.neo4j.org/download/linux>`_
+        - Note: You may need to install Java JDK 1.7. If you have Java 1.7 installed and error says otherwise, run 
     
     ::
     
