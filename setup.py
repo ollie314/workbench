@@ -29,7 +29,7 @@ setup(
     url='http://github.com/SuperCowPowers/workbench',
     packages=['workbench', 'workbench.server',
               'workbench.server.bro', 'workbench.workers',
-              # 'workbench.workers.rekall_adapter', 
+              'workbench.workers.rekall_adapter', 
               'workbench.clients', 'workbench_apps', 'workbench_apps.workbench_cli'],
     package_dir={'workbench': 'workbench', 'workbench_apps': 'workbench_apps'},
     include_package_data=True,
