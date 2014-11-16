@@ -112,6 +112,9 @@ Ubuntu (14.04 and 12.04)
     
         $ update-alternatives --config java and select Java 1.7
 
+    - If you don't have Java JDK 1.7 try installing it with this
+        - sudo apt-get install openjdk-7-jdk
+
     -  ElasticSearch:
 
         -  wget https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.2.1.deb
