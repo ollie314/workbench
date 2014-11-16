@@ -56,8 +56,8 @@ def run():
     _foo = workbench.set_work_request('unzip', zip_files); list(_foo) # See Issue #306
     pcap_files = workbench.generate_sample_set('pcap')
     _foo = workbench.set_work_request('pcap_bro', pcap_files); list(_foo) # See Issue #306
-    #mem_files = workbench.generate_sample_set('mem')
-    #_foo = workbench.set_work_request('mem_procdump', mem_files); list(_foo) # See Issue #306
+    mem_files = workbench.generate_sample_set('mem')
+    _foo = workbench.set_work_request('mem_procdump', mem_files); list(_foo) # See Issue #306
 
 
     # Make sure all files are properly identified
