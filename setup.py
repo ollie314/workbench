@@ -37,7 +37,7 @@ setup(
     tests_require=['tox'],
     install_requires=['cython', 'elasticsearch', 'funcsigs', 'flask', 'filemagic', 
                       'ipython', 'lz4', 'mock', 'pandas', 'pefile',
-                      'py2neo', 'pymongo', 'pytest', 'rekall', 'requests',
+                      'py2neo==1.6.4', 'pymongo', 'pytest', 'rekall==1.0.3', 'requests',
                       'ssdeep==2.9-0.3', 'urllib3', 'yara', 'zerorpc', 'cython'],
     license='MIT',
     zip_safe=False,
