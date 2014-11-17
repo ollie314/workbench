@@ -64,6 +64,10 @@ class MemoryImageDllList(object):
         return self.output
 
 # Unit test: Create the class, the proper input and run the execute() method for a test
+import pytest
+#pylint: disable=no-member
+@pytest.mark.xfail
+#pylint: enable=no-member
 def test():
     ''' mem_dlllist.py: Test '''
 
