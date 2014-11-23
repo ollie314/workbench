@@ -37,3 +37,9 @@ History
 ^^^^^^^^^^^^^^^^^^
 
 * Release of workbench for alpha developers and users.
+
+0.3.4 (2014-11-23)
+^^^^^^^^^^^^^^^^^^
+
+* Bug fixes related to 'drift' of python modules.
+* Release of workbench for alpha developers and users.
