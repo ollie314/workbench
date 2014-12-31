@@ -17,7 +17,7 @@ import os
 
 import mock
 
-MOCK_MODULES = ['coverage', 'cython', 'distorm3>=0', 'elasticsearch',
+MOCK_MODULES = ['coverage', 'cython', 'distorm3', 'elasticsearch',
                 'funcsigs', 'filemagic', 'pefile', 'peutils', 'py2neo',
                 'pymongo', 'pytest-cov', 'rekall', 'rekall.plugins',
                 'rekall.plugins.addrspaces', 'rekall.plugins.renderers.data_export',
