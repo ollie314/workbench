@@ -1,6 +1,6 @@
 language: python
 env:
-  matrix:
+matrix:
     - TOX_ENV=py27
     - TOX_ENV=docs
 services:
@@ -15,9 +15,9 @@ before_install:
     - sudo apt-get install libpcap0.8
     - wget https://s3-us-west-2.amazonaws.com/workbench-data/packages/Bro-2.2-Linux-x86_64_flex.deb
     - sudo dpkg -i Bro-2.2-Linux-x86_64_flex.deb
-    - export PATH=/opt/bro/bin:$PATH
-#    - wget https://s3.amazonaws.com/workbench-wheels/wheelhouse.tar.gz
-#    - tar xvfz wheelhouse.tar.gz
+    - export PATH=/usr/local/bin:/opt/bro/bin:$PATH
+    - wget https://s3.amazonaws.com/workbench-wheels/wheelhouse.tar.gz
+    - tar xvfz wheelhouse.tar.gz
     - wget http://s3-us-west-2.amazonaws.com/workbench-data/memory_images/exemplar4.vmem -O workbench/data/memory_images/exemplar4.vmem
 install:
     - pip install tox
