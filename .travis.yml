@@ -1,6 +1,6 @@
 language: python
 env:
-matrix:
+  matrix:
     - TOX_ENV=py27
     - TOX_ENV=docs
 services:
@@ -22,7 +22,6 @@ before_install:
 install:
     - pip install tox
     - pip install coveralls
-    - pip install cython
 script: 
     - tox -v -e $TOX_ENV
 after_success:
