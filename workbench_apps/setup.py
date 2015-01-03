@@ -5,10 +5,6 @@ import os, sys
 from setuptools import setup
 
 
-if sys.argv[-1] == 'publish':
-    os.system('python setup.py sdist upload')
-    sys.exit()
-
 readme = open('workbench_cli/README.rst').read()
 long_description = readme
 doclink = '''
