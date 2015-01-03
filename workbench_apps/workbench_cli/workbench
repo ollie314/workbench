@@ -3,7 +3,7 @@
 
 """Workbench Interactive Shell using IPython"""
 
-from workbench_apps.workbench_cli import workbench_shell
+from workbench_cli import workbench_shell
 
 def run():
     work_shell = workbench_shell.WorkbenchShell()
