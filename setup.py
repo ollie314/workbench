@@ -5,10 +5,6 @@ import os, sys
 from setuptools import setup
 
 
-if sys.argv[-1] == 'publish':
-    os.system('python setup.py sdist upload')
-    sys.exit()
-
 readme = open('README.rst').read()
 long_description = readme
 doclink = '''
@@ -35,8 +31,8 @@ setup(
     include_package_data=True,
     scripts=['workbench/server/workbench_server', 'workbench_apps/workbench_cli/workbench'],
     tests_require=['tox'],
-    install_requires=['cython', 'elasticsearch', 'funcsigs', 'flask', 'filemagic', 
-                      'ipython', 'lz4', 'mock', 'pandas', 'pefile',
+    install_requires=['cython', 'distorm3', 'elasticsearch', 'funcsigs', 'flask', 'filemagic', 
+                      'ipython', 'lz4', 'mock', 'numpy', 'pandas', 'pefile',
                       'py2neo==1.6.4', 'pymongo', 'pytest', 'rekall==1.0.3', 'requests',
                       'ssdeep==2.9-0.3', 'urllib3', 'yara', 'zerorpc', 'cython'],
     license='MIT',

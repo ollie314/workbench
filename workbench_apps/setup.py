@@ -5,10 +5,6 @@ import os, sys
 from setuptools import setup
 
 
-if sys.argv[-1] == 'publish':
-    os.system('python setup.py sdist upload')
-    sys.exit()
-
 readme = open('workbench_cli/README.rst').read()
 long_description = readme
 doclink = '''
@@ -27,7 +23,7 @@ setup(
     author_email='support@supercowpowers.com',
     url='http://github.com/SuperCowPowers/workbench',
     packages=['workbench_cli'],
-    package_dir={'workbench': 'workbench_cli'},
+    package_dir={'workbench_cli': 'workbench_cli'},
     include_package_data=True,
     scripts=['workbench_cli/workbench'],
     install_requires=['funcsigs', 'ipython', 'lz4', 

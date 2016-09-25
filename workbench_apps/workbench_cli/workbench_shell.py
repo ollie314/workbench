@@ -132,7 +132,13 @@ class WorkbenchShell(object):
         self.tags()
 
     def pivot(self, md5, tag=''):
-        '''Pivot on the md5e'''
+        """Pivot on an md5 (md5 can be a single sample or a sample_set)
+            Args:
+                md5: The md5 can be a single sample or a sample_set
+                tags (optional): a tag for the sample (for the prompt)
+            Returns:
+                Nothing but it's sets the active sample/sample_set
+        """
 
         # Is the md5 a tag?
         ss = self.workbench.generate_sample_set(md5)
